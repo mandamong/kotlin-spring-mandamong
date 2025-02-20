@@ -26,9 +26,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.jsonwebtoken:jjwt:0.12.6")
     implementation("org.springframework.boot:spring-boot-starter-logging")
+    implementation("io.minio:minio:8.5.17")
+    implementation("org.springframework.boot:spring-boot-starter-security")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("org.springframework.security:spring-security-test")
 
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 
