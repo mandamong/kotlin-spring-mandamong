@@ -1,5 +1,6 @@
 package com.mandamong.api.domains.auth.domain
 
+import com.mandamong.api.domains.model.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -13,8 +14,8 @@ class Member(
     @Column(name = "email")
     var email: String,
 
-    @Column(name = "phone_number")
-    var phoneNumber: String,
+    @Column(name = "phone_number", nullable = true)
+    var phoneNumber: String?,
 
     @Column(name = "nickname")
     var nickname: String,
@@ -22,20 +23,20 @@ class Member(
     @Column(name = "password")
     var password: String,
 
-    @Column(name = "profile_image")
+    @Column(name = "profile_image", columnDefinition = "TEXT")
     var profileImage: String,
 
     @Column(name = "language")
     var language: String,
-
-    @Column(name = "refresh_token")
-    var refresh_token: String,
-
-    @Column(name = "oauth_provider_uid")
-    var oauthProviderUid: String,
-) {
+) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     val id: Long = 0L
+
+    @Column(name = "refresh_token")
+    var refreshToken: String? = null
+
+    @Column(name = "oauth_provider_uid")
+    var oauthProviderUid: String? = null
 }

@@ -17,7 +17,7 @@ class Action(
 
     @ManyToOne
     @JoinColumn(name = "object_id")
-    var objectId: Object,
+    var `object`: Object,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

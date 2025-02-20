@@ -13,7 +13,7 @@ import jakarta.persistence.Table
 @Table(name = "objects")
 class Object(
     @Column(name = "object")
-    var objectValue: String,
+    var `object`: String,
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
