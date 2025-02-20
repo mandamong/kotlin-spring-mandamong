@@ -17,7 +17,7 @@ class SecurityConfig {
             .httpBasic { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers("/members", "/auth/login").permitAll()
+                it.requestMatchers("/members", "/auth/login", "/members/duplication/*").permitAll()
                     .anyRequest().authenticated()
             }
 
