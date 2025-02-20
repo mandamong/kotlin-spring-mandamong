@@ -1,4 +1,4 @@
-package com.mandamong.api.auth.domain
+package com.mandamong.api.domains.auth.domain
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

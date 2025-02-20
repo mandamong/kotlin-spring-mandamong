@@ -1,5 +1,4 @@
-application-prod.yml
-.env
+.env*
 .DS_Store
 HELP.md
 .gradle
