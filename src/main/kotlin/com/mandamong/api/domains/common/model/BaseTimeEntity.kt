@@ -1,4 +1,4 @@
-package com.mandamong.api.domains.model
+package com.mandamong.api.domains.common.model
 
 import jakarta.persistence.Column
 import jakarta.persistence.MappedSuperclass
@@ -7,12 +7,12 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 
 @MappedSuperclass
-abstract class BaseEntity {
+abstract class BaseTimeEntity {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private lateinit var createdAt: LocalDateTime
+    lateinit var createdAt: LocalDateTime
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
-    private lateinit var updatedAt: LocalDateTime
+    lateinit var updatedAt: LocalDateTime
 }

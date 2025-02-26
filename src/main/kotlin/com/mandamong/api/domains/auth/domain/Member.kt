@@ -1,18 +1,28 @@
 package com.mandamong.api.domains.auth.domain
 
-import com.mandamong.api.domains.model.BaseEntity
+import com.mandamong.api.domains.auth.api.dto.EmailAuthResponse
+import com.mandamong.api.domains.auth.api.dto.EmailSignupRequest
+import com.mandamong.api.domains.common.model.BaseTimeEntity
+import com.mandamong.api.domains.model.Email
 import jakarta.persistence.Column
+import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "members")
 class Member(
-    @Column(name = "email")
-    var email: String,
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    var id: Long = 0L,
+
+    @Embedded
+    var email: Email,
 
     @Column(name = "phone_number", nullable = true)
     var phoneNumber: String?,
@@ -28,15 +38,36 @@ class Member(
 
     @Column(name = "language")
     var language: String,
-) : BaseEntity() {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    val id: Long = 0L
 
     @Column(name = "refresh_token")
-    var refreshToken: String? = null
+    var refreshToken: String? = null,
 
     @Column(name = "oauth_provider_uid")
-    var oauthProviderUid: String? = null
+    var oauthProviderUid: String? = null,
+) : BaseTimeEntity() {
+    companion object {
+        fun toEntity(emailSignupRequest: EmailSignupRequest, profileImageUrl: String): Member {
+            return Member(
+                email = Email.from(emailSignupRequest.email),
+                password = emailSignupRequest.password,
+                nickname = emailSignupRequest.nickname,
+                profileImage = profileImageUrl,
+                language = emailSignupRequest.language,
+                phoneNumber = null,
+            )
+        }
+
+        fun toDto(member: Member, accessToken: String, refreshToken: String): EmailAuthResponse {
+            return EmailAuthResponse(
+                id = member.id,
+                email = member.email.value,
+                nickname = member.nickname,
+                profileImage = member.profileImage,
+                language = member.language,
+                accessToken = accessToken,
+                refreshToken = refreshToken,
+                time = LocalDateTime.now(),
+            )
+        }
+    }
 }

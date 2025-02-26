@@ -2,6 +2,7 @@ package com.mandamong.api.domains.auth.api
 
 import com.mandamong.api.domains.auth.api.dto.DuplicationResponse
 import com.mandamong.api.domains.auth.dao.MemberRepository
+import com.mandamong.api.domains.model.Email
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,6 +23,6 @@ class DuplicationApi(
     @GetMapping("/email")
     fun checkEmail(@RequestParam email: String): ResponseEntity<DuplicationResponse> {
         return ResponseEntity.ok()
-            .body(DuplicationResponse(memberRepository.existsByEmail(email)))
+            .body(DuplicationResponse(memberRepository.existsByEmail(Email.from(email))))
     }
 }

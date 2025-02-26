@@ -1,4 +1,4 @@
-package com.mandamong.api.global.service
+package com.mandamong.api.domains.common.application
 
 import io.minio.GetPresignedObjectUrlArgs
 import io.minio.MinioClient

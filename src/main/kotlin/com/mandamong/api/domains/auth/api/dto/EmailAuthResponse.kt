@@ -2,7 +2,7 @@ package com.mandamong.api.domains.auth.api.dto
 
 import java.time.LocalDateTime
 
-class EmailAuthResponse(
+data class EmailAuthResponse(
     val id: Long,
     val email: String,
     val nickname: String,
