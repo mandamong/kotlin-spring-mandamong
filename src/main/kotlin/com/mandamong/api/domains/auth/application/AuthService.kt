@@ -6,8 +6,8 @@ import com.mandamong.api.domains.auth.api.dto.EmailSignupRequest
 import com.mandamong.api.domains.auth.dao.MemberRepository
 import com.mandamong.api.domains.auth.domain.Member
 import com.mandamong.api.domains.auth.util.JwtUtil
-import com.mandamong.api.domains.auth.util.MemberMapper
-import com.mandamong.api.global.service.MinioService
+import com.mandamong.api.domains.common.application.MinioService
+import com.mandamong.api.domains.model.Email
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,18 +19,17 @@ class AuthService(
     private val minioService: MinioService,
     private val passwordEncoder: BCryptPasswordEncoder
 ) {
-
     @Transactional
     fun basicSignup(emailSignupRequest: EmailSignupRequest): EmailAuthResponse {
-        if (memberRepository.existsByEmail(emailSignupRequest.email)) {
-            throw IllegalStateException("이미 등록된 이메일입니다.")
+        if (memberRepository.existsByEmail(Email.from(emailSignupRequest.email))) {
+            throw IllegalStateException("이메일: ${emailSignupRequest.email} 중복 오류")
         }
 
         emailSignupRequest.password = passwordEncoder.encode(emailSignupRequest.password)
 
         val preSignedUrl: String = minioService.upload(emailSignupRequest.profileImage, emailSignupRequest.nickname)
 
-        val member: Member = MemberMapper.toEntity(emailSignupRequest, preSignedUrl)
+        val member: Member = Member.toEntity(emailSignupRequest, preSignedUrl)
 
         val savedMember: Member = memberRepository.save(member)
 
@@ -38,17 +37,19 @@ class AuthService(
         val refreshToken: String = jwtUtil.generateRefreshToken(savedMember.id)
         savedMember.refreshToken = refreshToken
 
-        return MemberMapper.toDto(savedMember, accessToken, refreshToken)
+        return Member.toDto(savedMember, accessToken, refreshToken)
     }
 
     @Transactional
     fun basicLogin(emailLoginRequest: EmailLoginRequest): EmailAuthResponse {
-        val member: Member = memberRepository.findByEmail(emailLoginRequest.email)
+        val member: Member = memberRepository.findByEmail(
+            Email.from(emailLoginRequest.email),
+        ) ?: throw IllegalArgumentException("이메일: ${emailLoginRequest.email} 조회 오류")
 
         if (isValidPassword(emailLoginRequest, member)) {
             val accessToken: String = jwtUtil.generateAccessToken(member.id)
             val refreshToken: String = jwtUtil.generateRefreshToken(member.id)
-            return MemberMapper.toDto(member, accessToken, refreshToken)
+            return Member.toDto(member, accessToken, refreshToken)
         } else {
             throw IllegalArgumentException("잘못된 비밀번호입니다.")
         }

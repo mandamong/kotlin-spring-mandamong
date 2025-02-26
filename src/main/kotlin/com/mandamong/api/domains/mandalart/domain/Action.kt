@@ -12,15 +12,15 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "actions")
 class Action(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    val id: Long = 0L,
+
     @Column(name = "action")
     var action: String,
 
     @ManyToOne
     @JoinColumn(name = "object_id")
     var `object`: Object,
-) {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    val id: Long = 0L
-}
+)
