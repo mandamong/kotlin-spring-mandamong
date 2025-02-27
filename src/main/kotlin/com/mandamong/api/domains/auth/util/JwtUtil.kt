@@ -71,4 +71,16 @@ class JwtUtil(
             .parseSignedClaims(refreshToken)
             .payload
     }
+
+    fun validateRefreshToken(refreshToken: String, memberId: Long) {
+        val claims: Claims = parseRefreshToken(refreshToken)
+        val memberIdInToken: String = claims.subject
+        if (isMemberIdNotEquals(memberIdInToken, memberId)) {
+            throw IllegalStateException("Refresh Token 검증 오류")
+        }
+    }
+
+    private fun isMemberIdNotEquals(memberIdInToken: String, memberId: Long): Boolean {
+        return !memberIdInToken.equals(memberId.toString())
+    }
 }

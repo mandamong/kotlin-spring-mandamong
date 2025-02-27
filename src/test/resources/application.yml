@@ -26,6 +26,6 @@ jwt:
 
 minio:
   endpoint: http://localhost:9000
-  accessKey: oinpjyg01QCM8ecLkLfS
-  secretKey: 2sk6fFAh6VqONmt57r2HljKtySetgdFLaOMmHgUN
+  accessKey: EJEtF6JdhDtqH7RPc2xp
+  secretKey: aOXQTuCzjzTlnVSapf7gdtDJdnAIqXQoFx22AWbw
   bucketName: test
