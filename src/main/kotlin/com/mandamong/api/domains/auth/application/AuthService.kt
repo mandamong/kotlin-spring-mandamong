@@ -3,6 +3,8 @@ package com.mandamong.api.domains.auth.application
 import com.mandamong.api.domains.auth.api.dto.EmailAuthResponse
 import com.mandamong.api.domains.auth.api.dto.EmailLoginRequest
 import com.mandamong.api.domains.auth.api.dto.EmailSignupRequest
+import com.mandamong.api.domains.auth.api.dto.RefreshRequest
+import com.mandamong.api.domains.auth.api.dto.RefreshResponse
 import com.mandamong.api.domains.auth.dao.MemberRepository
 import com.mandamong.api.domains.auth.domain.Member
 import com.mandamong.api.domains.auth.util.JwtUtil
@@ -49,6 +51,8 @@ class AuthService(
         if (isValidPassword(emailLoginRequest, member)) {
             val accessToken: String = jwtUtil.generateAccessToken(member.id)
             val refreshToken: String = jwtUtil.generateRefreshToken(member.id)
+
+
             return Member.toDto(member, accessToken, refreshToken)
         } else {
             throw IllegalArgumentException("잘못된 비밀번호입니다.")
@@ -57,5 +61,24 @@ class AuthService(
 
     private fun isValidPassword(emailLoginRequest: EmailLoginRequest, member: Member): Boolean {
         return passwordEncoder.matches(emailLoginRequest.password, member.password)
+    }
+
+    @Transactional
+    fun refresh(refreshRequest: RefreshRequest): RefreshResponse {
+        val refreshToken: String = refreshRequest.refreshToken
+
+        val member: Member = memberRepository.findByRefreshToken(refreshToken)
+            ?: throw IllegalArgumentException("Refresh Token 조회 오류")
+
+        jwtUtil.validateRefreshToken(refreshToken, member.id)
+
+        val accessToken: String = jwtUtil.generateAccessToken(member.id)
+        member.refreshToken = jwtUtil.generateRefreshToken(member.id)
+
+        return RefreshResponse(
+            id = member.id,
+            accessToken = accessToken,
+            refreshToken = member.refreshToken!!,
+        )
     }
 }

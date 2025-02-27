@@ -18,8 +18,8 @@ spring:
 
 jwt:
   secret: testestesttestestesttestestesttestestesttestestesttestestesttestestesttestestesttestestest
-  access-expiration: 60
-  refresh-expiration: 120
+  access-expiration: 6000
+  refresh-expiration: 12000
 
 minio:
   endpoint: http://localhost:9000
