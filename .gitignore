@@ -1,5 +1,3 @@
-application-local.yml
-.env*
 .DS_Store
 HELP.md
 .gradle

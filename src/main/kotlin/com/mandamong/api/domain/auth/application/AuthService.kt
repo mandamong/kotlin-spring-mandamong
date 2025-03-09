@@ -8,8 +8,8 @@ import com.mandamong.api.domain.auth.api.dto.RefreshResponse
 import com.mandamong.api.domain.auth.dao.MemberRepository
 import com.mandamong.api.domain.auth.domain.Member
 import com.mandamong.api.domain.auth.util.JwtUtil
-import com.mandamong.api.infrastructure.application.MinioService
 import com.mandamong.api.domain.model.Email
+import com.mandamong.api.infrastructure.application.MinioService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,7 +19,7 @@ class AuthService(
     private val memberRepository: MemberRepository,
     private val jwtUtil: JwtUtil,
     private val minioService: MinioService,
-    private val passwordEncoder: BCryptPasswordEncoder
+    private val passwordEncoder: BCryptPasswordEncoder,
 ) {
     @Transactional
     fun basicSignup(emailSignupRequest: EmailSignupRequest): EmailAuthResponse {
@@ -44,18 +44,16 @@ class AuthService(
 
     @Transactional
     fun basicLogin(emailLoginRequest: EmailLoginRequest): EmailAuthResponse {
-        val member: Member = memberRepository.findByEmail(
-            Email.from(emailLoginRequest.email),
-        ) ?: throw IllegalArgumentException("이메일: ${emailLoginRequest.email} 조회 오류")
+        val member: Member = memberRepository.findByEmail(Email.from(emailLoginRequest.email))
+            ?: throw IllegalArgumentException("이메일: ${emailLoginRequest.email} 조회 오류")
 
         if (isValidPassword(emailLoginRequest, member)) {
             val accessToken: String = jwtUtil.generateAccessToken(member.id)
             val refreshToken: String = jwtUtil.generateRefreshToken(member.id)
 
-
             return Member.toDto(member, accessToken, refreshToken)
         } else {
-            throw IllegalArgumentException("잘못된 비밀번호입니다.")
+            throw IllegalArgumentException("비밀번호 검증 오류")
         }
     }
 
@@ -66,7 +64,7 @@ class AuthService(
         val member: Member = memberRepository.findByRefreshToken(refreshToken)
             ?: throw IllegalArgumentException("Refresh Token 조회 오류")
 
-        jwtUtil.validateRefreshToken(refreshToken, member.id)
+        jwtUtil.validateMemberIdInRefreshToken(refreshToken, member.id)
 
         val accessToken: String = jwtUtil.generateAccessToken(member.id)
         member.refreshToken = jwtUtil.generateRefreshToken(member.id)

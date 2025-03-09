@@ -3,6 +3,7 @@ package com.mandamong.api.domain.auth.util
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import jakarta.servlet.http.HttpServletRequest
 import java.util.Base64
 import java.util.Date
 import javax.crypto.SecretKey
@@ -25,6 +26,11 @@ class JwtUtil(
 
     private val accessSignKey: SecretKey = Keys.hmacShaKeyFor(rawSecretKey)
     private val refreshSignKey: SecretKey = Keys.hmacShaKeyFor(decodedSecretKey)
+
+    companion object {
+        private const val AUTHORIZATION_HEADER = "Authorization"
+        private const val TOKEN_PREFIX = "Bearer "
+    }
 
     fun generateAccessToken(memberId: Long): String {
         val now: Date = Date()
@@ -72,15 +78,27 @@ class JwtUtil(
             .payload
     }
 
-    fun validateRefreshToken(refreshToken: String, memberId: Long) {
-        val claims: Claims = parseRefreshToken(refreshToken)
+    fun validateMemberIdInAccessToken(accessToken: String, memberId: Long): Boolean {
+        val claims: Claims = parseAccessToken(accessToken)
         val memberIdInToken: String = claims.subject
-        if (isMemberIdNotEquals(memberIdInToken, memberId)) {
-            throw IllegalStateException("Refresh Token 검증 오류")
+        if (memberIdInToken == memberId.toString()) {
+            return true
         }
+        throw IllegalStateException("Access Token, Member Id 검증 오류")
     }
 
-    private fun isMemberIdNotEquals(memberIdInToken: String, memberId: Long): Boolean {
-        return !memberIdInToken.equals(memberId.toString())
+    fun validateMemberIdInRefreshToken(refreshToken: String, memberId: Long): Boolean {
+        val claims: Claims = parseRefreshToken(refreshToken)
+        val memberIdInToken: String = claims.subject
+        if (memberIdInToken == memberId.toString()) {
+            return true
+        }
+        throw IllegalStateException("Access Token, Member Id 검증 오류")
+    }
+
+    fun resolve(request: HttpServletRequest): String? {
+        return request.getHeader(AUTHORIZATION_HEADER)
+            .takeIf { it.startsWith(TOKEN_PREFIX) }
+            ?.substring(TOKEN_PREFIX.length)
     }
 }
