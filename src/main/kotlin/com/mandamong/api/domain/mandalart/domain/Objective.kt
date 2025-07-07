@@ -10,15 +10,15 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "objects")
-class Object(
+@Table(name = "objectives")
+class Objective(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     var id: Long = 0L,
 
-    @Column(name = "object")
-    var `object`: String,
+    @Column(name = "objective")
+    var objective: String,
 
     @ManyToOne
     @JoinColumn(name = "subject_id")

@@ -21,6 +21,6 @@ class Action(
     var action: String,
 
     @ManyToOne
-    @JoinColumn(name = "object_id")
-    var `object`: Object,
+    @JoinColumn(name = "objective_id")
+    var objective: Objective,
 )
