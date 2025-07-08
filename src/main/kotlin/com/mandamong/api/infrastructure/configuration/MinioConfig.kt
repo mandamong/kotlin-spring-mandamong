@@ -16,6 +16,7 @@ class MinioConfig(
     @Value("\${minio.secretKey}")
     private val secretKey: String,
 ) {
+
     @Bean
     fun minioClient(): MinioClient {
         return MinioClient.builder()

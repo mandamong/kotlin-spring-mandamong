@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -12,10 +13,6 @@ import org.springframework.web.filter.OncePerRequestFilter
 class TokenAuthenticationFilter(
     private val jwtUtil: JwtUtil,
 ) : OncePerRequestFilter() {
-    companion object {
-        private const val AUTHORIZATION_HEADER = "Authorization"
-        private const val TOKEN_PREFIX = "Bearer "
-    }
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -30,9 +27,18 @@ class TokenAuthenticationFilter(
         token?.let {
             val claims: Claims = jwtUtil.parseAccessToken(it)
             val memberId: Long = claims.subject.toLong()
-            jwtUtil.validateMemberIdInAccessToken(it, memberId)
+            if (jwtUtil.validateMemberIdInAccessToken(it, memberId)) {
+                val authentication = jwtUtil.getAuthentication(token)
+                SecurityContextHolder.getContext().authentication = authentication
+            }
+
         }
 
         filterChain.doFilter(request, response)
+    }
+
+    companion object {
+        private const val AUTHORIZATION_HEADER = "Authorization"
+        private const val TOKEN_PREFIX = "Bearer "
     }
 }

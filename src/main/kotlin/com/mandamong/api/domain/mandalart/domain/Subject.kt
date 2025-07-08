@@ -25,4 +25,9 @@ class Subject(
     @ManyToOne
     @JoinColumn(name = "member_id")
     var member: Member,
-) : BaseTimeEntity()
+) : BaseTimeEntity() {
+
+    /*fun from(subject: String): Subject {
+        return Subject()
+    }*/
+}
