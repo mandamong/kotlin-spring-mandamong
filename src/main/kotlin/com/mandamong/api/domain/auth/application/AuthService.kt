@@ -10,6 +10,8 @@ import com.mandamong.api.domain.auth.domain.Member
 import com.mandamong.api.domain.auth.util.JwtUtil
 import com.mandamong.api.domain.model.Email
 import com.mandamong.api.infrastructure.application.MinioService
+import com.mandamong.api.infrastructure.application.RedisService
+import java.time.Duration
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -20,7 +22,9 @@ class AuthService(
     private val jwtUtil: JwtUtil,
     private val minioService: MinioService,
     private val passwordEncoder: BCryptPasswordEncoder,
+    private val redisService: RedisService,
 ) {
+
     @Transactional
     fun basicSignup(emailSignupRequest: EmailSignupRequest): EmailAuthResponse {
         if (memberRepository.existsByEmail(Email.from(emailSignupRequest.email))) {
@@ -39,6 +43,8 @@ class AuthService(
         val refreshToken: String = jwtUtil.generateRefreshToken(savedMember.id)
         savedMember.refreshToken = refreshToken
 
+        redisService.setValues(savedMember.id.toString(), refreshToken)
+
         return Member.toDto(savedMember, accessToken, refreshToken)
     }
 
@@ -50,6 +56,9 @@ class AuthService(
         if (isValidPassword(emailLoginRequest, member)) {
             val accessToken: String = jwtUtil.generateAccessToken(member.id)
             val refreshToken: String = jwtUtil.generateRefreshToken(member.id)
+
+            redisService.setValues(member.id.toString(), accessToken)
+            member.refreshToken = refreshToken
 
             return Member.toDto(member, accessToken, refreshToken)
         } else {
@@ -68,6 +77,8 @@ class AuthService(
 
         val accessToken: String = jwtUtil.generateAccessToken(member.id)
         member.refreshToken = jwtUtil.generateRefreshToken(member.id)
+
+        redisService.setValues(member.id.toString(), accessToken)
 
         return RefreshResponse(
             id = member.id,

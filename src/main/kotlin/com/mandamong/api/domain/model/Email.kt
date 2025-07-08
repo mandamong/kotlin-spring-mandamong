@@ -8,6 +8,7 @@ class Email(
     @Column(name = "email")
     var value: String,
 ) {
+
     fun getLocalPart(): String {
         val index: Int = value.indexOf('@')
         return value.substring(0, index)

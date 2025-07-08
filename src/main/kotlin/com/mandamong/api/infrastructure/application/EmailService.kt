@@ -13,10 +13,6 @@ class EmailService(
     private val redisService: RedisService,
     private val javaMailSender: JavaMailSender,
 ) {
-    companion object {
-        private const val REDIS_PREFIX: String = "email::auth::code::"
-        private const val EMAIL_SUBJECT: String = "만다몽 이메일 인증 번호"
-    }
 
     @Transactional
     fun sendCode(targetEmail: String) {
@@ -69,5 +65,10 @@ class EmailService(
         message.subject = EMAIL_SUBJECT
         message.text = text
         return message
+    }
+
+    companion object {
+        private const val REDIS_PREFIX: String = "email::auth::code::"
+        private const val EMAIL_SUBJECT: String = "만다몽 이메일 인증 번호"
     }
 }

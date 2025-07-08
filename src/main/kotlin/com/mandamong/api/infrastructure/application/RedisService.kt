@@ -8,8 +8,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class RedisService(
-    private val redisTemplate: RedisTemplate<String, Any?>
+    private val redisTemplate: RedisTemplate<String, String>,
 ) {
+
     fun setValues(key: String, data: String) {
         val values = redisTemplate.opsForValue()
         values[key] = data

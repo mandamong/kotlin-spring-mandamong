@@ -45,6 +45,7 @@ class Member(
     @Column(name = "oauth_provider_uid")
     var oauthProviderUid: String? = null,
 ) : BaseTimeEntity() {
+
     companion object {
         fun toEntity(emailSignupRequest: EmailSignupRequest, profileImageUrl: String): Member {
             return Member(
