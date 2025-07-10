@@ -2,13 +2,13 @@ package com.mandamong.api.infrastructure.application
 
 import java.time.Duration
 import java.util.concurrent.TimeUnit
-import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class RedisService(
-    private val redisTemplate: RedisTemplate<String, String>,
+    private val redisTemplate: StringRedisTemplate,
 ) {
 
     fun setValues(key: String, data: String) {

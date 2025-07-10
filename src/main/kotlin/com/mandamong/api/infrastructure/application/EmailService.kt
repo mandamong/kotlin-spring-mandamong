@@ -1,6 +1,6 @@
 package com.mandamong.api.infrastructure.application
 
-import com.mandamong.api.domain.auth.api.dto.EmailVerificationResponse
+import com.mandamong.api.auth.api.dto.EmailVerificationResponse
 import java.security.SecureRandom
 import java.time.Duration
 import org.springframework.mail.SimpleMailMessage
@@ -35,7 +35,7 @@ class EmailService(
     }
 
     private fun createCode(): String {
-        val length: Int = 6
+        val length = 6
         val random: SecureRandom = SecureRandom.getInstanceStrong()
         val stringBuilder = StringBuilder()
         for (i in 0..<length) {
@@ -60,7 +60,7 @@ class EmailService(
         targetEmail: String,
         text: String,
     ): SimpleMailMessage {
-        val message: SimpleMailMessage = SimpleMailMessage()
+        val message = SimpleMailMessage()
         message.setTo(targetEmail)
         message.subject = EMAIL_SUBJECT
         message.text = text

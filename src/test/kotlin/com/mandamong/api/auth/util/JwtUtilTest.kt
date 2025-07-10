@@ -1,6 +1,5 @@
 package com.mandamong.api.auth.util
 
-import com.mandamong.api.domain.auth.util.JwtUtil
 import io.jsonwebtoken.Claims
 import java.util.Date
 import org.assertj.core.api.Assertions.assertThat
