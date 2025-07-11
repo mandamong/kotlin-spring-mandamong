@@ -49,11 +49,12 @@ class Member(
     companion object {
         fun toEntity(
             emailSignupRequest: EmailSignupRequest,
-            profileImageUrl: String
+            encodedPassword: String,
+            profileImageUrl: String,
         ): Member {
             return Member(
                 email = Email.from(emailSignupRequest.email),
-                password = emailSignupRequest.password,
+                password = encodedPassword,
                 nickname = emailSignupRequest.nickname,
                 profileImage = profileImageUrl,
                 language = emailSignupRequest.language,
@@ -64,7 +65,7 @@ class Member(
         fun toDto(
             member: Member,
             accessToken: String,
-            refreshToken: String
+            refreshToken: String,
         ): EmailAuthResponse {
             return EmailAuthResponse(
                 id = member.id,

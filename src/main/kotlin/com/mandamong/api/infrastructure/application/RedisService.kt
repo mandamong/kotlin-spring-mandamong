@@ -1,7 +1,6 @@
 package com.mandamong.api.infrastructure.application
 
 import java.time.Duration
-import java.util.concurrent.TimeUnit
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -11,50 +10,25 @@ class RedisService(
     private val redisTemplate: StringRedisTemplate,
 ) {
 
-    fun setValues(key: String, data: String) {
-        val values = redisTemplate.opsForValue()
-        values[key] = data
-    }
-
-    fun setValues(key: String, data: String, duration: Duration) {
-        val values = redisTemplate.opsForValue()
-        values.set(key, data, duration)
+    fun set(key: String, data: String, duration: Duration) {
+        val redis = redisTemplate.opsForValue()
+        redis.set(key, data, duration)
     }
 
     @Transactional(readOnly = true)
-    fun getValues(key: String): String {
-        val values = redisTemplate.opsForValue()
-        if (values[key] == null) {
-            return "false"
+    fun get(key: String): String? {
+        val redis = redisTemplate.opsForValue()
+        if (redis.get(key) == null) {
+            return null
         }
-        return values[key].toString()
+        return redis.get(key)
     }
 
-    fun deleteValues(key: String) {
+    fun delete(key: String) {
         redisTemplate.delete(key)
     }
 
-    fun expireValues(key: String, timeout: Int) {
-        redisTemplate.expire(key, timeout.toLong(), TimeUnit.MILLISECONDS)
-    }
-
-    fun setHashOps(key: String, data: Map<String, String>) {
-        val values = redisTemplate.opsForHash<Any, Any>()
-        values.putAll(key, data)
-    }
-
-    @Transactional(readOnly = true)
-    fun getHashOps(key: String, hashKey: String): String {
-        val values = redisTemplate.opsForHash<Any, Any>()
-        return values.get(key, hashKey).toString()
-    }
-
-    fun deleteHashOps(key: String, hashKey: String) {
-        val values = redisTemplate.opsForHash<Any, Any>()
-        values.delete(key, hashKey)
-    }
-
-    fun checkExistsValue(value: String): Boolean {
-        return value != "false"
+    fun isExist(key: String): Boolean {
+        return redisTemplate.opsForValue().get(key) != null
     }
 }

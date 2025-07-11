@@ -19,10 +19,8 @@ import org.springframework.stereotype.Component
 class JwtUtil(
     @Value("\${jwt.secret}")
     private val secretKey: String,
-
     @Value("\${jwt.access-expiration}")
     private val accessExpiration: Long,
-
     @Value("\${jwt.refresh-expiration}")
     private val refreshExpiration: Long,
 
@@ -38,7 +36,6 @@ class JwtUtil(
 
     fun generateAccessToken(memberId: Long): String {
         val now = Date()
-
         return Jwts.builder()
             .header()
             .type("JWT")
@@ -53,7 +50,6 @@ class JwtUtil(
 
     fun generateRefreshToken(memberId: Long): String {
         val now = Date()
-
         return Jwts.builder()
             .header()
             .type("JWT")
@@ -82,25 +78,24 @@ class JwtUtil(
             .payload
     }
 
-    fun validateMemberIdInAccessToken(accessToken: String, memberId: Long): Boolean {
-        val token = redisService.getValues(memberId.toString())
-        if (accessToken == token) {
-            return true
+    fun validateMemberIdInAccessToken(accessToken: String) {
+        val memberId = parseAccessToken(accessToken).subject.toLong()
+        val savedAccessToken: String = redisService.get(memberId.toString())!!
+        if (accessToken != savedAccessToken) {
+            throw IllegalStateException("Access Token, Member Id 검증 오류")
         }
-        throw IllegalStateException("Access Token, Member Id 검증 오류")
     }
 
-    fun validateMemberIdInRefreshToken(refreshToken: String, memberId: Long): Boolean {
-        val id = memberService.findByRefreshToken(refreshToken)
-        if (memberId == id) {
-            return true
+    fun validateMemberIdInRefreshToken(refreshToken: String, memberId: Long) {
+        val savedMemberId = memberService.findByRefreshToken(refreshToken)
+        if (memberId != savedMemberId) {
+            throw IllegalStateException("Refresh Token, Member Id 검증 오류")
         }
-        throw IllegalStateException("Refresh Token, Member Id 검증 오류")
     }
 
-    fun getAuthentication(token: String): UsernamePasswordAuthenticationToken {
-        val claims = parseAccessToken(token)
+    fun getAuthentication(accessToken: String): UsernamePasswordAuthenticationToken {
+        val claims = parseAccessToken(accessToken)
         val authorities = Collections.singleton(SimpleGrantedAuthority("ROLE_USER"))
-        return UsernamePasswordAuthenticationToken(User(claims.subject, "", authorities), token, authorities)
+        return UsernamePasswordAuthenticationToken(User(claims.subject, "", authorities), accessToken, authorities)
     }
 }

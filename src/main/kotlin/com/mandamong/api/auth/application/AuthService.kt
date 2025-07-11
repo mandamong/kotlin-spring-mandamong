@@ -11,6 +11,7 @@ import com.mandamong.api.auth.util.JwtUtil
 import com.mandamong.api.infrastructure.application.MinioService
 import com.mandamong.api.infrastructure.application.RedisService
 import com.mandamong.api.model.Email
+import java.time.Duration
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -29,36 +30,30 @@ class AuthService(
         if (memberRepository.existsByEmail(Email.from(emailSignupRequest.email))) {
             throw IllegalStateException("이메일: ${emailSignupRequest.email} 중복 오류")
         }
-
-        emailSignupRequest.password = passwordEncoder.encode(emailSignupRequest.password)
-
+        val encodedPassword: String = passwordEncoder.encode(emailSignupRequest.password)
         val preSignedUrl: String = minioService.upload(emailSignupRequest.profileImage, emailSignupRequest.nickname)
-
-        val member: Member =
-            Member.toEntity(emailSignupRequest, preSignedUrl)
-
+        val member: Member = Member.toEntity(emailSignupRequest, encodedPassword, preSignedUrl)
         val savedMember: Member = memberRepository.save(member)
 
         val accessToken: String = jwtUtil.generateAccessToken(savedMember.id)
+        redisService.set(savedMember.id.toString(), accessToken, Duration.ofMinutes(10))
+
         val refreshToken: String = jwtUtil.generateRefreshToken(savedMember.id)
         savedMember.refreshToken = refreshToken
-
-        redisService.setValues(savedMember.id.toString(), refreshToken)
 
         return Member.toDto(savedMember, accessToken, refreshToken)
     }
 
     @Transactional
     fun basicLogin(emailLoginRequest: EmailLoginRequest): EmailAuthResponse {
-        val member: Member =
-            memberRepository.findByEmail(Email.from(emailLoginRequest.email))
-                ?: throw IllegalArgumentException("이메일: ${emailLoginRequest.email} 조회 오류")
+        val member: Member = memberRepository.findByEmail(Email.from(emailLoginRequest.email))
+            ?: throw IllegalArgumentException("이메일: ${emailLoginRequest.email} 조회 오류")
 
-        if (isValidPassword(emailLoginRequest, member)) {
+        if (isValidPassword(emailLoginRequest.password, member.password)) {
             val accessToken: String = jwtUtil.generateAccessToken(member.id)
-            val refreshToken: String = jwtUtil.generateRefreshToken(member.id)
+            redisService.set(member.id.toString(), accessToken, Duration.ofMinutes(10))
 
-            redisService.setValues(member.id.toString(), accessToken)
+            val refreshToken: String = jwtUtil.generateRefreshToken(member.id)
             member.refreshToken = refreshToken
 
             return Member.toDto(member, accessToken, refreshToken)
@@ -70,28 +65,25 @@ class AuthService(
     @Transactional
     fun refresh(refreshRequest: RefreshRequest): RefreshResponse {
         val refreshToken: String = refreshRequest.refreshToken
-
         val member: Member = memberRepository.findByRefreshToken(refreshToken)
             ?: throw IllegalArgumentException("Refresh Token 조회 오류")
 
         jwtUtil.validateMemberIdInRefreshToken(refreshToken, member.id)
 
-        val accessToken: String = jwtUtil.generateAccessToken(member.id)
-        member.refreshToken = jwtUtil.generateRefreshToken(member.id)
+        val newAccessToken: String = jwtUtil.generateAccessToken(member.id)
+        redisService.set(member.id.toString(), newAccessToken, Duration.ofMinutes(10))
 
-        redisService.setValues(member.id.toString(), accessToken)
+        val newRefreshToken: String = jwtUtil.generateRefreshToken(member.id)
+        member.refreshToken = newRefreshToken
 
         return RefreshResponse(
             id = member.id,
-            accessToken = accessToken,
-            refreshToken = member.refreshToken!!,
+            accessToken = newAccessToken,
+            refreshToken = newRefreshToken,
         )
     }
 
-    private fun isValidPassword(
-        emailLoginRequest: EmailLoginRequest,
-        member: Member
-    ): Boolean {
-        return passwordEncoder.matches(emailLoginRequest.password, member.password)
+    private fun isValidPassword(input: String, real: String): Boolean {
+        return passwordEncoder.matches(input, real)
     }
 }

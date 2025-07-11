@@ -11,31 +11,25 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class EmailService(
     private val redisService: RedisService,
-    private val javaMailSender: JavaMailSender,
+    private val mailSender: JavaMailSender,
 ) {
 
     @Transactional
     fun sendCode(targetEmail: String) {
         val code: String = createCode()
         send(targetEmail, code)
-        redisService.setValues(
-            REDIS_PREFIX + targetEmail,
-            code,
-            Duration.ofMinutes(10),
-        )
+        redisService.set(REDIS_PREFIX + targetEmail, code, Duration.ofMinutes(10))
     }
 
     @Transactional
     fun verifyCode(email: String, code: String): EmailVerificationResponse {
-        val codeInRedis: String = redisService.getValues(REDIS_PREFIX + email)
-
-        val result: Boolean = redisService.checkExistsValue(codeInRedis) && codeInRedis == code
-
+        val codeInRedis: String? = redisService.get(REDIS_PREFIX + email)
+        val result: Boolean = codeInRedis != null && codeInRedis == code
         return EmailVerificationResponse(result)
     }
 
     private fun createCode(): String {
-        val length = 6
+        val length = CODE_LENGTH
         val random: SecureRandom = SecureRandom.getInstanceStrong()
         val stringBuilder = StringBuilder()
         for (i in 0..<length) {
@@ -44,22 +38,16 @@ class EmailService(
         return stringBuilder.toString()
     }
 
-    private fun send(
-        targetEmail: String,
-        text: String,
-    ) {
+    private fun send(targetEmail: String, text: String) {
         val email: SimpleMailMessage = createEmail(targetEmail, text)
         try {
-            javaMailSender.send(email)
+            mailSender.send(email)
         } catch (exception: RuntimeException) {
             throw IllegalStateException("이메일 전송 실패")
         }
     }
 
-    private fun createEmail(
-        targetEmail: String,
-        text: String,
-    ): SimpleMailMessage {
+    private fun createEmail(targetEmail: String, text: String): SimpleMailMessage {
         val message = SimpleMailMessage()
         message.setTo(targetEmail)
         message.subject = EMAIL_SUBJECT
@@ -70,5 +58,6 @@ class EmailService(
     companion object {
         private const val REDIS_PREFIX: String = "email::auth::code::"
         private const val EMAIL_SUBJECT: String = "만다몽 이메일 인증 번호"
+        private const val CODE_LENGTH = 6
     }
 }

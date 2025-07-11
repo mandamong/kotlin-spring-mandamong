@@ -1,7 +1,6 @@
 package com.mandamong.api.auth.filter
 
 import com.mandamong.api.auth.util.JwtUtil
-import io.jsonwebtoken.Claims
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -20,17 +19,14 @@ class TokenAuthenticationFilter(
         filterChain: FilterChain,
     ) {
         val header: String? = request.getHeader(AUTHORIZATION_HEADER)
-        val token: String? = header
+        val accessToken: String? = header
             ?.takeIf { it.startsWith(TOKEN_PREFIX) }
             ?.substring(TOKEN_PREFIX.length)
 
-        token?.let {
-            val claims: Claims = jwtUtil.parseAccessToken(it)
-            val memberId: Long = claims.subject.toLong()
-            if (jwtUtil.validateMemberIdInAccessToken(it, memberId)) {
-                val authentication = jwtUtil.getAuthentication(token)
-                SecurityContextHolder.getContext().authentication = authentication
-            }
+        accessToken?.let {
+            jwtUtil.validateMemberIdInAccessToken(it)
+            val authentication = jwtUtil.getAuthentication(accessToken)
+            SecurityContextHolder.getContext().authentication = authentication
         }
 
         filterChain.doFilter(request, response)
