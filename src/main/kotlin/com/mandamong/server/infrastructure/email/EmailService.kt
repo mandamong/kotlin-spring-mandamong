@@ -1,0 +1,65 @@
+package com.mandamong.server.infrastructure.email
+
+import com.mandamong.server.auth.dto.response.EmailVerificationResponse
+import com.mandamong.server.infrastructure.redis.RedisService
+import java.security.SecureRandom
+import java.time.Duration
+import org.springframework.mail.SimpleMailMessage
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+
+@Service
+class EmailService(
+    private val redisService: RedisService,
+    private val mailSender: JavaMailSender,
+) {
+
+    @Transactional
+    fun sendCode(targetEmail: String) {
+        val code: String = createCode()
+        send(targetEmail, code)
+        redisService.set(REDIS_PREFIX + targetEmail, code, Duration.ofMinutes(10))
+    }
+
+    @Transactional
+    fun verifyCode(email: String, code: String): EmailVerificationResponse {
+        val codeInRedis: String? = redisService.get(REDIS_PREFIX + email)
+        val result: Boolean = codeInRedis != null && codeInRedis == code
+        return EmailVerificationResponse(result)
+    }
+
+    private fun createCode(): String {
+        val length = CODE_LENGTH
+        val random: SecureRandom = SecureRandom.getInstanceStrong()
+        val stringBuilder = StringBuilder()
+        for (i in 0..<length) {
+            stringBuilder.append(random.nextInt(10))
+        }
+        return stringBuilder.toString()
+    }
+
+    private fun send(targetEmail: String, text: String) {
+        val email: SimpleMailMessage = createEmail(targetEmail, text)
+        try {
+            mailSender.send(email)
+        } catch (exception: RuntimeException) {
+            throw IllegalStateException("이메일 전송 실패")
+        }
+    }
+
+    private fun createEmail(targetEmail: String, text: String): SimpleMailMessage {
+        val message = SimpleMailMessage()
+        message.setTo(targetEmail)
+        message.subject = EMAIL_SUBJECT
+        message.text = text
+        return message
+    }
+
+    companion object {
+        private const val REDIS_PREFIX: String = "email::auth::code::"
+        private const val EMAIL_SUBJECT: String = "만다몽 이메일 인증 번호"
+        private const val CODE_LENGTH = 6
+    }
+
+}
