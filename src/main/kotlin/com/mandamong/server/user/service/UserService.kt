@@ -39,6 +39,7 @@ class UserService(
         return User.toDto(savedUser, accessToken, refreshToken)
     }
 
+    fun findById(id: Long) = repository.findById(id)
     fun findByRefreshToken(refreshToken: String): User? = repository.findByRefreshToken(refreshToken)
     fun findByEmail(email: String): User? = repository.findByEmail(Email.from(email))
     fun existsByNickname(nickname: String): Boolean = repository.existsByNickname(nickname)

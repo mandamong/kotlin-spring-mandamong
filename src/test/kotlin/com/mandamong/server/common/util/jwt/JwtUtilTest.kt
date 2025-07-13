@@ -4,14 +4,14 @@ import io.jsonwebtoken.Claims
 import java.util.Date
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.TestConstructor
 
 @SpringBootTest
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-class JwtUtilTest(
-    private val jwtUtil: JwtUtil
-) {
+class JwtUtilTest {
+
+    @Autowired
+    private lateinit var jwtUtil: JwtUtil
 
     private val memberId = 1L
 

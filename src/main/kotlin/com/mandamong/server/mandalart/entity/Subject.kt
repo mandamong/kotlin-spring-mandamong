@@ -1,9 +1,9 @@
 package com.mandamong.server.mandalart.entity
 
 import com.mandamong.server.common.entity.BaseTimeEntity
-import com.mandamong.server.user.entity.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -22,9 +22,18 @@ class Subject(
     @Column(name = "subject")
     var subject: String,
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    var user: User,
+    @JoinColumn(name = "mandalart_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    var mandalart: Mandalart,
 ) : BaseTimeEntity() {
+
+    companion object {
+        fun of(subject: String, mandalart: Mandalart): Subject {
+            return Subject(
+                subject = subject,
+                mandalart = mandalart,
+            )
+        }
+    }
 
 }

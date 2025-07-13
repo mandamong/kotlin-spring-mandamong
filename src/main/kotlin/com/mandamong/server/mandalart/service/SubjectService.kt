@@ -1,5 +1,6 @@
 package com.mandamong.server.mandalart.service
 
+import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.entity.Subject
 import com.mandamong.server.mandalart.repository.SubjectRepository
 import org.springframework.stereotype.Service
@@ -11,8 +12,9 @@ class SubjectService(
 ) {
 
     @Transactional
-    fun save(subject: Subject) {
-        repository.save(subject)
+    fun save(subjectName: String, mandalart: Mandalart): Subject {
+        val subject = Subject.of(subjectName, mandalart)
+        return repository.save(subject)
     }
 
 }

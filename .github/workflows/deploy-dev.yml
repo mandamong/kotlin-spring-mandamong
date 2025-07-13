@@ -1,4 +1,4 @@
-name: ci/cd (dev)
+name: deploy-dev
 
 on:
   push:
@@ -14,14 +14,11 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
       - name: Inject application.yml
         run: |
           mkdir -p src/main/resources src/test/resources
-          echo "${{ secrets.APPLICATION }}" > src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION }}" > src/test/resources/application.yml
+          echo "${{ secrets.APPLICATION }}" | base64 --decode > src/main/resources/application.yml
+          echo "${{ secrets.APPLICATION }}" | base64 --decode > src/test/resources/application.yml
 
       - name: Install WireGuard
         run: |
@@ -35,10 +32,9 @@ jobs:
           sleep 3
 
       - name: Build with Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: build
-          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
+        run: |
+          chmod +x gradlew
+          ./gradlew build
         env:
           GOOGLE_API_KEY: ${{ secrets.GEMINI }}
 
@@ -64,14 +60,13 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
 
       - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.9.1
+        uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy on K8s
         run: |
-          ssh -t -vvv -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -vvv -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             sudo kubectl rollout restart deployment mandamong-deployment -n mandamong
             sudo kubectl rollout status deployment mandamong-deployment -n mandamong
-            exit
           EOF

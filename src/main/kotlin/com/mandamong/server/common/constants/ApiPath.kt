@@ -20,19 +20,25 @@ object ApiPath {
 
     object Mandalart {
         const val CREATE = "/api/mandalart"
+        const val MANDALARTS = "/api/mandalart"
+        const val MANDALART = "/api/mandalart/{mandalartId}"
+        const val UPDATE = "/api/mandalart"
         const val DELETE = "/api/mandalart/{mandalartId}"
     }
 
     object Subject {
-        const val CREATE = "/api/mandalart/subject"
-        const val UPDATE = "/api/mandalart/subject/{subjectId}"
         const val SUGGEST = "/api/gemini/subject"
+        const val UPDATE = "/api/mandalart/subject/{subjectId}"
+
     }
 
     object Objective {
-        const val CREATE = "/api/mandalart/objective"
-        const val UPDATE = "/api/mandalart/objective/objectiveId"
         const val SUGGEST = "/api/gemini/objective"
+        const val UPDATE = "/api/mandalart/objective/{objectiveId}"
+    }
+
+    object Action {
+        const val UPDATE = "/api/mandalart/action/{actionId}"
     }
 
 }

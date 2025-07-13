@@ -1,6 +1,7 @@
 package com.mandamong.server.common.util.jwt
 
 import com.mandamong.server.infrastructure.redis.RedisService
+import com.mandamong.server.user.dto.AuthenticatedUser
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -81,8 +82,8 @@ class JwtUtil(
 
     fun getAuthentication(accessToken: String): UsernamePasswordAuthenticationToken {
         val claims = parseAccessToken(accessToken)
-        val authorities = Collections.singleton(SimpleGrantedAuthority("ROLE_USER"))
-        return UsernamePasswordAuthenticationToken(User(claims.subject, "", authorities), accessToken, authorities)
+        val principal = AuthenticatedUser(claims.subject.toLong())
+        return UsernamePasswordAuthenticationToken(principal, null, emptyList())
     }
 
     companion object {
