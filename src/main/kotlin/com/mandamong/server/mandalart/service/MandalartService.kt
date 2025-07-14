@@ -16,7 +16,7 @@ class MandalartService(
 
     @Transactional
     fun save(name: String, user: AuthenticatedUser): Mandalart {
-        val savedUser: User = userService.findById(user.userId).orElseThrow()
+        val savedUser: User = userService.findById(user.userId)
         return repository.save(
             Mandalart(
                 name = name,

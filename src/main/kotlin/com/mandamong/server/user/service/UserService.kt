@@ -5,6 +5,7 @@ import com.mandamong.server.common.util.jwt.JwtUtil
 import com.mandamong.server.infrastructure.minio.MinioService
 import com.mandamong.server.infrastructure.redis.RedisService
 import com.mandamong.server.user.dto.request.EmailRegisterRequest
+import com.mandamong.server.user.dto.request.UserUpdateRequest
 import com.mandamong.server.user.entity.Email
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.repository.UserRepository
@@ -39,7 +40,14 @@ class UserService(
         return User.toDto(savedUser, accessToken, refreshToken)
     }
 
-    fun findById(id: Long) = repository.findById(id)
+    @Transactional
+    fun updateNickname(request: UserUpdateRequest, userId: Long): UserUpdateRequest {
+        val user = repository.findById(userId).orElseThrow()
+        user.nickname = request.updated
+        return UserUpdateRequest(updated = user.nickname)
+    }
+
+    fun findById(id: Long): User = repository.findById(id).orElseThrow()
     fun findByRefreshToken(refreshToken: String): User? = repository.findByRefreshToken(refreshToken)
     fun findByEmail(email: String): User? = repository.findByEmail(Email.from(email))
     fun existsByNickname(nickname: String): Boolean = repository.existsByNickname(nickname)

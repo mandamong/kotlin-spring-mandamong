@@ -17,7 +17,7 @@ class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var id: Long = 0L,
+    val id: Long = 0L,
 
     @Embedded
     var email: Email,

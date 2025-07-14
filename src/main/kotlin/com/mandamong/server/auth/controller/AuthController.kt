@@ -14,7 +14,7 @@ class AuthController(
     private val service: AuthService,
 ) {
 
-    @PostMapping(ApiPath.Auth.BASIC_LOGIN)
+    @PostMapping(ApiPath.Auth.LOGIN)
     fun basicLogin(@RequestBody emailLoginRequest: EmailLoginRequest): ResponseEntity<EmailAuthResponse> {
         return ResponseEntity.ok(service.basicLogin(emailLoginRequest.email, emailLoginRequest.password))
     }

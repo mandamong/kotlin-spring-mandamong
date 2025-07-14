@@ -2,9 +2,13 @@ package com.mandamong.server.common.constants
 
 object ApiPath {
 
+    object User {
+        const val CREATE = "/api/user/basic/register"
+        const val UPDATE_NICKNAME = "/api/user/nickname"
+    }
+
     object Auth {
-        const val BASIC_REGISTER = "/api/auth/basic/register"
-        const val BASIC_LOGIN = "/api/auth/basic/login"
+        const val LOGIN = "/api/auth/basic/login"
         const val REFRESH = "/api/auth/token/refresh"
     }
 

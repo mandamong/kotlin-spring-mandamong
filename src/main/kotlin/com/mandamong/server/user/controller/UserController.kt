@@ -2,12 +2,17 @@ package com.mandamong.server.user.controller
 
 import com.mandamong.server.auth.dto.response.EmailAuthResponse
 import com.mandamong.server.common.constants.ApiPath
+import com.mandamong.server.user.dto.AuthenticatedUser
 import com.mandamong.server.user.dto.request.EmailRegisterRequest
+import com.mandamong.server.user.dto.request.UserUpdateRequest
 import com.mandamong.server.user.service.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -15,10 +20,18 @@ class UserController(
     private val service: UserService,
 ) {
 
-    @PostMapping(ApiPath.Auth.BASIC_REGISTER)
+    @PostMapping(ApiPath.User.CREATE)
     fun basicRegister(@ModelAttribute emailRegisterRequest: EmailRegisterRequest): ResponseEntity<EmailAuthResponse> {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(service.basicRegister(emailRegisterRequest))
+    }
+
+    @PatchMapping(ApiPath.User.UPDATE_NICKNAME)
+    fun updateNickname(
+        @RequestBody request: UserUpdateRequest,
+        @AuthenticationPrincipal user: AuthenticatedUser,
+    ): ResponseEntity<UserUpdateRequest> {
+        return ResponseEntity.ok(service.updateNickname(request, user.userId))
     }
 
 }

@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -20,8 +20,9 @@ jobs:
       - name: Inject application.yml
         run: |
           mkdir -p src/main/resources src/test/resources
-          echo "${{ secrets.APPLICATION }}" | base64 --decode > src/main/resources/application.yml
-          echo "${{ secrets.APPLICATION }}" | base64 --decode > src/test/resources/application.yml
+          echo "${{ secrets.APPLICATION }}" > application.yml
+          cp application.yml src/main/resources/application.yml
+          cp application.yml src/test/resources/application.yml
 
       - name: Install WireGuard
         run: |
@@ -36,6 +37,8 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: true
 
       - name: Build with Gradle
         run: ./gradlew clean build
@@ -70,7 +73,8 @@ jobs:
 
       - name: Deploy on K8s
         run: |
-          ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -t -v -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             sudo kubectl rollout restart deployment mandamong-deployment -n mandamong
             sudo kubectl rollout status deployment mandamong-deployment -n mandamong
+            exit
           EOF
