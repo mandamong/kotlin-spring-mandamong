@@ -19,4 +19,14 @@ class ObjectiveService(
         }
     }
 
+    @Transactional
+    fun findBySubjectId(subjectId: Long): List<Objective> {
+        return repository.findBySubjectId(subjectId)
+    }
+
+    @Transactional
+    fun deleteBySubjectId(subjectId: Long) {
+        repository.deleteBySubjectId(subjectId)
+    }
+
 }

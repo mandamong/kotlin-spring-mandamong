@@ -19,7 +19,7 @@ class Mandalart(
     val id: Long = 0L,
 
     @Column(name = "name")
-    val name: String,
+    var name: String,
 
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -14,6 +14,9 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
       - name: Inject application.yml
         run: |
           mkdir -p src/main/resources src/test/resources
@@ -31,10 +34,11 @@ jobs:
           sudo wg-quick up wg0
           sleep 3
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: Build with Gradle
-        run: |
-          chmod +x gradlew
-          ./gradlew build
+        run: ./gradlew clean build
         env:
           GOOGLE_API_KEY: ${{ secrets.GEMINI }}
 
@@ -60,13 +64,13 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
 
       - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.5.3
+        uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy on K8s
         run: |
-          ssh -vvv -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             sudo kubectl rollout restart deployment mandamong-deployment -n mandamong
             sudo kubectl rollout status deployment mandamong-deployment -n mandamong
           EOF

@@ -25,4 +25,19 @@ class MandalartService(
         )
     }
 
+    @Transactional
+    fun getMandalarts(userId: Long): List<Mandalart> {
+        return repository.findByUserId(userId)
+    }
+
+    @Transactional
+    fun findById(mandalartId: Long): Mandalart {
+        return repository.findById(mandalartId).orElseThrow()
+    }
+
+    @Transactional
+    fun deleteById(mandalartId: Long) {
+        repository.deleteById(mandalartId)
+    }
+
 }

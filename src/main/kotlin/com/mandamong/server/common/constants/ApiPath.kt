@@ -22,7 +22,7 @@ object ApiPath {
         const val CREATE = "/api/mandalart"
         const val MANDALARTS = "/api/mandalart"
         const val MANDALART = "/api/mandalart/{mandalartId}"
-        const val UPDATE = "/api/mandalart"
+        const val UPDATE_NAME = "/api/mandalart/name/{mandalartId}"
         const val DELETE = "/api/mandalart/{mandalartId}"
     }
 

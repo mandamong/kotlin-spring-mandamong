@@ -18,4 +18,19 @@ class ActionService(
         }
     }
 
+    @Transactional
+    fun findByObjectiveId(objectives: List<Objective>): List<List<Action>> {
+        return objectives.map { objective ->
+            repository.findByObjectiveId(objective.id)
+        }
+
+    }
+
+    @Transactional
+    fun deleteByObjectiveId(objectives: List<Objective>) {
+        objectives.map { objective ->
+            repository.deleteByObjectiveId(objective.id)
+        }
+    }
+
 }

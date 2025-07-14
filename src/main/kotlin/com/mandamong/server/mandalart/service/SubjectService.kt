@@ -17,4 +17,14 @@ class SubjectService(
         return repository.save(subject)
     }
 
+    @Transactional
+    fun findByMandalartId(mandalartId: Long): Subject {
+        return repository.findById(mandalartId).orElseThrow()
+    }
+
+    @Transactional
+    fun deleteByMandalartId(mandalartId: Long) {
+        repository.deleteByMandalartId(mandalartId)
+    }
+
 }

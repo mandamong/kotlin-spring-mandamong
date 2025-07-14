@@ -2,6 +2,7 @@ package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.mandalart.dto.request.MandalartCreateRequest
+import com.mandamong.server.mandalart.dto.request.MandalartUpdateRequest
 import com.mandamong.server.mandalart.dto.response.MandalartDataResponse
 import com.mandamong.server.mandalart.facade.MandalartFacade
 import com.mandamong.server.user.dto.AuthenticatedUser
@@ -9,9 +10,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
@@ -25,27 +26,31 @@ class MandalartController(
         @RequestBody request: MandalartCreateRequest,
         @AuthenticationPrincipal user: AuthenticatedUser,
     ): ResponseEntity<MandalartDataResponse> {
-        return facade.create(request, user)
+        return ResponseEntity.ok(facade.create(request, user))
     }
 
     @GetMapping(ApiPath.Mandalart.MANDALARTS)
-    fun mandalarts() {
-
+    fun getMandalarts(@AuthenticationPrincipal user: AuthenticatedUser): ResponseEntity<List<MandalartDataResponse>> {
+        return ResponseEntity.ok(facade.getMandalarts(user))
     }
 
     @GetMapping(ApiPath.Mandalart.MANDALART)
-    fun mandalart(@PathVariable mandalartId: Long) {
-
+    fun getMandalart(@PathVariable mandalartId: Long): ResponseEntity<MandalartDataResponse> {
+        return ResponseEntity.ok(facade.getMandalart(mandalartId))
     }
 
-    @PutMapping(ApiPath.Mandalart.UPDATE)
-    fun update() {
-
+    @PatchMapping(ApiPath.Mandalart.UPDATE_NAME)
+    fun changeName(
+        @PathVariable mandalartId: Long,
+        @RequestBody request: MandalartUpdateRequest,
+    ): ResponseEntity<MandalartUpdateRequest> {
+        return ResponseEntity.ok(facade.updateName(mandalartId, request))
     }
 
     @DeleteMapping(ApiPath.Mandalart.DELETE)
-    fun delete(@PathVariable mandalartId: Long) {
+    fun delete(@PathVariable mandalartId: Long): ResponseEntity<Nothing> {
         facade.delete(mandalartId)
+        return ResponseEntity.noContent().build()
     }
 
 }
