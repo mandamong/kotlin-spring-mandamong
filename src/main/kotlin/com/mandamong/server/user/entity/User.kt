@@ -1,6 +1,6 @@
 package com.mandamong.server.user.entity
 
-import com.mandamong.server.auth.dto.response.EmailAuthResponse
+import com.mandamong.server.auth.dto.response.EmailLoginResponse
 import com.mandamong.server.common.entity.BaseTimeEntity
 import com.mandamong.server.user.dto.request.EmailRegisterRequest
 import jakarta.persistence.Column
@@ -37,9 +37,6 @@ class User(
     @Column(name = "language")
     var language: String,
 
-    @Column(name = "refresh_token")
-    var refreshToken: String? = null,
-
     @Column(name = "oauth_provider_uid")
     var oauthProviderUid: String? = null,
 ) : BaseTimeEntity() {
@@ -64,8 +61,8 @@ class User(
             user: User,
             accessToken: String,
             refreshToken: String,
-        ): EmailAuthResponse {
-            return EmailAuthResponse(
+        ): EmailLoginResponse {
+            return EmailLoginResponse(
                 id = user.id,
                 email = user.email.value,
                 nickname = user.nickname,

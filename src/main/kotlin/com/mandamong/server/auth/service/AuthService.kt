@@ -1,6 +1,6 @@
 package com.mandamong.server.auth.service
 
-import com.mandamong.server.auth.dto.response.EmailAuthResponse
+import com.mandamong.server.auth.dto.response.EmailLoginResponse
 import com.mandamong.server.common.util.jwt.JwtUtil
 import com.mandamong.server.infrastructure.redis.RedisService
 import com.mandamong.server.user.entity.User
@@ -19,15 +19,14 @@ class AuthService(
 ) {
 
     @Transactional
-    fun basicLogin(email: String, password: String): EmailAuthResponse {
+    fun basicLogin(email: String, password: String): EmailLoginResponse {
         val user: User = userService.findByEmail(email)
-            ?: throw IllegalArgumentException("이메일: ${email} 조회 오류")
+            ?: throw IllegalArgumentException("이메일: $email 조회 오류")
 
         if (isValidPassword(password, user.password)) {
             val accessToken: String = jwtUtil.generateAccessToken(user.id)
-            redisService.set(user.id.toString(), accessToken, Duration.ofMinutes(10))
             val refreshToken: String = jwtUtil.generateRefreshToken(user.id)
-            user.refreshToken = refreshToken
+            redisService.set("RT::${user.id}", refreshToken, Duration.ofDays(30))
             return User.toDto(user, accessToken, refreshToken)
         }
 

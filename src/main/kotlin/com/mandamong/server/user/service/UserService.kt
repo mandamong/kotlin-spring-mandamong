@@ -1,6 +1,6 @@
 package com.mandamong.server.user.service
 
-import com.mandamong.server.auth.dto.response.EmailAuthResponse
+import com.mandamong.server.auth.dto.response.EmailLoginResponse
 import com.mandamong.server.common.util.jwt.JwtUtil
 import com.mandamong.server.infrastructure.minio.MinioService
 import com.mandamong.server.infrastructure.redis.RedisService
@@ -24,19 +24,19 @@ class UserService(
 ) {
 
     @Transactional
-    fun basicRegister(emailRegisterRequest: EmailRegisterRequest): EmailAuthResponse {
+    fun basicRegister(emailRegisterRequest: EmailRegisterRequest): EmailLoginResponse {
         if (isDuplicatedEmail(emailRegisterRequest.email)) {
             throw IllegalStateException("이메일: ${emailRegisterRequest.email} 중복 오류")
         }
-        val encodedPassword: String = passwordEncoder.encode(emailRegisterRequest.password)
-        val preSignedUrl: String = minioService.upload(emailRegisterRequest.profileImage, emailRegisterRequest.nickname)
-        val user: User = User.toEntity(emailRegisterRequest, encodedPassword, preSignedUrl)
-        val savedUser: User = repository.save(user)
+        val encodedPassword = passwordEncoder.encode(emailRegisterRequest.password)
+        val profileImageUrl = minioService.upload(emailRegisterRequest.profileImage, emailRegisterRequest.nickname)
+        val user = User.toEntity(emailRegisterRequest, encodedPassword, profileImageUrl)
+        val savedUser = repository.save(user)
 
-        val accessToken: String = jwtUtil.generateAccessToken(savedUser.id)
-        redisService.set(savedUser.id.toString(), accessToken, Duration.ofMinutes(10))
-        val refreshToken: String = jwtUtil.generateRefreshToken(savedUser.id)
-        savedUser.refreshToken = refreshToken
+        val accessToken = jwtUtil.generateAccessToken(savedUser.id)
+        val refreshToken = jwtUtil.generateRefreshToken(savedUser.id)
+        redisService.set("RT::${savedUser.id}", refreshToken, Duration.ofDays(30))
+
         return User.toDto(savedUser, accessToken, refreshToken)
     }
 
@@ -48,7 +48,6 @@ class UserService(
     }
 
     fun findById(id: Long): User = repository.findById(id).orElseThrow()
-    fun findByRefreshToken(refreshToken: String): User? = repository.findByRefreshToken(refreshToken)
     fun findByEmail(email: String): User? = repository.findByEmail(Email.from(email))
     fun existsByNickname(nickname: String): Boolean = repository.existsByNickname(nickname)
     fun existsByEmail(email: String): Boolean = repository.existsByEmail(Email.from(email))

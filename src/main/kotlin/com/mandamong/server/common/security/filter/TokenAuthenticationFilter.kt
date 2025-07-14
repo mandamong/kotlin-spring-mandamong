@@ -22,12 +22,7 @@ class TokenAuthenticationFilter(
         val accessToken: String? = header
             ?.takeIf { it.startsWith(TOKEN_PREFIX) }
             ?.substring(TOKEN_PREFIX.length)
-
-        accessToken?.let {
-            jwtUtil.validateMemberIdInAccessToken(it)
-            val authentication = jwtUtil.getAuthentication(accessToken)
-            SecurityContextHolder.getContext().authentication = authentication
-        }
+        accessToken?.let { SecurityContextHolder.getContext().authentication = jwtUtil.getAuthentication(it) }
 
         filterChain.doFilter(request, response)
     }

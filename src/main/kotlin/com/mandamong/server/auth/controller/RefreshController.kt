@@ -15,8 +15,8 @@ class RefreshController(
 ) {
 
     @PostMapping(ApiPath.Auth.REFRESH)
-    fun refreshToken(@RequestBody refreshRequest: RefreshRequest): ResponseEntity<RefreshResponse> {
-        return ResponseEntity.ok(service.refresh(refreshRequest.refreshToken))
+    fun refreshToken(@RequestBody request: RefreshRequest): ResponseEntity<RefreshResponse> {
+        return ResponseEntity.ok(service.refresh(request))
     }
 
 }

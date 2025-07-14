@@ -6,13 +6,10 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import java.util.Base64
-import java.util.Collections
 import java.util.Date
 import javax.crypto.SecretKey
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 
 @Component
@@ -70,14 +67,6 @@ class JwtUtil(
             .build()
             .parseSignedClaims(refreshToken)
             .payload
-    }
-
-    fun validateMemberIdInAccessToken(accessToken: String) {
-        val memberId = parseAccessToken(accessToken).subject.toLong()
-        val savedAccessToken: String = redisService.get(memberId.toString())!!
-        if (accessToken != savedAccessToken) {
-            throw IllegalStateException("Access Token, Member Id 검증 오류")
-        }
     }
 
     fun getAuthentication(accessToken: String): UsernamePasswordAuthenticationToken {
