@@ -16,14 +16,14 @@ class Objective(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var id: Long = 0L,
+    val id: Long = 0L,
 
     @Column(name = "objective")
     var objective: String,
 
     @JoinColumn(name = "subject_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    var subject: Subject,
+    val subject: Subject,
 ) {
 
     companion object {

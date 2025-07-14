@@ -17,14 +17,14 @@ class Subject(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    var id: Long = 0L,
+    val id: Long = 0L,
 
     @Column(name = "subject")
     var subject: String,
 
     @JoinColumn(name = "mandalart_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    var mandalart: Mandalart,
+    val mandalart: Mandalart,
 ) : BaseTimeEntity() {
 
     companion object {

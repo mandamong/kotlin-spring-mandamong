@@ -40,7 +40,7 @@ class MandalartController(
     }
 
     @PatchMapping(ApiPath.Mandalart.UPDATE_NAME)
-    fun changeName(
+    fun updateName(
         @PathVariable mandalartId: Long,
         @RequestBody request: MandalartUpdateRequest,
     ): ResponseEntity<MandalartUpdateRequest> {

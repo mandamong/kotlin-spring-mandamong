@@ -1,5 +1,6 @@
 package com.mandamong.server.mandalart.service
 
+import com.mandamong.server.mandalart.dto.request.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Action
 import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.repository.ActionRepository
@@ -19,11 +20,17 @@ class ActionService(
     }
 
     @Transactional
+    fun updateAction(actionId: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
+        val action = repository.findById(actionId).orElseThrow()
+        action.action = request.updated
+        return MandalartUpdateRequest(updated = action.action)
+    }
+
+    @Transactional
     fun findByObjectiveId(objectives: List<Objective>): List<List<Action>> {
         return objectives.map { objective ->
             repository.findByObjectiveId(objective.id)
         }
-
     }
 
     @Transactional

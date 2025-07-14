@@ -27,14 +27,13 @@ object ApiPath {
     }
 
     object Subject {
-        const val SUGGEST = "/api/gemini/subject"
         const val UPDATE = "/api/mandalart/subject/{subjectId}"
-
+        const val SUGGEST = "/api/gemini/subject"
     }
 
     object Objective {
-        const val SUGGEST = "/api/gemini/objective"
         const val UPDATE = "/api/mandalart/objective/{objectiveId}"
+        const val SUGGEST = "/api/gemini/objective"
     }
 
     object Action {

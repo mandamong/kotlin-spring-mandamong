@@ -23,7 +23,7 @@ class Action(
 
     @JoinColumn(name = "objective_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    var objective: Objective,
+    val objective: Objective,
 ) {
     companion object {
         fun of(action: String, objective: Objective): Action {
