@@ -64,14 +64,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
 
-      - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.9.1
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy on K8s
         run: |
-          ssh -t -v -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             sudo kubectl rollout restart deployment mandamong-deployment -n mandamong
             sudo kubectl rollout status deployment mandamong-deployment -n mandamong
             exit

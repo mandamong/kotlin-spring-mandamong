@@ -2,13 +2,16 @@ package com.mandamong.server.user.entity
 
 import com.mandamong.server.auth.dto.response.EmailLoginResponse
 import com.mandamong.server.common.entity.BaseTimeEntity
+import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.user.dto.request.EmailRegisterRequest
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 
 @Entity
@@ -39,6 +42,9 @@ class User(
 
     @Column(name = "oauth_provider_uid")
     var oauthProviderUid: String? = null,
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    private val mandalarts: List<Mandalart> = listOf()
 ) : BaseTimeEntity() {
 
     companion object {

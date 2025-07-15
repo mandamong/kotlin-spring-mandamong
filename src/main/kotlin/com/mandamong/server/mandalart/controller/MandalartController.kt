@@ -31,7 +31,7 @@ class MandalartController(
 
     @GetMapping(ApiPath.Mandalart.MANDALARTS)
     fun getMandalarts(@AuthenticationPrincipal user: AuthenticatedUser): ResponseEntity<List<MandalartDataResponse>> {
-        return ResponseEntity.ok(facade.getMandalarts(user))
+        return ResponseEntity.ok(facade.getMandalarts(user.userId))
     }
 
     @GetMapping(ApiPath.Mandalart.MANDALART)

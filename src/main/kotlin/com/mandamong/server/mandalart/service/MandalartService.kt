@@ -40,4 +40,11 @@ class MandalartService(
         repository.deleteById(mandalartId)
     }
 
+    @Transactional
+    fun updateName(mandalartId: Long, updated: String): String {
+        val mandalart = repository.findById(mandalartId).orElseThrow()
+        mandalart.name = updated
+        return mandalart.name
+    }
+
 }

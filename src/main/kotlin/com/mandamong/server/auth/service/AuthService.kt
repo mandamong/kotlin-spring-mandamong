@@ -33,6 +33,11 @@ class AuthService(
         throw IllegalArgumentException("비밀번호 검증 오류")
     }
 
+    @Transactional
+    fun logout(userId: Long) {
+        redisService.delete("RT::$userId")
+    }
+
     private fun isValidPassword(input: String, saved: String): Boolean = passwordEncoder.matches(input, saved)
 
 }

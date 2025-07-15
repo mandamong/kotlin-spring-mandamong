@@ -3,13 +3,15 @@ package com.mandamong.server.common.constants
 object ApiPath {
 
     object User {
-        const val CREATE = "/api/user/basic/register"
+        const val CREATE = "/api/auth/basic"
         const val UPDATE_NICKNAME = "/api/user/nickname"
+        const val DELETE = "/api/auth/basic"
     }
 
     object Auth {
         const val LOGIN = "/api/auth/basic/login"
         const val REFRESH = "/api/auth/token/refresh"
+        const val LOGOUT = "/api/auth/logout"
     }
 
     object Duplication {

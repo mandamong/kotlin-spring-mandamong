@@ -47,6 +47,11 @@ class UserService(
         return UserUpdateRequest(updated = user.nickname)
     }
 
+    @Transactional
+    fun deleteById(userId: Long) {
+        repository.deleteById(userId)
+    }
+
     fun findById(id: Long): User = repository.findById(id).orElseThrow()
     fun findByEmail(email: String): User? = repository.findByEmail(Email.from(email))
     fun existsByNickname(nickname: String): Boolean = repository.existsByNickname(nickname)

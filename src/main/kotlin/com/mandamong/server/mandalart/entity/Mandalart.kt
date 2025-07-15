@@ -1,6 +1,7 @@
 package com.mandamong.server.mandalart.entity
 
 import com.mandamong.server.user.entity.User
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 
 @Entity
@@ -24,4 +26,7 @@ class Mandalart(
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     val user: User,
+
+    @OneToMany(mappedBy = "mandalart", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    val subjects: MutableList<Subject> = mutableListOf()
 )

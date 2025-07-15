@@ -8,6 +8,7 @@ import com.mandamong.server.user.dto.request.UserUpdateRequest
 import com.mandamong.server.user.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -30,6 +31,12 @@ class UserController(
         @AuthenticationPrincipal user: AuthenticatedUser,
     ): ResponseEntity<UserUpdateRequest> {
         return ResponseEntity.ok(service.updateNickname(request, user.userId))
+    }
+
+    @DeleteMapping(ApiPath.User.DELETE)
+    fun delete(@AuthenticationPrincipal user: AuthenticatedUser): ResponseEntity<Nothing> {
+        service.deleteById(user.userId)
+        return ResponseEntity.noContent().build()
     }
 
 }

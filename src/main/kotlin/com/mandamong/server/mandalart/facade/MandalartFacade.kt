@@ -10,7 +10,6 @@ import com.mandamong.server.mandalart.service.ObjectiveService
 import com.mandamong.server.mandalart.service.SubjectService
 import com.mandamong.server.user.dto.AuthenticatedUser
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 
 @Component
 class MandalartFacade(
@@ -33,8 +32,8 @@ class MandalartFacade(
         )
     }
 
-    fun getMandalarts(user: AuthenticatedUser): List<MandalartDataResponse> {
-        val mandalarts = mandalartService.getMandalarts(user.userId)
+    fun getMandalarts(userId: Long): List<MandalartDataResponse> {
+        val mandalarts = mandalartService.getMandalarts(userId)
         return mandalarts.map { mandalart ->
             val subject = subjectService.findByMandalartId(mandalart.id)
             val objectives = objectiveService.findBySubjectId(subject.id)
@@ -62,20 +61,12 @@ class MandalartFacade(
     }
 
     fun delete(mandalartId: Long) {
-        val subject = subjectService.findByMandalartId(mandalartId)
-        val objectives = objectiveService.findBySubjectId(subject.id)
-
-        actionService.deleteByObjectiveId(objectives)
-        objectiveService.deleteBySubjectId(subject.id)
-        subjectService.deleteByMandalartId(mandalartId)
         mandalartService.deleteById(mandalartId)
     }
 
-    @Transactional
     fun updateName(mandalartId: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
-        val mandalart = mandalartService.findById(mandalartId)
-        mandalart.name = request.updated
-        return MandalartUpdateRequest(updated = mandalart.name)
+        val updated: String = mandalartService.updateName(mandalartId, request.updated)
+        return MandalartUpdateRequest(updated = updated)
     }
 
 }
