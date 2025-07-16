@@ -1,6 +1,7 @@
 package com.mandamong.server.auth.service
 
-import com.mandamong.server.auth.dto.response.EmailLoginResponse
+import com.mandamong.server.auth.dto.EmailLoginResponse
+import com.mandamong.server.common.error.exception.EmailNotFoundException
 import com.mandamong.server.common.util.jwt.JwtUtil
 import com.mandamong.server.infrastructure.redis.RedisService
 import com.mandamong.server.user.entity.User
@@ -20,8 +21,7 @@ class AuthService(
 
     @Transactional
     fun basicLogin(email: String, password: String): EmailLoginResponse {
-        val user: User = userService.findByEmail(email)
-            ?: throw IllegalArgumentException("이메일: $email 조회 오류")
+        val user: User = userService.findByEmail(email) ?: throw EmailNotFoundException(email)
 
         if (isValidPassword(password, user.password)) {
             val accessToken: String = jwtUtil.generateAccessToken(user.id)

@@ -1,7 +1,7 @@
 package com.mandamong.server.auth.service
 
-import com.mandamong.server.auth.dto.request.RefreshRequest
-import com.mandamong.server.auth.dto.response.RefreshResponse
+import com.mandamong.server.auth.dto.RefreshRequest
+import com.mandamong.server.auth.dto.RefreshResponse
 import com.mandamong.server.common.util.jwt.JwtUtil
 import com.mandamong.server.infrastructure.redis.RedisService
 import java.time.Duration

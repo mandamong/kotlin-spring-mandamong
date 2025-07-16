@@ -1,4 +1,4 @@
-package com.mandamong.server.auth.dto.response
+package com.mandamong.server.auth.dto
 
 data class RefreshResponse(
     val id: Long,

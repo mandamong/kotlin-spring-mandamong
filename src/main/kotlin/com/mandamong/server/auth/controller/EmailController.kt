@@ -1,9 +1,9 @@
 package com.mandamong.server.auth.controller
 
-import com.mandamong.server.auth.dto.response.EmailVerificationResponse
+import com.mandamong.server.auth.dto.EmailVerificationResponse
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.infrastructure.email.EmailService
-import com.mandamong.server.user.dto.request.EmailVerificationRequest
+import com.mandamong.server.user.dto.EmailVerificationRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

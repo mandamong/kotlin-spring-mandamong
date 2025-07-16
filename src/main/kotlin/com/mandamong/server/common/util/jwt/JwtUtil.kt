@@ -1,6 +1,5 @@
 package com.mandamong.server.common.util.jwt
 
-import com.mandamong.server.infrastructure.redis.RedisService
 import com.mandamong.server.user.dto.AuthenticatedUser
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
@@ -17,7 +16,6 @@ class JwtUtil(
     @Value("\${jwt.secret}") private val secretKey: String,
     @Value("\${jwt.access-expiration}") private val accessExpiration: Long,
     @Value("\${jwt.refresh-expiration}") private val refreshExpiration: Long,
-    private val redisService: RedisService,
 ) {
 
     private val rawSecretKey: ByteArray = secretKey.toByteArray()
@@ -25,30 +23,32 @@ class JwtUtil(
     private val accessSignKey: SecretKey = Keys.hmacShaKeyFor(rawSecretKey)
     private val refreshSignKey: SecretKey = Keys.hmacShaKeyFor(decodedSecretKey)
 
-    fun generateAccessToken(memberId: Long): String {
+    fun generateAccessToken(userId: Long): String {
         val now = Date()
+        val expiry = Date(now.time + accessExpiration)
         return Jwts.builder()
             .header()
             .type(TOKEN_TYPE)
             .and()
-            .subject(memberId.toString())
+            .subject(userId.toString())
             .issuedAt(now)
             .notBefore(now)
-            .expiration(Date(now.time + accessExpiration))
+            .expiration(expiry)
             .signWith(accessSignKey)
             .compact()
     }
 
-    fun generateRefreshToken(memberId: Long): String {
+    fun generateRefreshToken(userId: Long): String {
         val now = Date()
+        val expiry = Date(now.time + refreshExpiration)
         return Jwts.builder()
             .header()
             .type(TOKEN_TYPE)
             .and()
-            .subject(memberId.toString())
+            .subject(userId.toString())
             .issuedAt(now)
             .notBefore(now)
-            .expiration(Date(now.time + refreshExpiration))
+            .expiration(expiry)
             .signWith(refreshSignKey)
             .compact()
     }

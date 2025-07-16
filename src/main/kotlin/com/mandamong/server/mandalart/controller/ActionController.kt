@@ -1,7 +1,7 @@
 package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
-import com.mandamong.server.mandalart.dto.request.MandalartUpdateRequest
+import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.service.ActionService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PatchMapping

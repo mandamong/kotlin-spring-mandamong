@@ -27,7 +27,7 @@ class Objective(
     @ManyToOne(fetch = FetchType.LAZY)
     val subject: Subject,
 
-    @OneToMany(mappedBy = "objective", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    @OneToMany(mappedBy = "objective", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
     val actions: MutableList<Action> = mutableListOf()
 ) {
 

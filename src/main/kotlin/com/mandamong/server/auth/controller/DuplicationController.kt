@@ -1,7 +1,7 @@
 package com.mandamong.server.auth.controller
 
 import com.mandamong.server.common.constants.ApiPath
-import com.mandamong.server.user.dto.response.DuplicationResponse
+import com.mandamong.server.user.dto.DuplicationResponse
 import com.mandamong.server.user.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

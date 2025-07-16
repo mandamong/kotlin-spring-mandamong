@@ -18,8 +18,7 @@ class TokenAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        val header: String? = request.getHeader(AUTHORIZATION_HEADER)
-        val accessToken: String? = header
+        val accessToken: String? = request.getHeader(AUTHORIZATION_HEADER)
             ?.takeIf { it.startsWith(TOKEN_PREFIX) }
             ?.substring(TOKEN_PREFIX.length)
         accessToken?.let { SecurityContextHolder.getContext().authentication = jwtUtil.getAuthentication(it) }

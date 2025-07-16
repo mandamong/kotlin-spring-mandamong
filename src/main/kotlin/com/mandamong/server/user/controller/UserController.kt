@@ -1,10 +1,10 @@
 package com.mandamong.server.user.controller
 
-import com.mandamong.server.auth.dto.response.EmailLoginResponse
+import com.mandamong.server.auth.dto.EmailLoginResponse
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.user.dto.AuthenticatedUser
-import com.mandamong.server.user.dto.request.EmailRegisterRequest
-import com.mandamong.server.user.dto.request.UserUpdateRequest
+import com.mandamong.server.user.dto.EmailRegisterRequest
+import com.mandamong.server.user.dto.UserUpdateRequest
 import com.mandamong.server.user.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal

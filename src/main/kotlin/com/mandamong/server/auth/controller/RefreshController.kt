@@ -1,7 +1,7 @@
 package com.mandamong.server.auth.controller
 
-import com.mandamong.server.auth.dto.request.RefreshRequest
-import com.mandamong.server.auth.dto.response.RefreshResponse
+import com.mandamong.server.auth.dto.RefreshRequest
+import com.mandamong.server.auth.dto.RefreshResponse
 import com.mandamong.server.auth.service.RefreshService
 import com.mandamong.server.common.constants.ApiPath
 import org.springframework.http.ResponseEntity

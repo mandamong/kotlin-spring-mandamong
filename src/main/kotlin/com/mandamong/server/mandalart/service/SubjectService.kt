@@ -1,6 +1,6 @@
 package com.mandamong.server.mandalart.service
 
-import com.mandamong.server.mandalart.dto.request.MandalartUpdateRequest
+import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.entity.Subject
 import com.mandamong.server.mandalart.repository.SubjectRepository
@@ -21,11 +21,6 @@ class SubjectService(
     @Transactional
     fun findByMandalartId(mandalartId: Long): Subject {
         return repository.findById(mandalartId).orElseThrow()
-    }
-
-    @Transactional
-    fun deleteByMandalartId(mandalartId: Long) {
-        repository.deleteByMandalartId(mandalartId)
     }
 
     @Transactional

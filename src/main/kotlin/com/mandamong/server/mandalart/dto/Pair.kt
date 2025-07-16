@@ -1,4 +1,4 @@
-package com.mandamong.server.mandalart.dto.response
+package com.mandamong.server.mandalart.dto
 
 data class Pair(
     val id: Long,

@@ -27,6 +27,6 @@ class Mandalart(
     @ManyToOne(fetch = FetchType.LAZY)
     val user: User,
 
-    @OneToMany(mappedBy = "mandalart", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    @OneToMany(mappedBy = "mandalart", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
     val subjects: MutableList<Subject> = mutableListOf()
 )

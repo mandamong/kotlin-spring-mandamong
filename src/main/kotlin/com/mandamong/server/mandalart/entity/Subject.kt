@@ -28,7 +28,7 @@ class Subject(
     @ManyToOne(fetch = FetchType.LAZY)
     val mandalart: Mandalart,
 
-    @OneToMany(mappedBy = "subject", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    @OneToMany(mappedBy = "subject", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
     val objectives: MutableList<Objective> = mutableListOf()
 ) : BaseTimeEntity() {
 

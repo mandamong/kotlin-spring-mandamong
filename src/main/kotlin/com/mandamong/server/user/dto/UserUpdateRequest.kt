@@ -1,4 +1,4 @@
-package com.mandamong.server.user.dto.request
+package com.mandamong.server.user.dto
 
 data class UserUpdateRequest(
     val updated: String,

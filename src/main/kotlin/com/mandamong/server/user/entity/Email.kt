@@ -5,7 +5,8 @@ import jakarta.persistence.Embeddable
 
 @Embeddable
 class Email(
-    @Column(name = "email") var value: String,
+    @Column(name = "email", nullable = false)
+    val value: String,
 ) {
 
     fun getLocalPart(): String {

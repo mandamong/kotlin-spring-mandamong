@@ -1,4 +1,4 @@
-package com.mandamong.server.auth.dto.request
+package com.mandamong.server.auth.dto
 
 data class EmailLoginRequest(
     val email: String,

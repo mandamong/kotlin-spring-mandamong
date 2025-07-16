@@ -1,9 +1,9 @@
 package com.mandamong.server.mandalart.facade
 
-import com.mandamong.server.mandalart.dto.request.MandalartCreateRequest
-import com.mandamong.server.mandalart.dto.request.MandalartUpdateRequest
-import com.mandamong.server.mandalart.dto.response.MandalartDataResponse
-import com.mandamong.server.mandalart.dto.response.Pair
+import com.mandamong.server.mandalart.dto.MandalartCreateRequest
+import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
+import com.mandamong.server.mandalart.dto.MandalartDataResponse
+import com.mandamong.server.mandalart.dto.Pair
 import com.mandamong.server.mandalart.service.ActionService
 import com.mandamong.server.mandalart.service.MandalartService
 import com.mandamong.server.mandalart.service.ObjectiveService

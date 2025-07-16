@@ -1,6 +1,6 @@
 package com.mandamong.server.mandalart.service
 
-import com.mandamong.server.mandalart.dto.request.MandalartUpdateRequest
+import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Action
 import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.repository.ActionRepository
@@ -30,13 +30,6 @@ class ActionService(
     fun findByObjectiveId(objectives: List<Objective>): List<List<Action>> {
         return objectives.map { objective ->
             repository.findByObjectiveId(objective.id)
-        }
-    }
-
-    @Transactional
-    fun deleteByObjectiveId(objectives: List<Objective>) {
-        objectives.map { objective ->
-            repository.deleteByObjectiveId(objective.id)
         }
     }
 

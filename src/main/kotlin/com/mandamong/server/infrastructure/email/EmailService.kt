@@ -1,6 +1,6 @@
 package com.mandamong.server.infrastructure.email
 
-import com.mandamong.server.auth.dto.response.EmailVerificationResponse
+import com.mandamong.server.auth.dto.EmailVerificationResponse
 import com.mandamong.server.infrastructure.redis.RedisService
 import java.security.SecureRandom
 import java.time.Duration
@@ -19,7 +19,7 @@ class EmailService(
     fun sendCode(targetEmail: String) {
         val code: String = createCode()
         send(targetEmail, code)
-        redisService.set(REDIS_PREFIX + targetEmail, code, Duration.ofMinutes(10))
+        redisService.set(REDIS_PREFIX + targetEmail, code, Duration.ofMinutes(5))
     }
 
     @Transactional

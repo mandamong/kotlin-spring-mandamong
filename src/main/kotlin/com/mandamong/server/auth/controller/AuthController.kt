@@ -1,7 +1,7 @@
 package com.mandamong.server.auth.controller
 
-import com.mandamong.server.auth.dto.request.EmailLoginRequest
-import com.mandamong.server.auth.dto.response.EmailLoginResponse
+import com.mandamong.server.auth.dto.EmailLoginRequest
+import com.mandamong.server.auth.dto.EmailLoginResponse
 import com.mandamong.server.auth.service.AuthService
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.user.dto.AuthenticatedUser

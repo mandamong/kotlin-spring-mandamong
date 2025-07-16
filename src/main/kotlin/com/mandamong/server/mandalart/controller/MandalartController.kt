@@ -1,9 +1,9 @@
 package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
-import com.mandamong.server.mandalart.dto.request.MandalartCreateRequest
-import com.mandamong.server.mandalart.dto.request.MandalartUpdateRequest
-import com.mandamong.server.mandalart.dto.response.MandalartDataResponse
+import com.mandamong.server.mandalart.dto.MandalartCreateRequest
+import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
+import com.mandamong.server.mandalart.dto.MandalartDataResponse
 import com.mandamong.server.mandalart.facade.MandalartFacade
 import com.mandamong.server.user.dto.AuthenticatedUser
 import org.springframework.http.ResponseEntity

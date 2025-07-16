@@ -1,11 +1,11 @@
 package com.mandamong.server.user.service
 
-import com.mandamong.server.auth.dto.response.EmailLoginResponse
+import com.mandamong.server.auth.dto.EmailLoginResponse
 import com.mandamong.server.common.util.jwt.JwtUtil
 import com.mandamong.server.infrastructure.minio.MinioService
 import com.mandamong.server.infrastructure.redis.RedisService
-import com.mandamong.server.user.dto.request.EmailRegisterRequest
-import com.mandamong.server.user.dto.request.UserUpdateRequest
+import com.mandamong.server.user.dto.EmailRegisterRequest
+import com.mandamong.server.user.dto.UserUpdateRequest
 import com.mandamong.server.user.entity.Email
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.repository.UserRepository
@@ -30,7 +30,7 @@ class UserService(
         }
         val encodedPassword = passwordEncoder.encode(emailRegisterRequest.password)
         val profileImageUrl = minioService.upload(emailRegisterRequest.profileImage, emailRegisterRequest.nickname)
-        val user = User.toEntity(emailRegisterRequest, encodedPassword, profileImageUrl)
+        val user = EmailRegisterRequest.toEntity(emailRegisterRequest, encodedPassword, profileImageUrl)
         val savedUser = repository.save(user)
 
         val accessToken = jwtUtil.generateAccessToken(savedUser.id)
