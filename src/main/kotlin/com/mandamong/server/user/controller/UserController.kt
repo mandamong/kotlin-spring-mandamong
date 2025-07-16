@@ -2,6 +2,7 @@ package com.mandamong.server.user.controller
 
 import com.mandamong.server.auth.dto.EmailLoginResponse
 import com.mandamong.server.common.constants.ApiPath
+import com.mandamong.server.common.response.ApiResponse
 import com.mandamong.server.user.dto.AuthenticatedUser
 import com.mandamong.server.user.dto.EmailRegisterRequest
 import com.mandamong.server.user.dto.UserUpdateRequest
@@ -21,22 +22,24 @@ class UserController(
 ) {
 
     @PostMapping(ApiPath.User.CREATE)
-    fun basicRegister(@ModelAttribute emailRegisterRequest: EmailRegisterRequest): ResponseEntity<EmailLoginResponse> {
-        return ResponseEntity.ok(service.basicRegister(emailRegisterRequest))
+    fun basicRegister(
+        @ModelAttribute emailRegisterRequest: EmailRegisterRequest,
+    ): ResponseEntity<ApiResponse<EmailLoginResponse>> {
+        return ApiResponse.created(service.basicRegister(emailRegisterRequest))
     }
 
     @PatchMapping(ApiPath.User.UPDATE_NICKNAME)
     fun updateNickname(
         @RequestBody request: UserUpdateRequest,
-        @AuthenticationPrincipal user: AuthenticatedUser,
-    ): ResponseEntity<UserUpdateRequest> {
-        return ResponseEntity.ok(service.updateNickname(request, user.userId))
+        @AuthenticationPrincipal loginUser: AuthenticatedUser,
+    ): ResponseEntity<ApiResponse<UserUpdateRequest>> {
+        return ApiResponse.ok(service.updateNickname(request, loginUser.userId))
     }
 
     @DeleteMapping(ApiPath.User.DELETE)
-    fun delete(@AuthenticationPrincipal user: AuthenticatedUser): ResponseEntity<Nothing> {
-        service.deleteById(user.userId)
-        return ResponseEntity.noContent().build()
+    fun delete(@AuthenticationPrincipal loginUser: AuthenticatedUser): ResponseEntity<ApiResponse<Nothing>> {
+        service.deleteById(loginUser.userId)
+        return ApiResponse.deleted()
     }
 
 }

@@ -1,7 +1,7 @@
 package com.mandamong.server.common.error
 
 import com.mandamong.server.common.error.exception.BusinessBaseException
-import io.jsonwebtoken.ExpiredJwtException
+import com.mandamong.server.common.response.ApiResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.HttpRequestMethodNotSupportedException
@@ -20,9 +20,9 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BusinessBaseException::class)
-    fun handle(e: BusinessBaseException): ResponseEntity<ErrorResponse> {
+    fun handle(e: BusinessBaseException): ResponseEntity<ApiResponse<ErrorResponse>> {
         log.error("BusinessBaseException", e)
-        return createErrorResponse(e.errorCode)
+        return ApiResponse.error(e)
     }
 
     @ExceptionHandler(Exception::class)

@@ -1,5 +1,6 @@
 package com.mandamong.server.mandalart.service
 
+import com.mandamong.server.common.error.exception.MandalartNotFoundException
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.repository.MandalartRepository
 import com.mandamong.server.user.dto.AuthenticatedUser
@@ -32,7 +33,7 @@ class MandalartService(
 
     @Transactional
     fun findById(mandalartId: Long): Mandalart {
-        return repository.findById(mandalartId).orElseThrow()
+        return repository.findById(mandalartId).orElseThrow { MandalartNotFoundException(mandalartId) }
     }
 
     @Transactional

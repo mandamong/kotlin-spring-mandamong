@@ -1,6 +1,7 @@
 package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
+import com.mandamong.server.common.response.ApiResponse
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.service.ActionService
 import org.springframework.http.ResponseEntity
@@ -18,8 +19,8 @@ class ActionController(
     fun updateAction(
         @PathVariable actionId: Long,
         @RequestBody request: MandalartUpdateRequest,
-    ): ResponseEntity<MandalartUpdateRequest> {
-        return ResponseEntity.ok(service.updateAction(actionId, request))
+    ): ResponseEntity<ApiResponse<MandalartUpdateRequest>> {
+        return ApiResponse.ok(service.updateAction(actionId, request))
     }
 
 }

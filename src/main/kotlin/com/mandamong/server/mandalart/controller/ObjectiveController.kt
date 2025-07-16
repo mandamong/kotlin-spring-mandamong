@@ -1,6 +1,7 @@
 package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
+import com.mandamong.server.common.response.ApiResponse
 import com.mandamong.server.infrastructure.gemini.GeminiService
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.dto.SuggestRequest
@@ -19,13 +20,16 @@ class ObjectiveController(
 ) {
 
     @PatchMapping(ApiPath.Objective.UPDATE)
-    fun updateObjective(@PathVariable objectiveId: Long, @RequestBody request: MandalartUpdateRequest): ResponseEntity<MandalartUpdateRequest> {
-        return ResponseEntity.ok(service.updateObjective(objectiveId, request))
+    fun updateObjective(
+        @PathVariable objectiveId: Long,
+        @RequestBody request: MandalartUpdateRequest,
+    ): ResponseEntity<ApiResponse<MandalartUpdateRequest>> {
+        return ApiResponse.ok(service.updateObjective(objectiveId, request))
     }
 
     @PostMapping(ApiPath.Objective.SUGGEST)
-    fun suggest(@RequestBody request: SuggestRequest): String {
-        return geminiService.generateByObjective(request.prompt)
+    fun suggest(@RequestBody request: SuggestRequest): ResponseEntity<String> {
+        return ResponseEntity.ok(geminiService.generateByObjective(request.prompt))
     }
 
 }

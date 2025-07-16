@@ -12,6 +12,7 @@ enum class ErrorCode(
     METHOD_NOT_ALLOWED("common.method.not-allowed", "잘못된 HTTP 메서드 호출", HttpStatus.METHOD_NOT_ALLOWED),
     NOT_FOUND("common.not.found", "조회 오류", HttpStatus.NOT_FOUND),
     NOT_FOUND_EMAIL("user.email.not-found", "이메일 조회 오류", HttpStatus.BAD_REQUEST),
+    NOT_FOUND_MANDALART("mandalart.id.not-found", "만다르트 ID 조회 오류", HttpStatus.BAD_REQUEST),
     EXPIRED_TOKEN("user.token.expired", "토큰 만료 오류", HttpStatus.UNAUTHORIZED)
     ;
 
