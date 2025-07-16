@@ -1,6 +1,7 @@
 package com.mandamong.server.common.error
 
 import com.mandamong.server.common.error.exception.BusinessBaseException
+import io.jsonwebtoken.ExpiredJwtException
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.HttpRequestMethodNotSupportedException
