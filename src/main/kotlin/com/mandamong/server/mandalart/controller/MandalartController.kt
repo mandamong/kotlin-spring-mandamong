@@ -34,13 +34,17 @@ class MandalartController(
     fun update(
         @PathVariable mandalartId: Long,
         @RequestBody request: MandalartUpdateRequest,
+        @AuthenticationPrincipal loginUser: AuthenticatedUser,
     ): ResponseEntity<ApiResponse<MandalartUpdateRequest>> {
-        return ApiResponse.ok(facade.update(mandalartId, request))
+        return ApiResponse.ok(facade.update(mandalartId, request, loginUser))
     }
 
     @DeleteMapping(ApiPath.Mandalart.DELETE)
-    fun delete(@PathVariable mandalartId: Long): ResponseEntity<ApiResponse<Nothing>> {
-        facade.delete(mandalartId)
+    fun delete(
+        @PathVariable mandalartId: Long,
+        @AuthenticationPrincipal loginUser: AuthenticatedUser,
+    ): ResponseEntity<ApiResponse<Nothing>> {
+        facade.delete(mandalartId, loginUser)
         return ApiResponse.deleted()
     }
 
@@ -52,8 +56,11 @@ class MandalartController(
     }
 
     @GetMapping(ApiPath.Mandalart.MANDALART)
-    fun getMandalart(@PathVariable mandalartId: Long): ResponseEntity<ApiResponse<MandalartDataResponse>> {
-        return ApiResponse.ok(facade.getByMandalartId(mandalartId))
+    fun getMandalart(
+        @PathVariable mandalartId: Long,
+        @AuthenticationPrincipal loginUser: AuthenticatedUser,
+    ): ResponseEntity<ApiResponse<MandalartDataResponse>> {
+        return ApiResponse.ok(facade.getByMandalartId(mandalartId, loginUser))
     }
 
 }

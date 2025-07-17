@@ -6,6 +6,7 @@ import com.mandamong.server.common.error.exception.EmailNotFoundException
 import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.common.error.exception.NicknameDuplicatedException
 import com.mandamong.server.common.util.jwt.JwtUtil
+import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.minio.MinioService
 import com.mandamong.server.infrastructure.redis.RedisService
 import com.mandamong.server.user.dto.EmailRegisterRequest
@@ -41,6 +42,7 @@ class UserService(
         val refreshToken = jwtUtil.generateRefreshToken(savedUser.id)
         redisService.set("RT::${savedUser.id}", refreshToken, Duration.ofDays(30))
 
+        log().info("REGISTER userId=${savedUser.id}")
         return User.toDto(savedUser, accessToken, refreshToken)
     }
 
@@ -48,11 +50,15 @@ class UserService(
     fun updateNickname(request: UserUpdateRequest, id: Long): UserUpdateRequest {
         val user = getById(id)
         user.nickname = request.updated
+        log().info("UPDATE_NICKNAME userId=$id")
         return UserUpdateRequest(updated = user.nickname)
     }
 
     @Transactional
-    fun deleteById(id: Long) = repository.deleteById(id)
+    fun deleteById(id: Long) {
+        repository.deleteById(id)
+        log().info("UNREGISTER userId=$id")
+    }
 
     @Transactional(readOnly = true)
     fun findById(id: Long): User? = repository.findById(id).getOrNull()

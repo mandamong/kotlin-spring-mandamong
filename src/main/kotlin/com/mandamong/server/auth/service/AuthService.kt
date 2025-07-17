@@ -3,6 +3,7 @@ package com.mandamong.server.auth.service
 import com.mandamong.server.auth.dto.EmailLoginResponse
 import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.jwt.JwtUtil
+import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.redis.RedisService
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.service.UserService
@@ -26,12 +27,14 @@ class AuthService(
         val accessToken = jwtUtil.generateAccessToken(savedUser.id)
         val refreshToken = jwtUtil.generateRefreshToken(savedUser.id)
         redisService.set("RT::${savedUser.id}", refreshToken, Duration.ofDays(30))
+        log().info("USER_LOGIN userId=${savedUser.id}")
         return User.toDto(savedUser, accessToken, refreshToken)
     }
 
     @Transactional
     fun logout(userId: Long) {
         redisService.delete("RT::$userId")
+        log().info("USER_LOGOUT userId=$userId")
     }
 
     private fun validatePassword(password: String, savedPassword: String) {

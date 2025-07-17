@@ -5,6 +5,7 @@ import com.mandamong.server.auth.dto.RefreshResponse
 import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.jwt.JwtUtil
+import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.redis.RedisService
 import java.time.Duration
 import org.springframework.stereotype.Service
@@ -27,7 +28,7 @@ class RefreshService(
         val newAccessToken: String = jwtUtil.generateAccessToken(userId)
         val newRefreshToken: String = jwtUtil.generateRefreshToken(userId)
         redisService.set("RT::$userId", newRefreshToken, Duration.ofDays(30))
-
+        log().info("TOKEN_REFRESHED userId=$userId")
         return RefreshResponse(userId, newAccessToken, newRefreshToken)
     }
 

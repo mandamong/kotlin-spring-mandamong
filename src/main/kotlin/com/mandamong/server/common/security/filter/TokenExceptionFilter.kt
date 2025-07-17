@@ -3,6 +3,7 @@ package com.mandamong.server.common.security.filter
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.mandamong.server.common.error.ErrorCode
 import com.mandamong.server.common.error.ErrorResponse
+import com.mandamong.server.common.util.log.log
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.UnsupportedJwtException
@@ -10,7 +11,6 @@ import io.jsonwebtoken.security.SignatureException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -18,8 +18,6 @@ import org.springframework.web.filter.OncePerRequestFilter
 class TokenExceptionFilter(
     private val objectMapper: ObjectMapper,
 ) : OncePerRequestFilter() {
-
-    val log = LoggerFactory.getLogger(this::class.java)
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -29,7 +27,7 @@ class TokenExceptionFilter(
         try {
             chain.doFilter(request, response)
         } catch (e: Exception) {
-            log.error("Exception", e)
+            log().error("Exception", e)
             handle(e, response)
         }
     }

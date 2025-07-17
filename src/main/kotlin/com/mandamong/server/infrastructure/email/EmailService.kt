@@ -2,6 +2,7 @@ package com.mandamong.server.infrastructure.email
 
 import com.mandamong.server.auth.dto.EmailVerificationResponse
 import com.mandamong.server.common.error.exception.BusinessBaseException
+import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.redis.RedisService
 import java.security.SecureRandom
 import java.time.Duration
@@ -21,12 +22,14 @@ class EmailService(
         val code = createCode()
         sendEmail(email, code)
         redisService.set(REDIS_PREFIX + email, code, Duration.ofMinutes(5))
+        log().info("EMAIL_VERIFICATION_SENT email=$email")
     }
 
     @Transactional
     fun verifyCode(email: String, code: String): EmailVerificationResponse {
         val savedCode: String? = redisService.get(REDIS_PREFIX + email)
         val result: Boolean = savedCode != null && savedCode == code
+        log().info("EMAIL_VERIFIED email=$email")
         return EmailVerificationResponse(result)
     }
 
