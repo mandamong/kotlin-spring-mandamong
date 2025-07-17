@@ -1,9 +1,12 @@
 package com.mandamong.server.mandalart.service
 
+import com.mandamong.server.common.error.exception.IdNotFoundException
+import com.mandamong.server.common.error.exception.NotFoundException
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Action
 import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.repository.ActionRepository
+import kotlin.jvm.optionals.getOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -13,24 +16,32 @@ class ActionService(
 ) {
 
     @Transactional
-    fun save(actions: List<List<String>>, objectives: List<Objective>): List<List<Action>> {
-        return actions.zip(objectives).map { (actionList, objective) ->
-            actionList.map { repository.save(Action.of(it, objective)) }
+    fun create(actions: List<List<String>>, objectives: List<Objective>): List<List<Action>> {
+        return actions.zip(objectives).map { (actionsByObjective, objective) ->
+            actionsByObjective.map { action ->
+                repository.save(Action.of(action, objective))
+            }
         }
     }
 
     @Transactional
-    fun updateAction(actionId: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
-        val action = repository.findById(actionId).orElseThrow()
+    fun update(id: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
+        val action = getById(id)
         action.action = request.updated
         return MandalartUpdateRequest(updated = action.action)
     }
 
     @Transactional
-    fun findByObjectiveId(objectives: List<Objective>): List<List<Action>> {
-        return objectives.map { objective ->
-            repository.findByObjectiveId(objective.id)
-        }
-    }
+    fun findById(id: Long): Action? = repository.findById(id).getOrNull()
 
+    @Transactional
+    fun getById(id: Long): Action = findById(id) ?: throw IdNotFoundException(id)
+
+    @Transactional
+    fun findByObjectiveId(objectives: List<Objective>): List<List<Action>>? =
+        objectives.map { repository.findByObjectiveId(it.id) }
+
+    @Transactional
+    fun getByObjectiveId(objectives: List<Objective>): List<List<Action>> = findByObjectiveId(objectives)
+        ?: throw NotFoundException()
 }

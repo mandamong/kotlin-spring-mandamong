@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface SubjectRepository : JpaRepository<Subject, Long> {
 
-    fun deleteByMandalartId(mandalartId: Long)
+    fun findByMandalartId(mandalartId: Long): Subject?
 
 }

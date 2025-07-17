@@ -1,6 +1,7 @@
 package com.mandamong.server.common.security
 
 import com.mandamong.server.common.security.filter.TokenAuthenticationFilter
+import com.mandamong.server.common.security.filter.TokenExceptionFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -12,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 class SecurityConfig(
     private val tokenAuthenticationFilter: TokenAuthenticationFilter,
+    private val tokenExceptionFilter: TokenExceptionFilter,
 ) {
 
     @Bean
@@ -25,6 +27,8 @@ class SecurityConfig(
                     .anyRequest().authenticated()
             }
             .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(tokenExceptionFilter, TokenAuthenticationFilter::class.java)
+
 
         return http.build()
     }

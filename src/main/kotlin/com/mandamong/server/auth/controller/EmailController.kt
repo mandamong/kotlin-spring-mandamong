@@ -18,15 +18,15 @@ class EmailController(
 ) {
 
     @PostMapping(ApiPath.Email.SEND)
-    fun sendCode(@RequestBody emailVerificationRequest: EmailVerificationRequest): ResponseEntity<ApiResponse<Nothing>> {
+    fun sendVerificationCode(@RequestBody emailVerificationRequest: EmailVerificationRequest): ResponseEntity<ApiResponse<Nothing>> {
         service.sendCode(emailVerificationRequest.email)
         return ApiResponse.ok()
     }
 
     @GetMapping(ApiPath.Email.VERIFY)
     fun verifyCode(
-        @RequestParam("email") email: String,
-        @RequestParam("code") code: String,
+        @RequestParam email: String,
+        @RequestParam code: String,
     ): ResponseEntity<ApiResponse<EmailVerificationResponse>> {
         return ApiResponse.ok(service.verifyCode(email, code))
     }

@@ -20,11 +20,11 @@ class ObjectiveController(
 ) {
 
     @PatchMapping(ApiPath.Objective.UPDATE)
-    fun updateObjective(
+    fun update(
         @PathVariable objectiveId: Long,
         @RequestBody request: MandalartUpdateRequest,
     ): ResponseEntity<ApiResponse<MandalartUpdateRequest>> {
-        return ApiResponse.ok(service.updateObjective(objectiveId, request))
+        return ApiResponse.ok(service.update(objectiveId, request))
     }
 
     @PostMapping(ApiPath.Objective.SUGGEST)

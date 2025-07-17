@@ -1,8 +1,8 @@
 package com.mandamong.server.mandalart.facade
 
 import com.mandamong.server.mandalart.dto.MandalartCreateRequest
-import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.dto.MandalartDataResponse
+import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.dto.Pair
 import com.mandamong.server.mandalart.service.ActionService
 import com.mandamong.server.mandalart.service.MandalartService
@@ -19,11 +19,11 @@ class MandalartFacade(
     private val actionService: ActionService,
 ) {
 
-    fun create(request: MandalartCreateRequest, user: AuthenticatedUser): MandalartDataResponse {
-        val mandalart = mandalartService.save(request.name, user)
-        val subject = subjectService.save(request.subject, mandalart)
-        val objectives = objectiveService.save(request.objectives, subject)
-        val actions = actionService.save(request.actions, objectives)
+    fun create(request: MandalartCreateRequest, loginUser: AuthenticatedUser): MandalartDataResponse {
+        val mandalart = mandalartService.create(request.name, loginUser)
+        val subject = subjectService.create(request.subject, mandalart)
+        val objectives = objectiveService.create(request.objectives, subject)
+        val actions = actionService.create(request.actions, objectives)
         return MandalartDataResponse(
             Pair.of(mandalart.id, mandalart.name),
             Pair.of(subject.id, subject.subject),
@@ -32,12 +32,19 @@ class MandalartFacade(
         )
     }
 
-    fun getMandalarts(userId: Long): List<MandalartDataResponse> {
-        val mandalarts = mandalartService.getMandalarts(userId)
+    fun update(id: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
+        val updated: String = mandalartService.update(id, request.updated)
+        return MandalartUpdateRequest(updated = updated)
+    }
+
+    fun delete(id: Long) = mandalartService.deleteById(id)
+
+    fun getMandalartsByUserId(userId: Long): List<MandalartDataResponse> {
+        val mandalarts = mandalartService.getByUserId(userId)
         return mandalarts.map { mandalart ->
-            val subject = subjectService.findByMandalartId(mandalart.id)
-            val objectives = objectiveService.findBySubjectId(subject.id)
-            val actions = actionService.findByObjectiveId(objectives)
+            val subject = subjectService.getByMandalartId(mandalart.id)
+            val objectives = objectiveService.getBySubjectId(subject.id)
+            val actions = actionService.getByObjectiveId(objectives)
             MandalartDataResponse(
                 Pair.of(mandalart.id, mandalart.name),
                 Pair.of(subject.id, subject.subject),
@@ -47,26 +54,17 @@ class MandalartFacade(
         }
     }
 
-    fun getMandalart(mandalartId: Long): MandalartDataResponse {
-        val mandalart = mandalartService.findById(mandalartId)
-        val subject = subjectService.findByMandalartId(mandalartId)
-        val objectives = objectiveService.findBySubjectId(subject.id)
-        val actions = actionService.findByObjectiveId(objectives)
+    fun getByMandalartId(id: Long): MandalartDataResponse {
+        val mandalart = mandalartService.getById(id)
+        val subject = subjectService.getByMandalartId(id)
+        val objectives = objectiveService.getBySubjectId(subject.id)
+        val actions = actionService.getByObjectiveId(objectives)
         return MandalartDataResponse(
             Pair.of(mandalart.id, mandalart.name),
             Pair.of(subject.id, subject.subject),
             objectives.map { Pair.of(it.id, it.objective) },
             actions.map { action -> action.map { Pair.of(it.id, it.action) } }
         )
-    }
-
-    fun delete(mandalartId: Long) {
-        mandalartService.deleteById(mandalartId)
-    }
-
-    fun updateName(mandalartId: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
-        val updated: String = mandalartService.updateName(mandalartId, request.updated)
-        return MandalartUpdateRequest(updated = updated)
     }
 
 }

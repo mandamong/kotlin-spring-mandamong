@@ -8,6 +8,5 @@ import org.springframework.stereotype.Repository
 interface ActionRepository : JpaRepository<Action, Long> {
 
     fun findByObjectiveId(objectiveId: Long): List<Action>
-    fun deleteByObjectiveId(objectiveId: Long)
 
 }

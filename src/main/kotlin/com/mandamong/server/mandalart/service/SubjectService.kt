@@ -1,9 +1,11 @@
 package com.mandamong.server.mandalart.service
 
+import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.entity.Subject
 import com.mandamong.server.mandalart.repository.SubjectRepository
+import kotlin.jvm.optionals.getOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -13,21 +15,29 @@ class SubjectService(
 ) {
 
     @Transactional
-    fun save(subjectName: String, mandalart: Mandalart): Subject {
+    fun create(subjectName: String, mandalart: Mandalart): Subject {
         val subject = Subject.of(subjectName, mandalart)
         return repository.save(subject)
     }
 
     @Transactional
-    fun findByMandalartId(mandalartId: Long): Subject {
-        return repository.findById(mandalartId).orElseThrow()
-    }
-
-    @Transactional
-    fun updateSubject(subjectId: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
-        val subject = repository.findById(subjectId).orElseThrow()
+    fun update(id: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
+        val subject = getById(id)
         subject.subject = request.updated
         return MandalartUpdateRequest(updated = subject.subject)
     }
+
+    @Transactional
+    fun findById(id: Long): Subject? = repository.findById(id).getOrNull()
+
+    @Transactional
+    fun getById(id: Long): Subject = findById(id) ?: throw IdNotFoundException(id)
+
+    @Transactional
+    fun findByMandalartId(mandalartId: Long): Subject? = repository.findByMandalartId(mandalartId)
+
+    @Transactional
+    fun getByMandalartId(mandalartId: Long): Subject = findByMandalartId(mandalartId)
+        ?: throw IdNotFoundException(mandalartId)
 
 }

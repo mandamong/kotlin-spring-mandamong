@@ -16,11 +16,11 @@ class ActionController(
 ) {
 
     @PatchMapping(ApiPath.Action.UPDATE)
-    fun updateAction(
+    fun update(
         @PathVariable actionId: Long,
         @RequestBody request: MandalartUpdateRequest,
     ): ResponseEntity<ApiResponse<MandalartUpdateRequest>> {
-        return ApiResponse.ok(service.updateAction(actionId, request))
+        return ApiResponse.ok(service.update(actionId, request))
     }
 
 }

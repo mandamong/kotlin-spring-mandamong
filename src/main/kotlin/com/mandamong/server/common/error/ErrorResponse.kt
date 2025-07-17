@@ -1,6 +1,6 @@
 package com.mandamong.server.common.error
 
-class ErrorResponse(
+data class ErrorResponse(
     val code: String,
     val message: String? = null,
 ) {

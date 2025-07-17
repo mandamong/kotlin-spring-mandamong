@@ -1,7 +1,7 @@
 package com.mandamong.server.auth.service
 
 import com.mandamong.server.auth.dto.EmailLoginResponse
-import com.mandamong.server.common.error.exception.EmailNotFoundException
+import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.jwt.JwtUtil
 import com.mandamong.server.infrastructure.redis.RedisService
 import com.mandamong.server.user.entity.User
@@ -21,16 +21,12 @@ class AuthService(
 
     @Transactional
     fun basicLogin(email: String, password: String): EmailLoginResponse {
-        val user: User = userService.findByEmail(email) ?: throw EmailNotFoundException(email)
-
-        if (isValidPassword(password, user.password)) {
-            val accessToken: String = jwtUtil.generateAccessToken(user.id)
-            val refreshToken: String = jwtUtil.generateRefreshToken(user.id)
-            redisService.set("RT::${user.id}", refreshToken, Duration.ofDays(30))
-            return User.toDto(user, accessToken, refreshToken)
-        }
-
-        throw IllegalArgumentException("비밀번호 검증 오류")
+        val savedUser = userService.getByEmail(email)
+        validatePassword(password, savedUser.password)
+        val accessToken = jwtUtil.generateAccessToken(savedUser.id)
+        val refreshToken = jwtUtil.generateRefreshToken(savedUser.id)
+        redisService.set("RT::${savedUser.id}", refreshToken, Duration.ofDays(30))
+        return User.toDto(savedUser, accessToken, refreshToken)
     }
 
     @Transactional
@@ -38,6 +34,10 @@ class AuthService(
         redisService.delete("RT::$userId")
     }
 
-    private fun isValidPassword(input: String, saved: String): Boolean = passwordEncoder.matches(input, saved)
+    private fun validatePassword(password: String, savedPassword: String) {
+        if (!passwordEncoder.matches(password, savedPassword)) {
+            throw UnauthorizedException()
+        }
+    }
 
 }

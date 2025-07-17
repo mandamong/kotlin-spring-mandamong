@@ -30,30 +30,30 @@ class MandalartController(
         return ApiResponse.ok(facade.create(request, loginUser))
     }
 
-    @GetMapping(ApiPath.Mandalart.MANDALARTS)
-    fun getMandalarts(
-        @AuthenticationPrincipal loginUser: AuthenticatedUser,
-    ): ResponseEntity<ApiResponse<List<MandalartDataResponse>>> {
-        return ApiResponse.ok(facade.getMandalarts(loginUser.userId))
-    }
-
-    @GetMapping(ApiPath.Mandalart.MANDALART)
-    fun getMandalart(@PathVariable mandalartId: Long): ResponseEntity<ApiResponse<MandalartDataResponse>> {
-        return ApiResponse.ok(facade.getMandalart(mandalartId))
-    }
-
     @PatchMapping(ApiPath.Mandalart.UPDATE_NAME)
-    fun updateName(
+    fun update(
         @PathVariable mandalartId: Long,
         @RequestBody request: MandalartUpdateRequest,
     ): ResponseEntity<ApiResponse<MandalartUpdateRequest>> {
-        return ApiResponse.ok(facade.updateName(mandalartId, request))
+        return ApiResponse.ok(facade.update(mandalartId, request))
     }
 
     @DeleteMapping(ApiPath.Mandalart.DELETE)
     fun delete(@PathVariable mandalartId: Long): ResponseEntity<ApiResponse<Nothing>> {
         facade.delete(mandalartId)
         return ApiResponse.deleted()
+    }
+
+    @GetMapping(ApiPath.Mandalart.MANDALARTS)
+    fun getMandalarts(
+        @AuthenticationPrincipal loginUser: AuthenticatedUser,
+    ): ResponseEntity<ApiResponse<List<MandalartDataResponse>>> {
+        return ApiResponse.ok(facade.getMandalartsByUserId(loginUser.userId))
+    }
+
+    @GetMapping(ApiPath.Mandalart.MANDALART)
+    fun getMandalart(@PathVariable mandalartId: Long): ResponseEntity<ApiResponse<MandalartDataResponse>> {
+        return ApiResponse.ok(facade.getByMandalartId(mandalartId))
     }
 
 }

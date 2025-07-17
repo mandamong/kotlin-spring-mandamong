@@ -14,14 +14,14 @@ class DuplicationController(
     private val userService: UserService,
 ) {
 
-    @GetMapping(ApiPath.Duplication.CHECK_NICKNAME)
-    fun checkNickname(@RequestParam nickname: String): ResponseEntity<ApiResponse<DuplicationResponse>> {
-        return ApiResponse.ok(DuplicationResponse(userService.existsByNickname(nickname)))
-    }
-
     @GetMapping(ApiPath.Duplication.CHECK_EMAIL)
     fun checkEmail(@RequestParam email: String): ResponseEntity<ApiResponse<DuplicationResponse>> {
         return ApiResponse.ok(DuplicationResponse(userService.existsByEmail(email)))
+    }
+
+    @GetMapping(ApiPath.Duplication.CHECK_NICKNAME)
+    fun checkNickname(@RequestParam nickname: String): ResponseEntity<ApiResponse<DuplicationResponse>> {
+        return ApiResponse.ok(DuplicationResponse(userService.existsByNickname(nickname)))
     }
 
 }

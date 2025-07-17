@@ -20,11 +20,11 @@ class SubjectController(
 ) {
 
     @PatchMapping(ApiPath.Subject.UPDATE)
-    fun updateSubject(
+    fun update(
         @PathVariable subjectId: Long,
         @RequestBody request: MandalartUpdateRequest,
     ): ResponseEntity<ApiResponse<MandalartUpdateRequest>> {
-        return ApiResponse.ok(service.updateSubject(subjectId, request))
+        return ApiResponse.ok(service.update(subjectId, request))
     }
 
     @PostMapping(ApiPath.Subject.SUGGEST)

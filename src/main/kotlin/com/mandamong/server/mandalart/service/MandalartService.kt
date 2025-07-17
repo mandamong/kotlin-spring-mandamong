@@ -1,11 +1,12 @@
 package com.mandamong.server.mandalart.service
 
-import com.mandamong.server.common.error.exception.MandalartNotFoundException
+import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.repository.MandalartRepository
 import com.mandamong.server.user.dto.AuthenticatedUser
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.service.UserService
+import kotlin.jvm.optionals.getOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,36 +17,31 @@ class MandalartService(
 ) {
 
     @Transactional
-    fun save(name: String, user: AuthenticatedUser): Mandalart {
-        val savedUser: User = userService.findById(user.userId)
-        return repository.save(
-            Mandalart(
-                name = name,
-                user = savedUser,
-            )
-        )
+    fun create(name: String, loginUser: AuthenticatedUser): Mandalart {
+        val savedUser: User = userService.getById(loginUser.userId)
+        return repository.save(Mandalart(name = name, user = savedUser))
     }
 
     @Transactional
-    fun getMandalarts(userId: Long): List<Mandalart> {
-        return repository.findByUserId(userId)
-    }
-
-    @Transactional
-    fun findById(mandalartId: Long): Mandalart {
-        return repository.findById(mandalartId).orElseThrow { MandalartNotFoundException(mandalartId) }
-    }
-
-    @Transactional
-    fun deleteById(mandalartId: Long) {
-        repository.deleteById(mandalartId)
-    }
-
-    @Transactional
-    fun updateName(mandalartId: Long, updated: String): String {
-        val mandalart = repository.findById(mandalartId).orElseThrow()
+    fun update(id: Long, updated: String): String {
+        val mandalart = getById(id)
         mandalart.name = updated
         return mandalart.name
     }
+
+    @Transactional
+    fun findById(id: Long): Mandalart? = repository.findById(id).getOrNull()
+
+    @Transactional
+    fun getById(id: Long): Mandalart = findById(id) ?: throw IdNotFoundException(id)
+
+    @Transactional
+    fun deleteById(id: Long) = repository.deleteById(id)
+
+    @Transactional
+    fun findByUserId(userId: Long): List<Mandalart>? = repository.findByUserId(userId)
+
+    @Transactional
+    fun getByUserId(userId: Long): List<Mandalart> = findByUserId(userId) ?: throw IdNotFoundException(userId)
 
 }

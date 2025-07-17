@@ -13,16 +13,16 @@ class GlobalExceptionHandler {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
-    fun handle(e: HttpRequestMethodNotSupportedException): ResponseEntity<ErrorResponse> {
-        log.error("HttpRequestMethodNotSupportedException", e)
-        return createErrorResponse(ErrorCode.METHOD_NOT_ALLOWED)
-    }
-
     @ExceptionHandler(BusinessBaseException::class)
     fun handle(e: BusinessBaseException): ResponseEntity<ApiResponse<ErrorResponse>> {
         log.error("BusinessBaseException", e)
         return ApiResponse.error(e)
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
+    fun handle(e: HttpRequestMethodNotSupportedException): ResponseEntity<ErrorResponse> {
+        log.error("HttpRequestMethodNotSupportedException", e)
+        return createErrorResponse(ErrorCode.METHOD_NOT_ALLOWED)
     }
 
     @ExceptionHandler(Exception::class)

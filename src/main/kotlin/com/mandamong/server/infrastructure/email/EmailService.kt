@@ -1,6 +1,7 @@
 package com.mandamong.server.infrastructure.email
 
 import com.mandamong.server.auth.dto.EmailVerificationResponse
+import com.mandamong.server.common.error.exception.BusinessBaseException
 import com.mandamong.server.infrastructure.redis.RedisService
 import java.security.SecureRandom
 import java.time.Duration
@@ -16,35 +17,35 @@ class EmailService(
 ) {
 
     @Transactional
-    fun sendCode(targetEmail: String) {
-        val code: String = createCode()
-        send(targetEmail, code)
-        redisService.set(REDIS_PREFIX + targetEmail, code, Duration.ofMinutes(5))
+    fun sendCode(email: String) {
+        val code = createCode()
+        sendEmail(email, code)
+        redisService.set(REDIS_PREFIX + email, code, Duration.ofMinutes(5))
     }
 
     @Transactional
     fun verifyCode(email: String, code: String): EmailVerificationResponse {
-        val codeInRedis: String? = redisService.get(REDIS_PREFIX + email)
-        val result: Boolean = codeInRedis != null && codeInRedis == code
+        val savedCode: String? = redisService.get(REDIS_PREFIX + email)
+        val result: Boolean = savedCode != null && savedCode == code
         return EmailVerificationResponse(result)
     }
 
     private fun createCode(): String {
         val length = CODE_LENGTH
         val random: SecureRandom = SecureRandom.getInstanceStrong()
-        val stringBuilder = StringBuilder()
+        val code = StringBuilder()
         for (i in 0..<length) {
-            stringBuilder.append(random.nextInt(10))
+            code.append(random.nextInt(10))
         }
-        return stringBuilder.toString()
+        return code.toString()
     }
 
-    private fun send(targetEmail: String, text: String) {
-        val email: SimpleMailMessage = createEmail(targetEmail, text)
+    private fun sendEmail(email: String, text: String) {
+        val mailMessage: SimpleMailMessage = createEmail(email, text)
         try {
-            mailSender.send(email)
+            mailSender.send(mailMessage)
         } catch (exception: RuntimeException) {
-            throw IllegalStateException("이메일 전송 실패")
+            throw BusinessBaseException()
         }
     }
 

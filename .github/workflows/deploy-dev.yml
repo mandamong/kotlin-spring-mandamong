@@ -71,8 +71,7 @@ jobs:
 
       - name: Deploy on K8s
         run: |
-          ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            sudo kubectl rollout restart deployment mandamong-deployment -n mandamong
-            sudo kubectl rollout status deployment mandamong-deployment -n mandamong
-            exit
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          sudo kubectl rollout restart deployment mandamong-deployment -n mandamong
+          sudo kubectl rollout status deployment mandamong-deployment -n mandamong
           EOF

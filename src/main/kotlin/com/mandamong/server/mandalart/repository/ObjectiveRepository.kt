@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ObjectiveRepository : JpaRepository<Objective, Long> {
 
-    fun findBySubjectId(subjectId: Long): List<Objective>
-    fun deleteBySubjectId(subjectId: Long)
+    fun findBySubjectId(subjectId: Long): List<Objective>?
 
 }

@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface MandalartRepository : JpaRepository<Mandalart, Long> {
 
-    fun findByUserId(userId: Long): List<Mandalart>
+    fun findByUserId(userId: Long): List<Mandalart>?
 
 }
