@@ -11,7 +11,9 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
+import org.hibernate.annotations.BatchSize
 
 @Entity
 @Table(name = "subjects")
@@ -25,9 +27,10 @@ class Subject(
     var subject: String,
 
     @JoinColumn(name = "mandalart_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     val mandalart: Mandalart,
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "subject", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
     val objectives: MutableList<Objective> = mutableListOf()
 ) : BaseTimeEntity() {

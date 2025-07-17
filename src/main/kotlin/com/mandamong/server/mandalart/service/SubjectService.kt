@@ -27,16 +27,16 @@ class SubjectService(
         return MandalartUpdateRequest(updated = subject.subject)
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun findById(id: Long): Subject? = repository.findById(id).getOrNull()
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getById(id: Long): Subject = findById(id) ?: throw IdNotFoundException(id)
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun findByMandalartId(mandalartId: Long): Subject? = repository.findByMandalartId(mandalartId)
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getByMandalartId(mandalartId: Long): Subject = findByMandalartId(mandalartId)
         ?: throw IdNotFoundException(mandalartId)
 

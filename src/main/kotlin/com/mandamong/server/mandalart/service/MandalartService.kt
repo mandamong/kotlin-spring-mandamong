@@ -30,18 +30,18 @@ class MandalartService(
     }
 
     @Transactional
-    fun findById(id: Long): Mandalart? = repository.findById(id).getOrNull()
-
-    @Transactional
-    fun getById(id: Long): Mandalart = findById(id) ?: throw IdNotFoundException(id)
-
-    @Transactional
     fun deleteById(id: Long) = repository.deleteById(id)
 
-    @Transactional
+    @Transactional(readOnly = true)
+    fun findById(id: Long): Mandalart? = repository.findById(id).getOrNull()
+
+    @Transactional(readOnly = true)
+    fun getById(id: Long): Mandalart = findById(id) ?: throw IdNotFoundException(id)
+
+    @Transactional(readOnly = true)
     fun findByUserId(userId: Long): List<Mandalart>? = repository.findByUserId(userId)
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getByUserId(userId: Long): List<Mandalart> = findByUserId(userId) ?: throw IdNotFoundException(userId)
 
 }

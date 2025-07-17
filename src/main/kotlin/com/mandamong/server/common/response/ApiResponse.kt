@@ -1,7 +1,7 @@
 package com.mandamong.server.common.response
 
+import com.mandamong.server.common.error.ErrorCode
 import com.mandamong.server.common.error.ErrorResponse
-import com.mandamong.server.common.error.exception.BusinessBaseException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
@@ -30,9 +30,9 @@ data class ApiResponse<T>(
                 .body(ApiResponse(success = true, data = null, error = null))
         }
 
-        fun <R> error(e: BusinessBaseException): ResponseEntity<ApiResponse<R>> {
-            return ResponseEntity.status(e.errorCode.status)
-                .body(ApiResponse(success = false, data = null, error = ErrorResponse.of(e.errorCode)))
+        fun error(errorCode: ErrorCode): ResponseEntity<ApiResponse<Nothing>> {
+            return ResponseEntity.status(errorCode.status)
+                .body(ApiResponse(success = false, data = null, error = ErrorResponse.of(errorCode)))
         }
     }
 

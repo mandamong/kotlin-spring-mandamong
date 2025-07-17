@@ -31,17 +31,17 @@ class ActionService(
         return MandalartUpdateRequest(updated = action.action)
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun findById(id: Long): Action? = repository.findById(id).getOrNull()
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getById(id: Long): Action = findById(id) ?: throw IdNotFoundException(id)
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun findByObjectiveId(objectives: List<Objective>): List<List<Action>>? =
         objectives.map { repository.findByObjectiveId(it.id) }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getByObjectiveId(objectives: List<Objective>): List<List<Action>> = findByObjectiveId(objectives)
         ?: throw NotFoundException()
 }

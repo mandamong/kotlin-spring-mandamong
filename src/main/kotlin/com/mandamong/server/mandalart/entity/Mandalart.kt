@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 
 @Entity
@@ -27,6 +27,6 @@ class Mandalart(
     @ManyToOne(fetch = FetchType.LAZY)
     val user: User,
 
-    @OneToMany(mappedBy = "mandalart", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
-    val subjects: MutableList<Subject> = mutableListOf()
+    @OneToOne(mappedBy = "mandalart", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
+    val subject: Subject? = null
 )

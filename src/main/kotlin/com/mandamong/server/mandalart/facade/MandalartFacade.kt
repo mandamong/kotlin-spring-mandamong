@@ -3,7 +3,6 @@ package com.mandamong.server.mandalart.facade
 import com.mandamong.server.mandalart.dto.MandalartCreateRequest
 import com.mandamong.server.mandalart.dto.MandalartDataResponse
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
-import com.mandamong.server.mandalart.dto.Pair
 import com.mandamong.server.mandalart.service.ActionService
 import com.mandamong.server.mandalart.service.MandalartService
 import com.mandamong.server.mandalart.service.ObjectiveService
@@ -24,12 +23,7 @@ class MandalartFacade(
         val subject = subjectService.create(request.subject, mandalart)
         val objectives = objectiveService.create(request.objectives, subject)
         val actions = actionService.create(request.actions, objectives)
-        return MandalartDataResponse(
-            Pair.of(mandalart.id, mandalart.name),
-            Pair.of(subject.id, subject.subject),
-            objectives.map { Pair.of(it.id, it.objective) },
-            actions.map { action -> action.map { Pair.of(it.id, it.action) } }
-        )
+        return MandalartDataResponse.of(mandalart, subject, objectives, actions)
     }
 
     fun update(id: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
@@ -45,12 +39,7 @@ class MandalartFacade(
             val subject = subjectService.getByMandalartId(mandalart.id)
             val objectives = objectiveService.getBySubjectId(subject.id)
             val actions = actionService.getByObjectiveId(objectives)
-            MandalartDataResponse(
-                Pair.of(mandalart.id, mandalart.name),
-                Pair.of(subject.id, subject.subject),
-                objectives.map { Pair.of(it.id, it.objective) },
-                actions.map { action -> action.map { Pair.of(it.id, it.action) } }
-            )
+            MandalartDataResponse.of(mandalart, subject, objectives, actions)
         }
     }
 
@@ -59,12 +48,7 @@ class MandalartFacade(
         val subject = subjectService.getByMandalartId(id)
         val objectives = objectiveService.getBySubjectId(subject.id)
         val actions = actionService.getByObjectiveId(objectives)
-        return MandalartDataResponse(
-            Pair.of(mandalart.id, mandalart.name),
-            Pair.of(subject.id, subject.subject),
-            objectives.map { Pair.of(it.id, it.objective) },
-            actions.map { action -> action.map { Pair.of(it.id, it.action) } }
-        )
+        return MandalartDataResponse.of(mandalart, subject, objectives, actions)
     }
 
 }

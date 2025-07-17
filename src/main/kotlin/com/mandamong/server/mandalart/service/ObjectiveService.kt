@@ -29,16 +29,16 @@ class ObjectiveService(
         return MandalartUpdateRequest(updated = objective.objective)
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun findById(id: Long): Objective? = repository.findById(id).getOrNull()
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getById(id: Long): Objective = findById(id) ?: throw IdNotFoundException(id)
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun findBySubjectId(subjectId: Long): List<Objective>? = repository.findBySubjectId(subjectId)
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getBySubjectId(subjectId: Long): List<Objective> = findBySubjectId(subjectId)
         ?: throw IdNotFoundException(subjectId)
 

@@ -54,32 +54,32 @@ class UserService(
     @Transactional
     fun deleteById(id: Long) = repository.deleteById(id)
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun findById(id: Long): User? = repository.findById(id).getOrNull()
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getById(id: Long): User = findById(id) ?: throw IdNotFoundException(id)
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun findByEmail(email: String): User? = repository.findByEmail(Email.from(email))
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun getByEmail(email: String): User = findByEmail(email) ?: throw EmailNotFoundException(email)
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun existsByEmail(email: String): Boolean = repository.existsByEmail(Email.from(email))
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun existsByNickname(nickname: String): Boolean = repository.existsByNickname(nickname)
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun validateEmail(email: String) {
         if (existsByEmail(email)) {
             throw EmailDuplicatedException(email)
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun validateNickname(nickname: String) {
         if (existsByNickname(nickname)) {
             throw NicknameDuplicatedException(nickname)

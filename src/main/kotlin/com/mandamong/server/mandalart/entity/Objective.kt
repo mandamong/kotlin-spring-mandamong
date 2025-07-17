@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
+import org.hibernate.annotations.BatchSize
 
 @Entity
 @Table(name = "objectives")
@@ -27,6 +28,7 @@ class Objective(
     @ManyToOne(fetch = FetchType.LAZY)
     val subject: Subject,
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "objective", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
     val actions: MutableList<Action> = mutableListOf()
 ) {
