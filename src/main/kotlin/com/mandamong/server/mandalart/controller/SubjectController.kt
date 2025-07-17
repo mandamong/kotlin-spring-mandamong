@@ -4,6 +4,7 @@ import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.response.ApiResponse
 import com.mandamong.server.infrastructure.gemini.GeminiService
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
+import com.mandamong.server.mandalart.dto.SuggestBySubjectResponse
 import com.mandamong.server.mandalart.dto.SuggestRequest
 import com.mandamong.server.mandalart.service.SubjectService
 import org.springframework.http.ResponseEntity
@@ -28,8 +29,8 @@ class SubjectController(
     }
 
     @PostMapping(ApiPath.Subject.SUGGEST)
-    fun suggest(@RequestBody request: SuggestRequest): ResponseEntity<String> {
-        return ResponseEntity.ok(geminiService.generateBySubject(request.prompt))
+    fun suggest(@RequestBody request: SuggestRequest): ResponseEntity<ApiResponse<SuggestBySubjectResponse>> {
+        return ApiResponse.ok(geminiService.generateBySubject(request.prompt))
     }
 
 }

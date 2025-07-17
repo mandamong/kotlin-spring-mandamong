@@ -1,16 +1,21 @@
 package com.mandamong.server.infrastructure.gemini
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.genai.Client
 import com.google.genai.types.GenerateContentConfig
 import com.google.genai.types.Schema
+import com.mandamong.server.mandalart.dto.SuggestByObjectiveResponse
+import com.mandamong.server.mandalart.dto.SuggestBySubjectResponse
 import org.springframework.stereotype.Service
 
 @Service
 class GeminiService(
     private val client: Client,
+    private val jacksonObjectMapper: ObjectMapper,
 ) {
 
-    fun generateBySubject(prompt: String): String {
+    fun generateBySubject(prompt: String): SuggestBySubjectResponse {
         val schema = Schema.fromJson(SUBJECT_SCHEMA)
         val config = GenerateContentConfig.builder()
             .responseSchema(schema)
@@ -20,11 +25,11 @@ class GeminiService(
             prompt + SUBJECT_SUGGEST,
             config,
         )
-
-        return response.text() ?: "response error"
+        val json = response.text() ?: "response error"
+        return jacksonObjectMapper.readValue(json)
     }
 
-    fun generateByObjective(prompt: String): String {
+    fun generateByObjective(prompt: String): SuggestByObjectiveResponse {
         val schema = Schema.fromJson(OBJECTIVE_SCHEMA)
         val config = GenerateContentConfig.builder()
             .responseSchema(schema)
@@ -34,8 +39,8 @@ class GeminiService(
             prompt + OBJECTIVE_SUGGEST,
             config,
         )
-
-        return response.text() ?: "response error"
+        val json = response.text() ?: "response error"
+        return jacksonObjectMapper.readValue(json)
     }
 
     companion object {
