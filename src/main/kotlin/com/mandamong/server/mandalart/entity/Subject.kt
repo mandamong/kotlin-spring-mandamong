@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
@@ -33,7 +32,7 @@ class Subject(
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "subject", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
     val objectives: MutableList<Objective> = mutableListOf()
-) : BaseTimeEntity() {
+) {
 
     companion object {
         fun of(subject: String, mandalart: Mandalart): Subject {

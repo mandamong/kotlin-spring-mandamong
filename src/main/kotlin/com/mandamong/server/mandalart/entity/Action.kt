@@ -25,6 +25,7 @@ class Action(
     @ManyToOne(fetch = FetchType.LAZY)
     val objective: Objective,
 ) {
+
     companion object {
         fun of(action: String, objective: Objective): Action {
             return Action(
@@ -33,4 +34,5 @@ class Action(
             )
         }
     }
+
 }

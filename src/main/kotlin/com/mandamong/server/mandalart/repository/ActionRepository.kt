@@ -5,8 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ActionRepository : JpaRepository<Action, Long> {
-
-    fun findByObjectiveId(objectiveId: Long): List<Action>
-
-}
+interface ActionRepository : JpaRepository<Action, Long>

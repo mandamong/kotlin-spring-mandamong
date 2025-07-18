@@ -6,7 +6,7 @@ import com.mandamong.server.mandalart.dto.MandalartCreateRequest
 import com.mandamong.server.mandalart.dto.MandalartDataResponse
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.facade.MandalartFacade
-import com.mandamong.server.user.dto.AuthenticatedUser
+import com.mandamong.server.user.dto.LoginUser
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -25,7 +25,7 @@ class MandalartController(
     @PostMapping(ApiPath.Mandalart.CREATE)
     fun create(
         @RequestBody request: MandalartCreateRequest,
-        @AuthenticationPrincipal loginUser: AuthenticatedUser,
+        @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<MandalartDataResponse>> {
         return ApiResponse.ok(facade.create(request, loginUser))
     }
@@ -34,7 +34,7 @@ class MandalartController(
     fun update(
         @PathVariable mandalartId: Long,
         @RequestBody request: MandalartUpdateRequest,
-        @AuthenticationPrincipal loginUser: AuthenticatedUser,
+        @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<MandalartUpdateRequest>> {
         return ApiResponse.ok(facade.update(mandalartId, request, loginUser))
     }
@@ -42,7 +42,7 @@ class MandalartController(
     @DeleteMapping(ApiPath.Mandalart.DELETE)
     fun delete(
         @PathVariable mandalartId: Long,
-        @AuthenticationPrincipal loginUser: AuthenticatedUser,
+        @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<Nothing>> {
         facade.delete(mandalartId, loginUser)
         return ApiResponse.deleted()
@@ -50,7 +50,7 @@ class MandalartController(
 
     @GetMapping(ApiPath.Mandalart.MANDALARTS)
     fun getMandalarts(
-        @AuthenticationPrincipal loginUser: AuthenticatedUser,
+        @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<List<MandalartDataResponse>>> {
         return ApiResponse.ok(facade.getMandalartsByUserId(loginUser.userId))
     }
@@ -58,9 +58,9 @@ class MandalartController(
     @GetMapping(ApiPath.Mandalart.MANDALART)
     fun getMandalart(
         @PathVariable mandalartId: Long,
-        @AuthenticationPrincipal loginUser: AuthenticatedUser,
+        @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<MandalartDataResponse>> {
-        return ApiResponse.ok(facade.getByMandalartId(mandalartId, loginUser))
+        return ApiResponse.ok(facade.getMandalartById(mandalartId, loginUser))
     }
 
 }

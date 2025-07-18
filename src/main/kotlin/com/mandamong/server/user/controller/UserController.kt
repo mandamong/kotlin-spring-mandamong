@@ -3,7 +3,7 @@ package com.mandamong.server.user.controller
 import com.mandamong.server.auth.dto.EmailLoginResponse
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.response.ApiResponse
-import com.mandamong.server.user.dto.AuthenticatedUser
+import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.dto.EmailRegisterRequest
 import com.mandamong.server.user.dto.UserUpdateRequest
 import com.mandamong.server.user.service.UserService
@@ -31,13 +31,13 @@ class UserController(
     @PatchMapping(ApiPath.User.UPDATE_NICKNAME)
     fun updateNickname(
         @RequestBody request: UserUpdateRequest,
-        @AuthenticationPrincipal loginUser: AuthenticatedUser,
+        @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<UserUpdateRequest>> {
         return ApiResponse.ok(service.updateNickname(request, loginUser.userId))
     }
 
     @DeleteMapping(ApiPath.User.DELETE)
-    fun delete(@AuthenticationPrincipal loginUser: AuthenticatedUser): ResponseEntity<ApiResponse<Nothing>> {
+    fun delete(@AuthenticationPrincipal loginUser: LoginUser): ResponseEntity<ApiResponse<Nothing>> {
         service.deleteById(loginUser.userId)
         return ApiResponse.deleted()
     }

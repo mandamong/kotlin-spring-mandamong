@@ -1,7 +1,6 @@
 package com.mandamong.server.mandalart.service
 
 import com.mandamong.server.common.error.exception.IdNotFoundException
-import com.mandamong.server.common.error.exception.NotFoundException
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Action
 import com.mandamong.server.mandalart.entity.Objective
@@ -37,11 +36,4 @@ class ActionService(
     @Transactional(readOnly = true)
     fun getById(id: Long): Action = findById(id) ?: throw IdNotFoundException(id)
 
-    @Transactional(readOnly = true)
-    fun findByObjectiveId(objectives: List<Objective>): List<List<Action>>? =
-        objectives.map { repository.findByObjectiveId(it.id) }
-
-    @Transactional(readOnly = true)
-    fun getByObjectiveId(objectives: List<Objective>): List<List<Action>> = findByObjectiveId(objectives)
-        ?: throw NotFoundException()
 }

@@ -1,5 +1,5 @@
 package com.mandamong.server.user.dto
 
-data class AuthenticatedUser(
+data class LoginUser(
     val userId: Long,
 )

@@ -1,6 +1,6 @@
 package com.mandamong.server.common.util.jwt
 
-import com.mandamong.server.user.dto.AuthenticatedUser
+import com.mandamong.server.user.dto.LoginUser
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
@@ -14,18 +14,19 @@ import org.springframework.stereotype.Component
 @Component
 class JwtUtil(
     @Value("\${jwt.secret}") private val secretKey: String,
-    @Value("\${jwt.access-expiration}") private val accessExpiration: Long,
-    @Value("\${jwt.refresh-expiration}") private val refreshExpiration: Long,
+    @Value("\${jwt.access-expiration}") private val accessExpiry: Long,
+    @Value("\${jwt.refresh-expiration}") private val refreshExpiry: Long,
 ) {
 
     private val rawSecretKey: ByteArray = secretKey.toByteArray()
     private val decodedSecretKey: ByteArray = Base64.getDecoder().decode(secretKey)
+
     private val accessSignKey: SecretKey = Keys.hmacShaKeyFor(rawSecretKey)
     private val refreshSignKey: SecretKey = Keys.hmacShaKeyFor(decodedSecretKey)
 
     fun generateAccessToken(userId: Long): String {
         val now = Date()
-        val expiry = Date(now.time + accessExpiration)
+        val expiry = Date(now.time + accessExpiry)
         return Jwts.builder()
             .header()
             .type(TOKEN_TYPE)
@@ -40,7 +41,7 @@ class JwtUtil(
 
     fun generateRefreshToken(userId: Long): String {
         val now = Date()
-        val expiry = Date(now.time + refreshExpiration)
+        val expiry = Date(now.time + refreshExpiry)
         return Jwts.builder()
             .header()
             .type(TOKEN_TYPE)
@@ -71,7 +72,8 @@ class JwtUtil(
 
     fun getAuthentication(accessToken: String): UsernamePasswordAuthenticationToken {
         val claims = parseAccessToken(accessToken)
-        val principal = AuthenticatedUser(claims.subject.toLong())
+        val userId = claims.subject.toLong()
+        val principal = LoginUser(userId)
         return UsernamePasswordAuthenticationToken(principal, null, emptyList())
     }
 

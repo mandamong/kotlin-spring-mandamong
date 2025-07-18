@@ -3,7 +3,7 @@ package com.mandamong.server.mandalart.service
 import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.repository.MandalartRepository
-import com.mandamong.server.user.dto.AuthenticatedUser
+import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.service.UserService
 import kotlin.jvm.optionals.getOrNull
@@ -17,9 +17,10 @@ class MandalartService(
 ) {
 
     @Transactional
-    fun create(name: String, loginUser: AuthenticatedUser): Mandalart {
+    fun create(name: String, loginUser: LoginUser): Mandalart {
         val savedUser: User = userService.getById(loginUser.userId)
-        return repository.save(Mandalart(name = name, user = savedUser))
+        val mandalart = Mandalart(name = name, user = savedUser)
+        return repository.save(mandalart)
     }
 
     @Transactional
@@ -39,9 +40,16 @@ class MandalartService(
     fun getById(id: Long): Mandalart = findById(id) ?: throw IdNotFoundException(id)
 
     @Transactional(readOnly = true)
-    fun findByUserId(userId: Long): List<Mandalart>? = repository.findByUserId(userId)
+    fun findByIdWithFullData(id: Long): Mandalart? = repository.findByIdWithFullData(id)
 
     @Transactional(readOnly = true)
-    fun getByUserId(userId: Long): List<Mandalart> = findByUserId(userId) ?: throw IdNotFoundException(userId)
+    fun getByIdWithFullData(id: Long): Mandalart = findByIdWithFullData(id) ?: throw IdNotFoundException(id)
+
+    @Transactional(readOnly = true)
+    fun findByUserIdWithFullData(userId: Long): List<Mandalart>? = repository.findByUserIdWithFullData(userId)
+
+    @Transactional(readOnly = true)
+    fun getByUserIdWithFullData(userId: Long): List<Mandalart> = findByUserIdWithFullData(userId)
+        ?: throw IdNotFoundException(userId)
 
 }

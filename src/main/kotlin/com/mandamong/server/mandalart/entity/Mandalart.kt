@@ -1,5 +1,6 @@
 package com.mandamong.server.mandalart.entity
 
+import com.mandamong.server.common.entity.BaseTimeEntity
 import com.mandamong.server.user.entity.User
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -29,4 +30,4 @@ class Mandalart(
 
     @OneToOne(mappedBy = "mandalart", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
     val subject: Subject? = null
-)
+): BaseTimeEntity()

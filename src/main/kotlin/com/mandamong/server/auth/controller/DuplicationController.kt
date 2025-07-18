@@ -14,13 +14,13 @@ class DuplicationController(
 ) {
 
     @GetMapping(ApiPath.Duplication.CHECK_EMAIL)
-    fun checkEmail(@RequestParam email: String): ResponseEntity<ApiResponse<Nothing>> {
+    fun validateEmailDuplication(@RequestParam email: String): ResponseEntity<ApiResponse<Nothing>> {
         userService.validateEmailDuplication(email)
         return ApiResponse.ok()
     }
 
     @GetMapping(ApiPath.Duplication.CHECK_NICKNAME)
-    fun checkNickname(@RequestParam nickname: String): ResponseEntity<ApiResponse<Nothing>> {
+    fun validateNicknameDuplication(@RequestParam nickname: String): ResponseEntity<ApiResponse<Nothing>> {
         userService.validateNicknameDuplication(nickname)
         return ApiResponse.ok()
     }
