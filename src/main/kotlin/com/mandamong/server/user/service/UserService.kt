@@ -31,8 +31,8 @@ class UserService(
 
     @Transactional
     fun basicRegister(emailRegisterRequest: EmailRegisterRequest): EmailLoginResponse {
-        validateEmail(emailRegisterRequest.email)
-        validateNickname(emailRegisterRequest.nickname)
+        validateEmailDuplication(emailRegisterRequest.email)
+        validateNicknameDuplication(emailRegisterRequest.nickname)
         val encodedPassword = passwordEncoder.encode(emailRegisterRequest.password)
         val profileImageUrl = minioService.upload(emailRegisterRequest.profileImage, emailRegisterRequest.nickname)
         val user = EmailRegisterRequest.toEntity(emailRegisterRequest, encodedPassword, profileImageUrl)
@@ -73,21 +73,15 @@ class UserService(
     fun getByEmail(email: String): User = findByEmail(email) ?: throw EmailNotFoundException(email)
 
     @Transactional(readOnly = true)
-    fun existsByEmail(email: String): Boolean = repository.existsByEmail(Email.from(email))
-
-    @Transactional(readOnly = true)
-    fun existsByNickname(nickname: String): Boolean = repository.existsByNickname(nickname)
-
-    @Transactional(readOnly = true)
-    fun validateEmail(email: String) {
-        if (existsByEmail(email)) {
+    fun validateEmailDuplication(email: String) {
+        if (repository.existsByEmail(Email.from(email))) {
             throw EmailDuplicatedException(email)
         }
     }
 
     @Transactional(readOnly = true)
-    fun validateNickname(nickname: String) {
-        if (existsByNickname(nickname)) {
+    fun validateNicknameDuplication(nickname: String) {
+        if (repository.existsByNickname(nickname)) {
             throw NicknameDuplicatedException(nickname)
         }
     }

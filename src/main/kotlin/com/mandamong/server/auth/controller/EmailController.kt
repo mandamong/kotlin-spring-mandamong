@@ -1,6 +1,5 @@
 package com.mandamong.server.auth.controller
 
-import com.mandamong.server.auth.dto.EmailVerificationResponse
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.response.ApiResponse
 import com.mandamong.server.infrastructure.email.EmailService
@@ -18,7 +17,9 @@ class EmailController(
 ) {
 
     @PostMapping(ApiPath.Email.SEND)
-    fun sendVerificationCode(@RequestBody emailVerificationRequest: EmailVerificationRequest): ResponseEntity<ApiResponse<Nothing>> {
+    fun sendVerificationCode(
+        @RequestBody emailVerificationRequest: EmailVerificationRequest,
+    ): ResponseEntity<ApiResponse<Nothing>> {
         service.sendCode(emailVerificationRequest.email)
         return ApiResponse.ok()
     }
@@ -27,8 +28,9 @@ class EmailController(
     fun verifyCode(
         @RequestParam email: String,
         @RequestParam code: String,
-    ): ResponseEntity<ApiResponse<EmailVerificationResponse>> {
-        return ApiResponse.ok(service.verifyCode(email, code))
+    ): ResponseEntity<ApiResponse<Nothing>> {
+        service.verifyCode(email, code)
+        return ApiResponse.ok()
     }
 
 }
