@@ -5,7 +5,7 @@ import com.mandamong.server.common.error.exception.EmailDuplicatedException
 import com.mandamong.server.common.error.exception.EmailNotFoundException
 import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.common.error.exception.NicknameDuplicatedException
-import com.mandamong.server.common.util.jwt.JwtUtil
+import com.mandamong.server.common.util.jwt.TokenUtil
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.minio.MinioService
 import com.mandamong.server.infrastructure.redis.RedisService
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(
     private val repository: UserRepository,
     private val passwordEncoder: BCryptPasswordEncoder,
-    private val jwtUtil: JwtUtil,
+    private val tokenUtil: TokenUtil,
     private val minioService: MinioService,
     private val redisService: RedisService,
 ) {
@@ -38,9 +38,9 @@ class UserService(
         val user = EmailRegisterRequest.toEntity(emailRegisterRequest, encodedPassword, profileImageUrl)
 
         val savedUser = repository.save(user)
-        val accessToken = jwtUtil.generateAccessToken(savedUser.id)
-        val refreshToken = jwtUtil.generateRefreshToken(savedUser.id)
-        redisService.set("RT::${savedUser.id}", refreshToken, Duration.ofDays(30))
+        val accessToken = tokenUtil.generateAccessToken(savedUser.id)
+        val refreshToken = tokenUtil.generateRefreshToken(savedUser.id)
+        redisService.set("RT::${savedUser.id}", refreshToken, Duration.ofMillis(tokenUtil.getRefreshExpiry()))
 
         log().info("REGISTER userId=${savedUser.id}")
         return User.toDto(savedUser, accessToken, refreshToken)

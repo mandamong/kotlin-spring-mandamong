@@ -1,0 +1,103 @@
+format_version: 10
+
+pipelines:
+  mandamong-monolithic-build:
+    group: defaultGroup
+    environment: mandamong-monolithic
+    materials:
+      mandamong:
+        git: git@github.com:mandamong/kotlin-spring-mandamong.git
+        branch: develop
+
+    stages:
+      - build:
+          jobs:
+            build:
+              tasks:
+                - exec:
+                    command: mkdir
+                    arguments: ["-p", "src/main/resources", "src/test/resources"]
+                    run_if: passed
+
+                - exec:
+                    command: bash
+                    arguments: ["-c", "echo" "$APPLICATION" ">" "application.yml"]
+                    run_if: passed
+
+                - exec:
+                    command: cp
+                    arguments: ["application.yml", "src/main/resources/application.yml"]
+                    run_if: passed
+
+                - exec:
+                    command: cp
+                    arguments: ["application.yml", "src/test/resources/application.yml"]
+                    run_if: passed
+
+                - exec:
+                    command: chmod
+                    arguments: ["+x", "./gradlew"]
+                    run_if: passed
+
+                - exec:
+                    command: ./gradlew
+                    arguments: ["clean", "build"]
+                    run_if: passed
+
+                - exec:
+                    command: docker
+                    arguments: ["login", "-u", "$DOCKER_USER", "-p", "$DOCKER_PASSWORD"]
+                    run_if: passed
+
+                - exec:
+                    command: docker
+                    arguments:
+                      [
+                        "buildx", "build",
+                        "-t", "$DOCKER_USER/$DOCKER_IMAGE:latest",
+                        "--platform", "linux/amd64,linux/arm64",
+                        "--push", "."
+                      ]
+                    run_if: passed
+
+  mandamong-monolithic-deploy:
+    group: defaultGroup
+    materials:
+      mandamong:
+        git: git@github.com:mandamong/kotlin-spring-mandamong.git
+        branch: develop
+
+      mandamong-monolithic-build:
+        pipeline: mandamong-monolithic-build
+        stage: build
+
+    stages:
+      - deploy:
+          jobs:
+            deploy:
+              tasks:
+                - exec:
+                    command: mkdir
+                    arguments: ["-p", "$HOME/.ssh"]
+                    run_if: passed
+
+                - exec:
+                    command: bash
+                    arguments: ["-c", "echo \"$SSH_PRIVATE_KEY\" > $HOME/.ssh/id_rsa"]
+                    run_if: passed
+
+                - exec:
+                    command: chmod
+                    arguments: ["600", "$HOME/.ssh/id_rsa"]
+                    run_if: passed
+
+                - exec:
+                    command: ssh
+                    arguments:
+                      [
+                        "-o", "StrictHostKeyChecking=no",
+                        "-p", "$SSH_PORT",
+                        "$SSH_USER@$SSH_HOST",
+                        "sudo kubectl rollout restart deployment mandamong-deployment -n mandamong && sudo kubectl rollout status deployment mandamong-deployment -n mandamong"
+                      ]
+                    run_if: passed

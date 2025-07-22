@@ -1,6 +1,6 @@
 package com.mandamong.server.common.security.filter
 
-import com.mandamong.server.common.util.jwt.JwtUtil
+import com.mandamong.server.common.util.jwt.TokenUtil
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -10,7 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class TokenAuthenticationFilter(
-    private val jwtUtil: JwtUtil,
+    private val tokenUtil: TokenUtil,
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
@@ -22,7 +22,7 @@ class TokenAuthenticationFilter(
             ?.takeIf { it.startsWith(TOKEN_PREFIX) }
             ?.substring(TOKEN_PREFIX.length)
 
-        accessToken?.let { SecurityContextHolder.getContext().authentication = jwtUtil.getAuthentication(accessToken) }
+        accessToken?.let { SecurityContextHolder.getContext().authentication = tokenUtil.getAuthentication(accessToken) }
 
         chain.doFilter(request, response)
     }

@@ -8,17 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class JwtUtilTest {
+class TokenUtilTest {
 
     @Autowired
-    private lateinit var jwtUtil: JwtUtil
+    private lateinit var tokenUtil: TokenUtil
 
     private val memberId = 1L
 
     @Test
     fun `AccessToken 발급에 성공한다`() {
-        val accessToken = jwtUtil.generateAccessToken(memberId)
-        val claims: Claims = jwtUtil.parseAccessToken(accessToken)
+        val accessToken = tokenUtil.generateAccessToken(memberId)
+        val claims: Claims = tokenUtil.parseAccessToken(accessToken)
 
         assertThat(accessToken).isNotNull()
         assertThat(claims.subject).isEqualTo(memberId.toString())
@@ -27,8 +27,8 @@ class JwtUtilTest {
 
     @Test
     fun `RefreshToken 발급에 성공한다`() {
-        val refreshToken = jwtUtil.generateRefreshToken(memberId)
-        val claims: Claims = jwtUtil.parseRefreshToken(refreshToken)
+        val refreshToken = tokenUtil.generateRefreshToken(memberId)
+        val claims: Claims = tokenUtil.parseRefreshToken(refreshToken)
 
         assertThat(refreshToken).isNotNull()
         assertThat(claims.subject).isEqualTo(memberId.toString())

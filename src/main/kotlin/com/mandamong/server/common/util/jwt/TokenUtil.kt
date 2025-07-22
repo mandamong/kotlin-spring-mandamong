@@ -7,26 +7,23 @@ import io.jsonwebtoken.security.Keys
 import java.util.Base64
 import java.util.Date
 import javax.crypto.SecretKey
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Component
 
 @Component
-class JwtUtil(
-    @Value("\${jwt.secret}") private val secretKey: String,
-    @Value("\${jwt.access-expiration}") private val accessExpiry: Long,
-    @Value("\${jwt.refresh-expiration}") private val refreshExpiry: Long,
+class TokenUtil(
+    private val properties: TokenProperties,
 ) {
 
-    private val rawSecretKey: ByteArray = secretKey.toByteArray()
-    private val decodedSecretKey: ByteArray = Base64.getDecoder().decode(secretKey)
+    private val rawSecretKey: ByteArray = properties.secretKey.toByteArray()
+    private val decodedSecretKey: ByteArray = Base64.getDecoder().decode(properties.secretKey)
 
     private val accessSignKey: SecretKey = Keys.hmacShaKeyFor(rawSecretKey)
     private val refreshSignKey: SecretKey = Keys.hmacShaKeyFor(decodedSecretKey)
 
     fun generateAccessToken(userId: Long): String {
         val now = Date()
-        val expiry = Date(now.time + accessExpiry)
+        val expiry = Date(now.time + properties.accessExpiry)
         return Jwts.builder()
             .header()
             .type(TOKEN_TYPE)
@@ -41,7 +38,7 @@ class JwtUtil(
 
     fun generateRefreshToken(userId: Long): String {
         val now = Date()
-        val expiry = Date(now.time + refreshExpiry)
+        val expiry = Date(now.time + properties.refreshExpiry)
         return Jwts.builder()
             .header()
             .type(TOKEN_TYPE)
@@ -76,6 +73,8 @@ class JwtUtil(
         val principal = LoginUser(userId)
         return UsernamePasswordAuthenticationToken(principal, null, emptyList())
     }
+
+    fun getRefreshExpiry(): Long = properties.refreshExpiry
 
     companion object {
         private const val TOKEN_TYPE = "JWT"
