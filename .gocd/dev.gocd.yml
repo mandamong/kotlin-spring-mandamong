@@ -1,13 +1,17 @@
 format_version: 10
 
 pipelines:
-  mandamong-monolithic-build:
+  mandamong-monolithic-ci:
     group: defaultGroup
     environment: mandamong-monolithic
     materials:
       mandamong:
-        git: git@github.com:mandamong/kotlin-spring-mandamong.git
+        git: https://github.com/mandamong/kotlin-spring-mandamong
+        username: digitpic
+        shallow_clone: false
+        auto_update: true
         branch: develop
+        encrypted_password: AES:UgHmpe2xcIyYJnHgtiQw3Q==:idjEfTlzt/4IFEoT/yHQkBjord7bPIowJY/jV6sfFXk50m31BUBbiYHdDL4+j+oX
 
     stages:
       - build:
@@ -60,15 +64,19 @@ pipelines:
                       ]
                     run_if: passed
 
-  mandamong-monolithic-deploy:
+  mandamong-monolithic-cd:
     group: defaultGroup
     materials:
       mandamong:
-        git: git@github.com:mandamong/kotlin-spring-mandamong.git
+        git: https://github.com/mandamong/kotlin-spring-mandamong
+        username: digitpic
+        shallow_clone: false
+        auto_update: true
         branch: develop
+        encrypted_password: AES:UgHmpe2xcIyYJnHgtiQw3Q==:idjEfTlzt/4IFEoT/yHQkBjord7bPIowJY/jV6sfFXk50m31BUBbiYHdDL4+j+oX
 
       mandamong-monolithic-build:
-        pipeline: mandamong-monolithic-build
+        pipeline: mandamong-monolithic-ci
         stage: build
 
     stages:

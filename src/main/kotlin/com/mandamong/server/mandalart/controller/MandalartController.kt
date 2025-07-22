@@ -2,6 +2,7 @@ package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.response.ApiResponse
+import com.mandamong.server.mandalart.dto.ActionUpdateRequest
 import com.mandamong.server.mandalart.dto.MandalartCreateRequest
 import com.mandamong.server.mandalart.dto.MandalartDataResponse
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
@@ -37,6 +38,14 @@ class MandalartController(
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<MandalartUpdateRequest>> {
         return ApiResponse.ok(facade.update(mandalartId, request, loginUser))
+    }
+
+    @PatchMapping(ApiPath.Action.UPDATE)
+    fun updateAction(
+        @PathVariable actionId: Long,
+        @RequestBody request: ActionUpdateRequest,
+    ): ResponseEntity<ApiResponse<ActionUpdateRequest>> {
+        return ApiResponse.ok(facade.updateAction(actionId, request))
     }
 
     @DeleteMapping(ApiPath.Mandalart.DELETE)

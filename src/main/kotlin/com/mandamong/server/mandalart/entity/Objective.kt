@@ -1,8 +1,11 @@
 package com.mandamong.server.mandalart.entity
 
+import com.mandamong.server.mandalart.enums.Status
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -27,6 +30,10 @@ class Objective(
     @JoinColumn(name = "subject_id")
     @ManyToOne(fetch = FetchType.LAZY)
     val subject: Subject,
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    var status: Status = Status.IN_PROGRESS,
 
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "objective", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)

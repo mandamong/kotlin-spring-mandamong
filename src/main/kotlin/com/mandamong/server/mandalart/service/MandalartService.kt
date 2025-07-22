@@ -24,10 +24,10 @@ class MandalartService(
     }
 
     @Transactional
-    fun update(id: Long, updated: String): String {
+    fun update(id: Long, updated: String): Mandalart {
         val mandalart = getById(id)
         mandalart.name = updated
-        return mandalart.name
+        return mandalart
     }
 
     @Transactional

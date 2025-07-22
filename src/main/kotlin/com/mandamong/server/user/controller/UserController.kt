@@ -3,8 +3,8 @@ package com.mandamong.server.user.controller
 import com.mandamong.server.auth.dto.EmailLoginResponse
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.response.ApiResponse
-import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.dto.EmailRegisterRequest
+import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.dto.UserUpdateRequest
 import com.mandamong.server.user.service.UserService
 import org.springframework.http.ResponseEntity

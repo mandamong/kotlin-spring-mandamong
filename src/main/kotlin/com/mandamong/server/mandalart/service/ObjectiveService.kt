@@ -4,6 +4,7 @@ import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.entity.Subject
+import com.mandamong.server.mandalart.enums.Status
 import com.mandamong.server.mandalart.repository.ObjectiveRepository
 import kotlin.jvm.optionals.getOrNull
 import org.springframework.stereotype.Service
@@ -34,5 +35,9 @@ class ObjectiveService(
 
     @Transactional(readOnly = true)
     fun getById(id: Long): Objective = findById(id) ?: throw IdNotFoundException(id)
+
+    @Transactional(readOnly = true)
+    fun countBySubjectIdAndStatus(subjectId: Long, status: Status): Int =
+        repository.countBySubjectIdAndStatus(subjectId, status)
 
 }

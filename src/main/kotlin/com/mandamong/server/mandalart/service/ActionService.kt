@@ -1,9 +1,9 @@
 package com.mandamong.server.mandalart.service
 
 import com.mandamong.server.common.error.exception.IdNotFoundException
-import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Action
 import com.mandamong.server.mandalart.entity.Objective
+import com.mandamong.server.mandalart.enums.Status
 import com.mandamong.server.mandalart.repository.ActionRepository
 import kotlin.jvm.optionals.getOrNull
 import org.springframework.stereotype.Service
@@ -23,17 +23,20 @@ class ActionService(
         }
     }
 
-    @Transactional
-    fun update(id: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
-        val action = getById(id)
-        action.action = request.updated
-        return MandalartUpdateRequest(updated = action.action)
-    }
-
     @Transactional(readOnly = true)
     fun findById(id: Long): Action? = repository.findById(id).getOrNull()
 
     @Transactional(readOnly = true)
     fun getById(id: Long): Action = findById(id) ?: throw IdNotFoundException(id)
+
+    @Transactional(readOnly = true)
+    fun findByIdWithAllData(id: Long): Action? = repository.findByIdWithAllData(id)
+
+    @Transactional(readOnly = true)
+    fun getByIdWithAllData(id: Long): Action = findByIdWithAllData(id) ?: throw IdNotFoundException(id)
+
+    @Transactional(readOnly = true)
+    fun countByObjectiveIdAndStatus(objectiveId: Long, status: Status): Int =
+        repository.countByObjectiveIdAndStatus(objectiveId, status)
 
 }
