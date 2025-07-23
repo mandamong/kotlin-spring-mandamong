@@ -97,9 +97,14 @@ class UserService(
         }
     }
 
+    @Transactional
+    fun updatePassword(request: UserUpdateRequest, loginUser: LoginUser) {
+        val user = getById(loginUser.userId)
+        user.password = passwordEncoder.encode(request.updated)
+    }
+
     private fun isValidPassword(
         request: PasswordValidationRequest,
         user: User,
     ) = passwordEncoder.matches(request.password, user.password)
-
 }
