@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -23,17 +23,6 @@ jobs:
           echo "${{ secrets.APPLICATION }}" > application.yml
           cp application.yml src/main/resources/application.yml
           cp application.yml src/test/resources/application.yml
-
-      - name: Install WireGuard
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y iproute2 wireguard
-
-      - name: Set up VPN connection
-        run: |
-          echo "${{ secrets.WG_CONF }}" | sudo tee /etc/wireguard/wg0.conf > /dev/null
-          sudo wg-quick up wg0
-          sleep 3
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -72,8 +61,6 @@ jobs:
 
       - name: Deploy on K8s
         run: |
-          ssh  -v -o StrictHostKeyChecking=no -tt -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -T -v -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           sudo kubectl rollout restart deployment mandamong-deployment -n mandamong
-          sudo kubectl rollout status deployment mandamong-deployment -n mandamong
-          exit
           EOF

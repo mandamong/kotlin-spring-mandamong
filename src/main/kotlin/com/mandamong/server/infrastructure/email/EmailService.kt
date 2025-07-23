@@ -1,6 +1,5 @@
 package com.mandamong.server.infrastructure.email
 
-import com.mandamong.server.auth.dto.EmailVerificationResponse
 import com.mandamong.server.common.error.exception.BusinessBaseException
 import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.log.log

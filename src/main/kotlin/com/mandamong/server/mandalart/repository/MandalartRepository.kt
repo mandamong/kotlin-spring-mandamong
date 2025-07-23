@@ -1,6 +1,8 @@
 package com.mandamong.server.mandalart.repository
 
 import com.mandamong.server.mandalart.entity.Mandalart
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -12,6 +14,9 @@ interface MandalartRepository : JpaRepository<Mandalart, Long> {
     @EntityGraph(attributePaths = ["subject", "subject.objectives", "subject.objectives.actions"])
     @Query("SELECT m FROM Mandalart m WHERE m.user.id = :userId")
     fun findByUserIdWithFullData(userId: Long): List<Mandalart>?
+
+    @EntityGraph(attributePaths = ["subject", "subject.objectives", "subject.objectives.actions"])
+    fun findByUserId(userId: Long, pageable: Pageable): Page<Mandalart>?
 
     @EntityGraph(attributePaths = ["subject", "subject.objectives", "subject.objectives.actions"])
     @Query("SELECT m FROM Mandalart m WHERE m.id = :id")

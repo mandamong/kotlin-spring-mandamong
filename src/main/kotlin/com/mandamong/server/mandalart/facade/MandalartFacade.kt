@@ -1,16 +1,20 @@
 package com.mandamong.server.mandalart.facade
 
+import com.mandamong.server.common.request.PageParameter
+import com.mandamong.server.common.response.PageResponse
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.mandalart.dto.ActionUpdateRequest
 import com.mandamong.server.mandalart.dto.MandalartCreateRequest
 import com.mandamong.server.mandalart.dto.MandalartDataResponse
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
+import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.enums.Status
 import com.mandamong.server.mandalart.service.ActionService
 import com.mandamong.server.mandalart.service.MandalartService
 import com.mandamong.server.mandalart.service.ObjectiveService
 import com.mandamong.server.mandalart.service.SubjectService
 import com.mandamong.server.user.dto.LoginUser
+import org.springframework.data.domain.Page
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
@@ -47,26 +51,14 @@ class MandalartFacade(
         request.updated?.let { action.action = it }
         request.status?.let {
             action.status = it
-            val inProgressCountInObjective = actionService.countByObjectiveIdAndStatus(objective.id, Status.IN_PROGRESS)
-            when (inProgressCountInObjective) {
-                0 -> objective.status = Status.DONE
-                else -> objective.status = Status.IN_PROGRESS
-            }
-
-            val inProgressCountInSubject = objectiveService.countBySubjectIdAndStatus(subject.id, Status.IN_PROGRESS)
-            when (inProgressCountInSubject) {
-                0 -> {
-                    subject.status = Status.DONE
-                    mandalart.status = Status.DONE
-                }
-                else -> {
-                    subject.status = Status.IN_PROGRESS
-                    mandalart.status = Status.IN_PROGRESS
-                }
-            }
+            val countInProgressActions = actionService.countByObjectiveIdAndStatus(objective.id, Status.IN_PROGRESS)
+            val countInProgressObjectives = objectiveService.countBySubjectIdAndStatus(subject.id, Status.IN_PROGRESS)
+            objective.status = if (countInProgressActions == 0) Status.DONE else Status.IN_PROGRESS
+            subject.status = if (countInProgressObjectives == 0) Status.DONE else Status.IN_PROGRESS
+            mandalart.status = subject.status
         }
 
-        return ActionUpdateRequest(updated = action.action, status = action.status)
+        return ActionUpdateRequest.of(action)
     }
 
     fun delete(id: Long, loginUser: LoginUser) {
@@ -74,24 +66,24 @@ class MandalartFacade(
         log().info("MANDALART_DELETED userId=${loginUser.userId} mandalartId=$id")
     }
 
-    fun getMandalartsByUserId(userId: Long): List<MandalartDataResponse> {
-        val mandalarts = mandalartService.getByUserIdWithFullData(userId)
+    fun getMandalartsByUserId(pageParameter: PageParameter, loginUser: LoginUser): PageResponse<MandalartDataResponse> {
+        val mandalarts = mandalartService.getByUserIdWithPage(loginUser.userId, pageParameter)
         val mandalartIds = mandalarts.joinToString(", ") { it.id.toString() }
-        log().info("READ MANDALARTS userId=$userId mandalartIds=$mandalartIds")
-        return mandalarts.map { mandalart ->
-            val subject = mandalart.subject!!
-            val objectives = subject.objectives
-            val actions = objectives.map { it.actions }
-            MandalartDataResponse.of(mandalart, subject, objectives, actions)
-        }
+        val mandalartPage: Page<MandalartDataResponse> = mandalarts.map { toMandalartDataResponse(it) }
+        log().info("READ MANDALARTS userId=${loginUser.userId} mandalartIds=$mandalartIds")
+        return PageResponse.of(mandalartPage)
     }
 
     fun getMandalartById(id: Long, loginUser: LoginUser): MandalartDataResponse {
         val mandalart = mandalartService.getByIdWithFullData(id)
+        log().info("READ MANDALART userId=${loginUser.userId} mandalartId=$id")
+        return toMandalartDataResponse(mandalart)
+    }
+
+    private fun toMandalartDataResponse(mandalart: Mandalart): MandalartDataResponse {
         val subject = mandalart.subject!!
         val objectives = subject.objectives
         val actions = objectives.map { it.actions }
-        log().info("READ MANDALART userId=${loginUser.userId} mandalartId=$id")
         return MandalartDataResponse.of(mandalart, subject, objectives, actions)
     }
 

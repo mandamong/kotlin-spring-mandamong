@@ -6,10 +6,10 @@ import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.entity.Subject
 
 data class MandalartDataResponse(
-    val mandalart: Pair,
-    val subject: Pair,
-    val objectives: List<Pair>,
-    val actions: List<List<Pair>>,
+    val mandalart: BasicData,
+    val subject: BasicData,
+    val objectives: List<BasicData>,
+    val actions: List<List<BasicData>>,
 ) {
 
     companion object {
@@ -20,10 +20,10 @@ data class MandalartDataResponse(
             actions: List<List<Action>>,
         ): MandalartDataResponse {
             return MandalartDataResponse(
-                mandalart = Pair.of(mandalart.id, mandalart.name),
-                subject = Pair.of(subject.id, subject.subject),
-                objectives = objectives.map { Pair.of(it.id, it.objective) },
-                actions = actions.map { action -> action.map { Pair.of(it.id, it.action) } }
+                mandalart = BasicData.of(mandalart.id, mandalart.name, mandalart.status),
+                subject = BasicData.of(subject.id, subject.subject, subject.status),
+                objectives = objectives.map { BasicData.of(it.id, it.objective, it.status) },
+                actions = actions.map { action -> action.map { BasicData(it.id, it.action, it.status) } }
             )
         }
     }

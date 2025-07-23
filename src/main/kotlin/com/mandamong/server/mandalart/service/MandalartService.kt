@@ -1,12 +1,16 @@
 package com.mandamong.server.mandalart.service
 
 import com.mandamong.server.common.error.exception.IdNotFoundException
+import com.mandamong.server.common.request.PageParameter
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.repository.MandalartRepository
 import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.service.UserService
 import kotlin.jvm.optionals.getOrNull
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -52,4 +56,17 @@ class MandalartService(
     fun getByUserIdWithFullData(userId: Long): List<Mandalart> = findByUserIdWithFullData(userId)
         ?: throw IdNotFoundException(userId)
 
+    @Transactional(readOnly = true)
+    fun findByUserIdWithPage(userId: Long, pageable: Pageable): Page<Mandalart>? =
+        repository.findByUserId(userId, pageable)
+
+    @Transactional(readOnly = true)
+    fun getByUserIdWithPage(userId: Long, pageParameter: PageParameter): Page<Mandalart> {
+        val pageable = if (pageParameter.number > 0) {
+            PageRequest.of(pageParameter.number - 1, pageParameter.size)
+        } else {
+            PageRequest.of(0, pageParameter.size)
+        }
+        return findByUserIdWithPage(userId, pageable) ?: throw IdNotFoundException(userId)
+    }
 }
