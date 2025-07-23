@@ -5,11 +5,14 @@ import com.mandamong.server.common.error.exception.EmailDuplicatedException
 import com.mandamong.server.common.error.exception.EmailNotFoundException
 import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.common.error.exception.NicknameDuplicatedException
+import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.jwt.TokenUtil
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.minio.MinioService
 import com.mandamong.server.infrastructure.redis.RedisService
 import com.mandamong.server.user.dto.EmailRegisterRequest
+import com.mandamong.server.user.dto.LoginUser
+import com.mandamong.server.user.dto.PasswordValidationRequest
 import com.mandamong.server.user.dto.UserUpdateRequest
 import com.mandamong.server.user.entity.Email
 import com.mandamong.server.user.entity.User
@@ -47,10 +50,10 @@ class UserService(
     }
 
     @Transactional
-    fun updateNickname(request: UserUpdateRequest, id: Long): UserUpdateRequest {
-        val user = getById(id)
+    fun updateNickname(request: UserUpdateRequest, loginUser: LoginUser): UserUpdateRequest {
+        val user = getById(loginUser.userId)
         user.nickname = request.updated
-        log().info("UPDATE_NICKNAME userId=$id")
+        log().info("UPDATE_NICKNAME userId=${loginUser.userId}")
         return UserUpdateRequest(updated = user.nickname)
     }
 
@@ -85,5 +88,18 @@ class UserService(
             throw NicknameDuplicatedException(nickname)
         }
     }
+
+    @Transactional(readOnly = true)
+    fun validatePassword(request: PasswordValidationRequest, loginUser: LoginUser) {
+        val user = getById(loginUser.userId)
+        if (!isValidPassword(request, user)) {
+            throw UnauthorizedException()
+        }
+    }
+
+    private fun isValidPassword(
+        request: PasswordValidationRequest,
+        user: User,
+    ) = passwordEncoder.matches(request.password, user.password)
 
 }

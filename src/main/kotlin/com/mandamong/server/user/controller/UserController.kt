@@ -5,6 +5,7 @@ import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.response.ApiResponse
 import com.mandamong.server.user.dto.EmailRegisterRequest
 import com.mandamong.server.user.dto.LoginUser
+import com.mandamong.server.user.dto.PasswordValidationRequest
 import com.mandamong.server.user.dto.UserUpdateRequest
 import com.mandamong.server.user.service.UserService
 import org.springframework.http.ResponseEntity
@@ -33,7 +34,16 @@ class UserController(
         @RequestBody request: UserUpdateRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<UserUpdateRequest>> {
-        return ApiResponse.ok(service.updateNickname(request, loginUser.userId))
+        return ApiResponse.ok(service.updateNickname(request, loginUser))
+    }
+
+    @PostMapping(ApiPath.User.VALIDATE_PASSWORD)
+    fun validatePassword(
+        @RequestBody request: PasswordValidationRequest,
+        @AuthenticationPrincipal loginUser: LoginUser,
+    ): ResponseEntity<ApiResponse<Nothing>> {
+        service.validatePassword(request, loginUser)
+        return ApiResponse.ok()
     }
 
     @DeleteMapping(ApiPath.User.DELETE)
