@@ -107,4 +107,19 @@ class UserService(
         request: PasswordValidationRequest,
         user: User,
     ) = passwordEncoder.matches(request.password, user.password)
+
+    @Transactional
+    fun initializePassword(loginUser: LoginUser): UserUpdateRequest {
+        val user = getById(loginUser.userId)
+
+        val randomPassword = generateRandomPassword()
+        user.password = passwordEncoder.encode(randomPassword)
+
+        return UserUpdateRequest(updated = randomPassword)
+    }
+
+    private fun generateRandomPassword(length: Int = 12): String {
+        val chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=!@#$%^&*()_+"
+        return (1..length).map { chars.random() }.joinToString("")
+    }
 }

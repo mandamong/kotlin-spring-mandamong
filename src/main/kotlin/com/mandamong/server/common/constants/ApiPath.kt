@@ -7,7 +7,7 @@ object ApiPath {
         const val UPDATE_NICKNAME = "/api/user/nickname"
         const val VALIDATE_PASSWORD = "/api/user/password"
         const val UPDATE_PASSWORD = "/api/user/password"
-        const val PASSWORD_INITIALIZE = "/api/user/password"
+        const val INITIALIZE_PASSWORD = "/api/user/password/initialize"
         const val DELETE = "/api/auth/basic"
     }
 

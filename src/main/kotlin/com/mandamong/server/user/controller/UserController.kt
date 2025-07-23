@@ -55,6 +55,11 @@ class UserController(
         return ApiResponse.ok()
     }
 
+    @PatchMapping(ApiPath.User.INITIALIZE_PASSWORD)
+    fun initializePassword(@AuthenticationPrincipal loginUser: LoginUser): ResponseEntity<ApiResponse<UserUpdateRequest>> {
+        return ApiResponse.ok(service.initializePassword(loginUser))
+    }
+
     @DeleteMapping(ApiPath.User.DELETE)
     fun delete(@AuthenticationPrincipal loginUser: LoginUser): ResponseEntity<ApiResponse<Nothing>> {
         service.deleteById(loginUser.userId)
