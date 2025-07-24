@@ -1,7 +1,7 @@
 package com.mandamong.server.auth.controller
 
-import com.mandamong.server.auth.dto.EmailLoginRequest
-import com.mandamong.server.auth.dto.EmailLoginResponse
+import com.mandamong.server.auth.dto.LoginRequest
+import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.auth.service.AuthService
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.response.ApiResponse
@@ -18,13 +18,13 @@ class AuthController(
 ) {
 
     @PostMapping(ApiPath.Auth.LOGIN)
-    fun basicLogin(@RequestBody emailLoginRequest: EmailLoginRequest): ResponseEntity<ApiResponse<EmailLoginResponse>> {
-        return ApiResponse.ok(service.basicLogin(emailLoginRequest.email, emailLoginRequest.password))
+    fun login(@RequestBody request: LoginRequest): ResponseEntity<ApiResponse<LoginResponse>> {
+        return ApiResponse.ok(service.login(request))
     }
 
     @PostMapping(ApiPath.Auth.LOGOUT)
     fun logout(@AuthenticationPrincipal loginUser: LoginUser): ResponseEntity<ApiResponse<Nothing>> {
-        service.logout(loginUser.userId)
+        service.logout(loginUser)
         return ApiResponse.deleted()
     }
 

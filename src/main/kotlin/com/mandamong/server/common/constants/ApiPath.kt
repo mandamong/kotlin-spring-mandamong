@@ -3,28 +3,28 @@ package com.mandamong.server.common.constants
 object ApiPath {
 
     object User {
-        const val CREATE = "/api/auth/basic"
+        const val REGISTER = "/api/auth/basic"
         const val UPDATE_NICKNAME = "/api/user/nickname"
         const val VALIDATE_PASSWORD = "/api/user/password"
         const val UPDATE_PASSWORD = "/api/user/password"
         const val INITIALIZE_PASSWORD = "/api/user/password/initialize"
-        const val DELETE = "/api/auth/basic"
+        const val UNREGISTER = "/api/auth/basic"
+    }
+
+    object Duplication {
+        const val NICKNAME = "/api/auth/duplication/nickname"
+        const val EMAIL = "/api/auth/duplication/email"
+    }
+
+    object Email {
+        const val SEND = "/api/auth/email/verification"
+        const val VERIFY = "/api/auth/email/verification"
     }
 
     object Auth {
         const val LOGIN = "/api/auth/basic/login"
         const val REFRESH = "/api/auth/token/refresh"
         const val LOGOUT = "/api/auth/logout"
-    }
-
-    object Duplication {
-        const val CHECK_NICKNAME = "/api/auth/duplication/nickname"
-        const val CHECK_EMAIL = "/api/auth/duplication/email"
-    }
-
-    object Email {
-        const val SEND = "/api/auth/email/verification"
-        const val VERIFY = "/api/auth/email/verification"
     }
 
     object Mandalart {

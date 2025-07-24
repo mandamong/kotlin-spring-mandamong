@@ -4,7 +4,7 @@ import com.mandamong.server.user.entity.Email
 import com.mandamong.server.user.entity.User
 import org.springframework.web.multipart.MultipartFile
 
-data class EmailRegisterRequest(
+data class RegisterRequest(
     val email: String,
     val password: String,
     val nickname: String,
@@ -14,16 +14,16 @@ data class EmailRegisterRequest(
 
     companion object {
         fun toEntity(
-            emailRegisterRequest: EmailRegisterRequest,
+            registerRequest: RegisterRequest,
             encodedPassword: String,
             profileImageUrl: String,
         ): User {
             return User(
-                email = Email.from(emailRegisterRequest.email),
+                email = Email.from(registerRequest.email),
                 password = encodedPassword,
-                nickname = emailRegisterRequest.nickname,
-                profileImage = profileImageUrl,
-                language = emailRegisterRequest.language,
+                nickname = registerRequest.nickname,
+                image = profileImageUrl,
+                language = registerRequest.language,
                 phoneNumber = null,
             )
         }

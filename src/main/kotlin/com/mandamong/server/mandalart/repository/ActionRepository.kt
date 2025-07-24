@@ -11,12 +11,12 @@ interface ActionRepository : JpaRepository<Action, Long> {
 
     @Query(
         """
-            SELECT a FROM Action a
-            JOIN FETCH a.objective o
-            JOIN FETCH o.subject s
-            JOIN FETCH s.mandalart
-            WHERE a.id = :id
-        """
+        SELECT a FROM Action a
+        JOIN FETCH a.objective o
+        JOIN FETCH o.subject s
+        JOIN FETCH s.mandalart
+        WHERE a.id = :id
+    """
     )
     fun findByIdWithAllData(id: Long): Action?
 

@@ -6,8 +6,8 @@ data class PageParameter(
 ) {
 
     companion object {
-        const val START_PAGE = 1
-        const val DEFAULT_SIZE = 5
+        private const val START_PAGE = 1
+        private const val DEFAULT_SIZE = 5
     }
 
 }

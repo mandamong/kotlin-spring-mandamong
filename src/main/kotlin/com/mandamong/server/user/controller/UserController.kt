@@ -1,9 +1,9 @@
 package com.mandamong.server.user.controller
 
-import com.mandamong.server.auth.dto.EmailLoginResponse
+import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.response.ApiResponse
-import com.mandamong.server.user.dto.EmailRegisterRequest
+import com.mandamong.server.user.dto.RegisterRequest
 import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.dto.PasswordValidationRequest
 import com.mandamong.server.user.dto.UserUpdateRequest
@@ -22,11 +22,11 @@ class UserController(
     private val service: UserService,
 ) {
 
-    @PostMapping(ApiPath.User.CREATE)
-    fun basicRegister(
-        @ModelAttribute emailRegisterRequest: EmailRegisterRequest,
-    ): ResponseEntity<ApiResponse<EmailLoginResponse>> {
-        return ApiResponse.created(service.basicRegister(emailRegisterRequest))
+    @PostMapping(ApiPath.User.REGISTER)
+    fun register(
+        @ModelAttribute request: RegisterRequest,
+    ): ResponseEntity<ApiResponse<LoginResponse>> {
+        return ApiResponse.created(service.register(request))
     }
 
     @PatchMapping(ApiPath.User.UPDATE_NICKNAME)
@@ -60,9 +60,9 @@ class UserController(
         return ApiResponse.ok(service.initializePassword(loginUser))
     }
 
-    @DeleteMapping(ApiPath.User.DELETE)
-    fun delete(@AuthenticationPrincipal loginUser: LoginUser): ResponseEntity<ApiResponse<Nothing>> {
-        service.deleteById(loginUser.userId)
+    @DeleteMapping(ApiPath.User.UNREGISTER)
+    fun unregister(@AuthenticationPrincipal loginUser: LoginUser): ResponseEntity<ApiResponse<Nothing>> {
+        service.unregister(loginUser)
         return ApiResponse.deleted()
     }
 

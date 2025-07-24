@@ -28,8 +28,6 @@ class SecurityConfig(
             }
             .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(tokenExceptionFilter, TokenAuthenticationFilter::class.java)
-
-
         return http.build()
     }
 

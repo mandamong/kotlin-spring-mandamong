@@ -40,7 +40,6 @@ class TokenExceptionFilter(
             is IllegalArgumentException -> ErrorCode.TOKEN_NOT_FOUND
             else -> ErrorCode.INTERNAL_SERVER_ERROR
         }
-
         response.status = errorCode.status.value()
         response.contentType = "application/json"
         response.characterEncoding = "UTF-8"

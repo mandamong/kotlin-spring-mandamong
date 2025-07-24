@@ -17,18 +17,13 @@ class EmailController(
 ) {
 
     @PostMapping(ApiPath.Email.SEND)
-    fun sendVerificationCode(
-        @RequestBody emailVerificationRequest: EmailVerificationRequest,
-    ): ResponseEntity<ApiResponse<Nothing>> {
-        service.sendCode(emailVerificationRequest.email)
+    fun sendVerificationCode(@RequestBody request: EmailVerificationRequest): ResponseEntity<ApiResponse<Nothing>> {
+        service.sendCode(request)
         return ApiResponse.ok()
     }
 
     @GetMapping(ApiPath.Email.VERIFY)
-    fun verifyCode(
-        @RequestParam email: String,
-        @RequestParam code: String,
-    ): ResponseEntity<ApiResponse<Nothing>> {
+    fun verifyCode(@RequestParam email: String, @RequestParam code: String): ResponseEntity<ApiResponse<Nothing>> {
         service.verifyCode(email, code)
         return ApiResponse.ok()
     }

@@ -1,6 +1,6 @@
 package com.mandamong.server.user.entity
 
-import com.mandamong.server.auth.dto.EmailLoginResponse
+import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.common.entity.BaseTimeEntity
 import com.mandamong.server.mandalart.entity.Mandalart
 import jakarta.persistence.CascadeType
@@ -33,14 +33,11 @@ class User(
     @Column(name = "password", nullable = false)
     var password: String,
 
-    @Column(name = "profile_image", columnDefinition = "TEXT")
-    var profileImage: String,
+    @Column(name = "image", columnDefinition = "TEXT")
+    var image: String,
 
     @Column(name = "language", nullable = false)
     var language: String,
-
-    @Column(name = "oauth_provider_uid", nullable = true)
-    var oauthProviderUid: String? = null,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
     private val mandalarts: List<Mandalart> = listOf()
@@ -51,12 +48,12 @@ class User(
             user: User,
             accessToken: String,
             refreshToken: String,
-        ): EmailLoginResponse {
-            return EmailLoginResponse(
+        ): LoginResponse {
+            return LoginResponse(
                 id = user.id,
                 email = user.email.value,
                 nickname = user.nickname,
-                profileImage = user.profileImage,
+                image = user.image,
                 language = user.language,
                 accessToken = accessToken,
                 refreshToken = refreshToken,

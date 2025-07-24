@@ -13,13 +13,13 @@ class DuplicationController(
     private val userService: UserService,
 ) {
 
-    @GetMapping(ApiPath.Duplication.CHECK_EMAIL)
+    @GetMapping(ApiPath.Duplication.EMAIL)
     fun validateEmailDuplication(@RequestParam email: String): ResponseEntity<ApiResponse<Nothing>> {
         userService.validateEmailDuplication(email)
         return ApiResponse.ok()
     }
 
-    @GetMapping(ApiPath.Duplication.CHECK_NICKNAME)
+    @GetMapping(ApiPath.Duplication.NICKNAME)
     fun validateNicknameDuplication(@RequestParam nickname: String): ResponseEntity<ApiResponse<Nothing>> {
         userService.validateNicknameDuplication(nickname)
         return ApiResponse.ok()

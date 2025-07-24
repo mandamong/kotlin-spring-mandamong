@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class TokenUtil(
-    private val properties: TokenProperties,
+    val properties: TokenProperties,
 ) {
 
     private val rawSecretKey: ByteArray = properties.secretKey.toByteArray()
@@ -73,8 +73,6 @@ class TokenUtil(
         val principal = LoginUser(userId)
         return UsernamePasswordAuthenticationToken(principal, null, emptyList())
     }
-
-    fun getRefreshExpiry(): Long = properties.refreshExpiry
 
     companion object {
         private const val TOKEN_TYPE = "JWT"

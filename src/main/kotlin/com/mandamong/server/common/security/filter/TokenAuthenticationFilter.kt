@@ -21,9 +21,7 @@ class TokenAuthenticationFilter(
         val accessToken: String? = request.getHeader(AUTHORIZATION_HEADER)
             ?.takeIf { it.startsWith(TOKEN_PREFIX) }
             ?.substring(TOKEN_PREFIX.length)
-
         accessToken?.let { SecurityContextHolder.getContext().authentication = tokenUtil.getAuthentication(accessToken) }
-
         chain.doFilter(request, response)
     }
 

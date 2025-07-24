@@ -47,7 +47,6 @@ class MandalartFacade(
         val objective = action.objective
         val subject = objective.subject
         val mandalart = subject.mandalart
-
         request.updated?.let { action.action = it }
         request.status?.let {
             action.status = it
@@ -57,7 +56,6 @@ class MandalartFacade(
             subject.status = if (countInProgressObjectives == 0) Status.DONE else Status.IN_PROGRESS
             mandalart.status = subject.status
         }
-
         return ActionUpdateRequest.of(action)
     }
 
@@ -69,7 +67,7 @@ class MandalartFacade(
     fun getMandalartsByUserId(pageParameter: PageParameter, loginUser: LoginUser): PageResponse<MandalartDataResponse> {
         val mandalarts = mandalartService.getByUserIdWithPage(loginUser.userId, pageParameter)
         val mandalartIds = mandalarts.joinToString(", ") { it.id.toString() }
-        val mandalartPage: Page<MandalartDataResponse> = mandalarts.map { toMandalartDataResponse(it) }
+        val mandalartPage: Page<MandalartDataResponse> = mandalarts.map { createMandalartDataResponse(it) }
         log().info("READ MANDALARTS userId=${loginUser.userId} mandalartIds=$mandalartIds")
         return PageResponse.of(mandalartPage)
     }
@@ -77,10 +75,10 @@ class MandalartFacade(
     fun getMandalartById(id: Long, loginUser: LoginUser): MandalartDataResponse {
         val mandalart = mandalartService.getByIdWithFullData(id)
         log().info("READ MANDALART userId=${loginUser.userId} mandalartId=$id")
-        return toMandalartDataResponse(mandalart)
+        return createMandalartDataResponse(mandalart)
     }
 
-    private fun toMandalartDataResponse(mandalart: Mandalart): MandalartDataResponse {
+    private fun createMandalartDataResponse(mandalart: Mandalart): MandalartDataResponse {
         val subject = mandalart.subject!!
         val objectives = subject.objectives
         val actions = objectives.map { it.actions }
