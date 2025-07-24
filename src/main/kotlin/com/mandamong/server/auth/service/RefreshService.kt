@@ -22,8 +22,7 @@ class RefreshService(
         val userId = tokenUtil.parseRefreshToken(request.refreshToken).subject.toLong()
         val savedRefreshToken: String = redisTemplate.opsForValue().get("RT::$userId")
             ?: throw IdNotFoundException(userId)
-        val savedUserId: Long = tokenUtil.parseRefreshToken(savedRefreshToken).subject.toLong()
-        validateId(userId, savedUserId)
+        validateToken(request.refreshToken, savedRefreshToken, userId)
         val newAccessToken: String = tokenUtil.generateAccessToken(userId)
         val newRefreshToken: String = tokenUtil.generateRefreshToken(userId)
         redisTemplate.opsForValue().set("RT::$userId", newRefreshToken, Duration.ofDays(30))
@@ -31,8 +30,9 @@ class RefreshService(
         return RefreshResponse(userId, newAccessToken, newRefreshToken)
     }
 
-    private fun validateId(userId: Long, savedUserId: Long) {
-        if (userId != savedUserId) {
+    private fun validateToken(refreshToken: String, savedRefreshToken: String, userId: Long) {
+        val savedUserId: Long = tokenUtil.parseRefreshToken(savedRefreshToken).subject.toLong()
+        if (userId != savedUserId || refreshToken != savedRefreshToken) {
             throw UnauthorizedException()
         }
     }
