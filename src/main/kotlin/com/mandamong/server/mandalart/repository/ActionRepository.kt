@@ -1,7 +1,6 @@
 package com.mandamong.server.mandalart.repository
 
 import com.mandamong.server.mandalart.entity.Action
-import com.mandamong.server.mandalart.enums.Status
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
@@ -19,7 +18,5 @@ interface ActionRepository : JpaRepository<Action, Long> {
     """
     )
     fun findByIdWithAllData(id: Long): Action?
-
-    fun countByObjectiveIdAndStatus(objectiveId: Long, status: Status): Int
 
 }

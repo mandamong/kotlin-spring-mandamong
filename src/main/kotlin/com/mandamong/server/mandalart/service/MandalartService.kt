@@ -50,13 +50,6 @@ class MandalartService(
     fun getByIdWithFullData(id: Long): Mandalart = findByIdWithFullData(id) ?: throw IdNotFoundException(id)
 
     @Transactional(readOnly = true)
-    fun findByUserIdWithFullData(userId: Long): List<Mandalart>? = repository.findByUserIdWithFullData(userId)
-
-    @Transactional(readOnly = true)
-    fun getByUserIdWithFullData(userId: Long): List<Mandalart> = findByUserIdWithFullData(userId)
-        ?: throw IdNotFoundException(userId)
-
-    @Transactional(readOnly = true)
     fun findByUserIdWithPage(userId: Long, pageable: Pageable): Page<Mandalart>? =
         repository.findByUserId(userId, pageable)
 

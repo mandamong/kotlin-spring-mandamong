@@ -37,7 +37,7 @@ class UserService(
         validateEmailDuplication(registerRequest.email)
         validateNicknameDuplication(registerRequest.nickname)
         val encodedPassword = passwordEncoder.encode(registerRequest.password)
-        val profileImageUrl = minioService.upload(registerRequest.profileImage, registerRequest.nickname)
+        val profileImageUrl = minioService.upload(registerRequest.image, registerRequest.nickname)
         val user = RegisterRequest.toEntity(registerRequest, encodedPassword, profileImageUrl)
 
         val savedUser = repository.save(user)

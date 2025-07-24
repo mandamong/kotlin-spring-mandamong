@@ -1,6 +1,7 @@
 package com.mandamong.server.mandalart.service
 
 import com.mandamong.server.common.error.exception.IdNotFoundException
+import com.mandamong.server.mandalart.dto.BasicData
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.entity.Subject
@@ -24,10 +25,10 @@ class ObjectiveService(
     }
 
     @Transactional
-    fun update(id: Long, request: MandalartUpdateRequest): MandalartUpdateRequest {
+    fun update(id: Long, request: MandalartUpdateRequest): BasicData {
         val objective = getById(id)
         objective.objective = request.updated
-        return MandalartUpdateRequest(updated = objective.objective)
+        return BasicData.of(objective.id, objective.objective, objective.status)
     }
 
     @Transactional(readOnly = true)
@@ -35,9 +36,5 @@ class ObjectiveService(
 
     @Transactional(readOnly = true)
     fun getById(id: Long): Objective = findById(id) ?: throw IdNotFoundException(id)
-
-    @Transactional(readOnly = true)
-    fun countBySubjectIdAndStatus(subjectId: Long, status: Status): Int =
-        repository.countBySubjectIdAndStatus(subjectId, status)
 
 }

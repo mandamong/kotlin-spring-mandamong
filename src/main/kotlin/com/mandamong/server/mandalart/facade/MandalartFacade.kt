@@ -4,6 +4,7 @@ import com.mandamong.server.common.request.PageParameter
 import com.mandamong.server.common.response.PageResponse
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.mandalart.dto.ActionUpdateRequest
+import com.mandamong.server.mandalart.dto.BasicData
 import com.mandamong.server.mandalart.dto.MandalartCreateRequest
 import com.mandamong.server.mandalart.dto.MandalartDataResponse
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
@@ -35,28 +36,28 @@ class MandalartFacade(
         return MandalartDataResponse.of(mandalart, subject, objectives, actions)
     }
 
-    fun update(id: Long, request: MandalartUpdateRequest, loginUser: LoginUser): MandalartUpdateRequest {
+    fun update(id: Long, request: MandalartUpdateRequest, loginUser: LoginUser): BasicData {
         val mandalart = mandalartService.update(id, request.updated)
         log().info("MANDALART_UPDATED userId=${loginUser.userId} mandalartId=$id")
-        return MandalartUpdateRequest(updated = mandalart.name)
+        return BasicData.of(mandalart.id, mandalart.name, mandalart.status)
     }
 
     @Transactional
-    fun updateAction(id: Long, request: ActionUpdateRequest): ActionUpdateRequest {
+    fun updateAction(id: Long, request: ActionUpdateRequest): BasicData {
         val action = actionService.getByIdWithAllData(id)
-        val objective = action.objective
-        val subject = objective.subject
-        val mandalart = subject.mandalart
         request.updated?.let { action.action = it }
-        request.status?.let {
-            action.status = it
-            val countInProgressActions = actionService.countByObjectiveIdAndStatus(objective.id, Status.IN_PROGRESS)
-            val countInProgressObjectives = objectiveService.countBySubjectIdAndStatus(subject.id, Status.IN_PROGRESS)
-            objective.status = if (countInProgressActions == 0) Status.DONE else Status.IN_PROGRESS
-            subject.status = if (countInProgressObjectives == 0) Status.DONE else Status.IN_PROGRESS
+        request.status?.let { status ->
+            action.status = status
+            val objective = action.objective
+            val isObjectiveDone = objective.actions.all { it.status == Status.DONE }
+            objective.status = if (isObjectiveDone) Status.DONE else Status.IN_PROGRESS
+            val subject = objective.subject
+            val isSubjectDone = subject.objectives.all { it.status == Status.DONE }
+            subject.status = if (isSubjectDone) Status.DONE else Status.IN_PROGRESS
+            val mandalart = subject.mandalart
             mandalart.status = subject.status
         }
-        return ActionUpdateRequest.of(action)
+        return BasicData.of(action.id, action.action, action.status)
     }
 
     fun delete(id: Long, loginUser: LoginUser) {

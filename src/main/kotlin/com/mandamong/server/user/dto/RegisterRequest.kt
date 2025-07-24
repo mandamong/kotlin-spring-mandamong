@@ -8,7 +8,7 @@ data class RegisterRequest(
     val email: String,
     val password: String,
     val nickname: String,
-    val profileImage: MultipartFile,
+    val image: MultipartFile,
     val language: String,
 ) {
 
@@ -16,13 +16,13 @@ data class RegisterRequest(
         fun toEntity(
             registerRequest: RegisterRequest,
             encodedPassword: String,
-            profileImageUrl: String,
+            image: String,
         ): User {
             return User(
                 email = Email.from(registerRequest.email),
                 password = encodedPassword,
                 nickname = registerRequest.nickname,
-                image = profileImageUrl,
+                image = image,
                 language = registerRequest.language,
                 phoneNumber = null,
             )
