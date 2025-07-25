@@ -3,13 +3,11 @@ package com.mandamong.server.mandalart.facade
 import com.mandamong.server.common.request.PageParameter
 import com.mandamong.server.common.response.PageResponse
 import com.mandamong.server.common.util.log.log
-import com.mandamong.server.mandalart.dto.ActionUpdateRequest
 import com.mandamong.server.mandalart.dto.BasicData
 import com.mandamong.server.mandalart.dto.MandalartCreateRequest
 import com.mandamong.server.mandalart.dto.MandalartDataResponse
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Mandalart
-import com.mandamong.server.mandalart.enums.Status
 import com.mandamong.server.mandalart.service.ActionService
 import com.mandamong.server.mandalart.service.MandalartService
 import com.mandamong.server.mandalart.service.ObjectiveService
@@ -17,7 +15,6 @@ import com.mandamong.server.mandalart.service.SubjectService
 import com.mandamong.server.user.dto.LoginUser
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 
 @Component
 class MandalartFacade(
@@ -40,24 +37,6 @@ class MandalartFacade(
         val mandalart = mandalartService.update(id, request.updated)
         log().info("MANDALART_UPDATED userId=${loginUser.userId} mandalartId=$id")
         return BasicData.of(mandalart.id, mandalart.name, mandalart.status)
-    }
-
-    @Transactional
-    fun updateAction(id: Long, request: ActionUpdateRequest): BasicData {
-        val action = actionService.getByIdWithAllData(id)
-        request.updated?.let { action.action = it }
-        request.status?.let { status ->
-            action.status = status
-            val objective = action.objective
-            val isObjectiveDone = objective.actions.all { it.status == Status.DONE }
-            objective.status = if (isObjectiveDone) Status.DONE else Status.IN_PROGRESS
-            val subject = objective.subject
-            val isSubjectDone = subject.objectives.all { it.status == Status.DONE }
-            subject.status = if (isSubjectDone) Status.DONE else Status.IN_PROGRESS
-            val mandalart = subject.mandalart
-            mandalart.status = subject.status
-        }
-        return BasicData.of(action.id, action.action, action.status)
     }
 
     fun delete(id: Long, loginUser: LoginUser) {

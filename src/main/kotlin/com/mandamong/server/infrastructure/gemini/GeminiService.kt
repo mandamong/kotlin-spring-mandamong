@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 @Service
 class GeminiService(
     private val client: Client,
-    private val jacksonObjectMapper: ObjectMapper,
+    private val objectMapper: ObjectMapper,
 ) {
 
     fun generateBySubject(prompt: String): SuggestBySubjectResponse {
@@ -20,7 +20,7 @@ class GeminiService(
         val config = GenerateContentConfig.builder().responseSchema(schema).build()
         val response = client.models.generateContent(MODEL, prompt + SUBJECT_SUGGEST, config)
         val json = response.text() ?: "response error"
-        return jacksonObjectMapper.readValue(json)
+        return objectMapper.readValue(json)
     }
 
     fun generateByObjective(prompt: String): SuggestByObjectiveResponse {
@@ -28,7 +28,7 @@ class GeminiService(
         val config = GenerateContentConfig.builder().responseSchema(schema).build()
         val response = client.models.generateContent(MODEL, prompt + OBJECTIVE_SUGGEST, config)
         val json = response.text() ?: "response error"
-        return jacksonObjectMapper.readValue(json)
+        return objectMapper.readValue(json)
     }
 
     companion object {
