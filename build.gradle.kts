@@ -32,7 +32,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-
+    implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("com.google.genai:google-genai:1.0.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")

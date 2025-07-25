@@ -23,7 +23,7 @@ class SecurityConfig(
             .httpBasic { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers(ALLOWED_PATH).permitAll()
+                it.requestMatchers(*ALLOWED_PATH).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
@@ -35,7 +35,7 @@ class SecurityConfig(
     fun passwordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
 
     companion object {
-        private const val ALLOWED_PATH = "/api/auth/**"
+        private val ALLOWED_PATH = arrayOf("/api/auth/**", "/metric/**")
     }
 
 }
