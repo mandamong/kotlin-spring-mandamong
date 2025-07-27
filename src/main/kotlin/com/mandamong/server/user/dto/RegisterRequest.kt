@@ -1,6 +1,6 @@
 package com.mandamong.server.user.dto
 
-import com.mandamong.server.user.entity.Email
+import com.mandamong.server.user.model.Email
 import com.mandamong.server.user.entity.User
 import org.springframework.web.multipart.MultipartFile
 

@@ -1,5 +1,6 @@
 package com.mandamong.server.mandalart.service
 
+import com.mandamong.server.common.annotation.lock.DistributedLock
 import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.mandalart.dto.ActionUpdateRequest
 import com.mandamong.server.mandalart.dto.BasicData
@@ -25,6 +26,7 @@ class ActionService(
     }
 
     @Transactional
+    @DistributedLock(name = "ACTION", key = "#id")
     fun update(id: Long, request: ActionUpdateRequest): BasicData {
         val action = getByIdWithAllData(id)
         request.updated?.let { action.action = it }

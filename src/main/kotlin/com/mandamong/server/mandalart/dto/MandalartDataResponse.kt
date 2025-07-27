@@ -5,7 +5,7 @@ import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.entity.Subject
 
-open class MandalartDataResponse(
+data class MandalartDataResponse(
     val mandalart: BasicData,
     val subject: BasicData,
     val objectives: List<BasicData>,

@@ -3,6 +3,7 @@ package com.mandamong.server.user.entity
 import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.common.entity.BaseTimeEntity
 import com.mandamong.server.mandalart.entity.Mandalart
+import com.mandamong.server.user.model.Email
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Embedded

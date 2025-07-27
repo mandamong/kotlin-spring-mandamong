@@ -1,4 +1,4 @@
-package com.mandamong.server.user.entity
+package com.mandamong.server.user.model
 
 import jakarta.persistence.Column
 import jakarta.persistence.Embeddable

@@ -1,6 +1,6 @@
 package com.mandamong.server.user.repository
 
-import com.mandamong.server.user.entity.Email
+import com.mandamong.server.user.model.Email
 import com.mandamong.server.user.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository

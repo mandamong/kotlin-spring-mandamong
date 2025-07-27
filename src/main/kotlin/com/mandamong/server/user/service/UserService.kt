@@ -13,7 +13,7 @@ import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.dto.PasswordValidationRequest
 import com.mandamong.server.user.dto.RegisterRequest
 import com.mandamong.server.user.dto.UserUpdateRequest
-import com.mandamong.server.user.entity.Email
+import com.mandamong.server.user.model.Email
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.repository.UserRepository
 import java.time.Duration
