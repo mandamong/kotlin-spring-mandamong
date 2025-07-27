@@ -1,4 +1,4 @@
-package com.mandamong.server.auth.controller
+package com.mandamong.server.user.controller
 
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.response.ApiResponse
