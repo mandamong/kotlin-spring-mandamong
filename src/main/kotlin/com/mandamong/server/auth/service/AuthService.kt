@@ -2,7 +2,7 @@ package com.mandamong.server.auth.service
 
 import com.mandamong.server.auth.dto.LoginRequest
 import com.mandamong.server.auth.dto.LoginResponse
-import com.mandamong.server.auth.repository.TokenRepository
+import com.mandamong.server.auth.repository.RefreshTokenRepository
 import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.jwt.TokenUtil
 import com.mandamong.server.common.util.log.log
@@ -19,7 +19,7 @@ class AuthService(
     private val userService: UserService,
     private val tokenUtil: TokenUtil,
     private val passwordEncoder: BCryptPasswordEncoder,
-    private val tokenRepository: TokenRepository,
+    private val refreshTokenRepository: RefreshTokenRepository,
     private val minioService: MinioService,
 ) {
 
@@ -29,7 +29,7 @@ class AuthService(
         validatePassword(request.password, savedUser.password)
         val accessToken = tokenUtil.generateAccessToken(savedUser.id)
         val refreshToken = tokenUtil.generateRefreshToken(savedUser.id)
-        tokenRepository.set(savedUser.id, refreshToken)
+        refreshTokenRepository.set(savedUser.id, refreshToken)
         savedUser.image = minioService.getPresignedUrlByNickname(savedUser.nickname)
         log().info("USER_LOGIN userId=${savedUser.id}")
         return User.toDto(savedUser, accessToken, refreshToken)
@@ -37,7 +37,7 @@ class AuthService(
 
     @Transactional
     fun logout(loginUser: LoginUser) {
-        tokenRepository.delete(loginUser.userId)
+        refreshTokenRepository.delete(loginUser.userId)
         log().info("USER_LOGOUT userId=${loginUser.userId}")
     }
 

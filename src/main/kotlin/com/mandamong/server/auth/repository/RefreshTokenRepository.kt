@@ -6,7 +6,7 @@ import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Repository
 
 @Repository
-class TokenRepository(
+class RefreshTokenRepository(
     private val redisTemplate: StringRedisTemplate,
     private val tokenUtil: TokenUtil,
 ) {
