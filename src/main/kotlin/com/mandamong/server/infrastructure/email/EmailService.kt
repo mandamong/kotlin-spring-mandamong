@@ -1,13 +1,14 @@
 package com.mandamong.server.infrastructure.email
 
-import com.mandamong.server.user.repository.EmailVerificationRepository
 import com.mandamong.server.common.error.exception.BusinessBaseException
 import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.user.dto.EmailVerificationRequest
+import com.mandamong.server.user.repository.EmailVerificationRepository
+import jakarta.mail.internet.MimeMessage
 import java.security.SecureRandom
-import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -28,7 +29,9 @@ class EmailService(
     @Transactional
     fun verifyCode(email: String, code: String) {
         val savedCode: String? = emailVerificationRepository.get(email)
-        require(savedCode == null || savedCode != code) { throw UnauthorizedException() }
+        if (savedCode == null || savedCode != code) {
+            throw UnauthorizedException()
+        }
         log().info("EMAIL_VERIFIED email=$email")
     }
 
@@ -41,25 +44,39 @@ class EmailService(
         return code.toString()
     }
 
-    private fun sendEmail(email: String, text: String) {
-        val mailMessage: SimpleMailMessage = createEmail(email, text)
+    private fun sendEmail(email: String, code: String) {
         try {
-            mailSender.send(mailMessage)
+            val message: MimeMessage = mailSender.createMimeMessage()
+            val helper = MimeMessageHelper(message, true, "UTF-8")
+            helper.setTo(email)
+            helper.setSubject(EMAIL_SUBJECT)
+            helper.setText(createEmail(code), true)
+            mailSender.send(message)
         } catch (e: RuntimeException) {
             throw BusinessBaseException()
         }
     }
 
-    private fun createEmail(email: String, text: String): SimpleMailMessage {
-        val message = SimpleMailMessage()
-        message.setTo(email)
-        message.subject = EMAIL_SUBJECT
-        message.text = text
-        return message
+    private fun createEmail(code: String): String {
+        return """
+            <div style="font-family: 'Apple SD Gothic Neo', Arial, sans-serif; background-color: #f5f7fa; padding: 60px 20px;">
+                <div style="max-width: 480px; margin: 0 auto; margin-top: 40px; background: white; border-radius: 10px; box-shadow: 0 6px 16px rgba(0,0,0,0.08); padding: 40px 30px; text-align: center;">
+                    <h2 style="color: #2c3e50; margin-bottom: 24px;">이메일 인증 번호</h2>
+                    <p style="font-size: 16px; color: #555;">아래 인증번호를 입력해주세요.</p>
+                    <div style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #ffb100; margin: 28px 0;">
+                        $code
+                    </div>
+                    <p style="font-size: 14px; color: #888;">이 인증번호는 5분간 유효합니다.</p>
+                </div>
+                <div style="text-align: center; font-size: 12px; color: #aaa; margin-top: 40px;">
+                    만다몽 팀 드림
+                </div>
+            </div>
+        """.trimIndent()
     }
 
     companion object {
-        private const val EMAIL_SUBJECT: String = "만다몽 이메일 인증 번호"
+        private const val EMAIL_SUBJECT: String = "만다몽 - 이메일 인증 번호"
         private const val CODE_LENGTH = 6
         private const val RANDOM_RANGE = 10
     }
