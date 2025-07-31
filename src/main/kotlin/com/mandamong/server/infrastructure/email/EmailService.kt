@@ -10,7 +10,6 @@ import java.security.SecureRandom
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class EmailService(
@@ -18,15 +17,13 @@ class EmailService(
     private val mailSender: JavaMailSender,
 ) {
 
-    @Transactional
     fun sendCode(request: EmailVerificationRequest) {
         val code = createCode()
         sendEmail(request.email, code)
         emailVerificationRepository.set(request.email, code)
-        log().info("EMAIL_VERIFICATION_SENT email=${request.email}")
+        log().info("VERIFICATION_EMAIL_SENT email=${request.email}")
     }
 
-    @Transactional
     fun verifyCode(email: String, code: String) {
         val savedCode: String? = emailVerificationRepository.get(email)
         if (savedCode == null || savedCode != code) {
@@ -37,11 +34,7 @@ class EmailService(
 
     private fun createCode(): String {
         val random: SecureRandom = SecureRandom.getInstanceStrong()
-        val code = StringBuilder()
-        for (i in 0..<CODE_LENGTH) {
-            code.append(random.nextInt(RANDOM_RANGE))
-        }
-        return code.toString()
+        return buildString(CODE_LENGTH) { repeat(CODE_LENGTH) { append(random.nextInt(RANDOM_RANGE)) } }
     }
 
     private fun sendEmail(email: String, code: String) {
