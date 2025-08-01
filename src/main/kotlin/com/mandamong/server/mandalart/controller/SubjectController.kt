@@ -31,7 +31,7 @@ class SubjectController(
 
     @PostMapping(ApiPath.Subject.SUGGEST)
     fun suggest(@RequestBody request: SuggestRequest): ResponseEntity<ApiResponse<SuggestBySubjectResponse>> {
-        return ApiResponse.ok(geminiService.generateBySubject(request.prompt))
+        return ApiResponse.ok(geminiService.suggestBySubject(request.prompt))
     }
 
 }

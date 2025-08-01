@@ -1,12 +1,13 @@
 package com.mandamong.server.infrastructure.email
 
-import com.mandamong.server.common.error.exception.BusinessBaseException
 import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.user.dto.EmailVerificationRequest
 import com.mandamong.server.user.repository.EmailVerificationRepository
 import jakarta.mail.internet.MimeMessage
 import java.security.SecureRandom
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
@@ -15,13 +16,16 @@ import org.springframework.stereotype.Service
 class EmailService(
     private val emailVerificationRepository: EmailVerificationRepository,
     private val mailSender: JavaMailSender,
+    private val coroutine: CoroutineScope,
 ) {
 
     fun sendCode(request: EmailVerificationRequest) {
-        val code = createCode()
-        sendEmail(request.email, code)
-        emailVerificationRepository.set(request.email, code)
-        log().info("VERIFICATION_EMAIL_SENT email=${request.email}")
+        coroutine.launch {
+            val code = createCode()
+            sendEmail(request.email, code)
+            emailVerificationRepository.set(request.email, code)
+            log().info("VERIFICATION_EMAIL_SENT email=${request.email}")
+        }
     }
 
     fun verifyCode(email: String, code: String) {
@@ -38,16 +42,12 @@ class EmailService(
     }
 
     private fun sendEmail(email: String, code: String) {
-        try {
-            val message: MimeMessage = mailSender.createMimeMessage()
-            val helper = MimeMessageHelper(message, true, "UTF-8")
-            helper.setTo(email)
-            helper.setSubject(EMAIL_SUBJECT)
-            helper.setText(createEmail(code), true)
-            mailSender.send(message)
-        } catch (e: RuntimeException) {
-            throw BusinessBaseException()
-        }
+        val message: MimeMessage = mailSender.createMimeMessage()
+        val helper = MimeMessageHelper(message, true, "UTF-8")
+        helper.setTo(email)
+        helper.setSubject(EMAIL_SUBJECT)
+        helper.setText(createEmail(code), true)
+        mailSender.send(message)
     }
 
     private fun createEmail(code: String): String {

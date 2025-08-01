@@ -31,7 +31,7 @@ class ObjectiveController(
 
     @PostMapping(ApiPath.Objective.SUGGEST)
     fun suggest(@RequestBody request: SuggestRequest): ResponseEntity<ApiResponse<SuggestByObjectiveResponse>> {
-        return ApiResponse.ok(geminiService.generateByObjective(request.prompt))
+        return ApiResponse.ok(geminiService.suggestByObjective(request.prompt))
     }
 
 }
