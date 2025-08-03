@@ -1,7 +1,7 @@
 package com.mandamong.server.user.controller
 
 import com.mandamong.server.common.constants.ApiPath
-import com.mandamong.server.common.response.ApiResponse
+import com.mandamong.server.common.dto.ApiResponse
 import com.mandamong.server.user.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

@@ -1,4 +1,4 @@
-package com.mandamong.server.common.response
+package com.mandamong.server.common.dto
 
 import com.mandamong.server.common.error.ErrorCode
 import com.mandamong.server.common.error.ErrorResponse

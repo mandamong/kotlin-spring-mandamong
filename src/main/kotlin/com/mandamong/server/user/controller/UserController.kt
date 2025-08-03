@@ -2,7 +2,7 @@ package com.mandamong.server.user.controller
 
 import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.common.constants.ApiPath
-import com.mandamong.server.common.response.ApiResponse
+import com.mandamong.server.common.dto.ApiResponse
 import com.mandamong.server.user.dto.RegisterRequest
 import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.dto.PasswordValidationRequest

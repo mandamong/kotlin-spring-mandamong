@@ -1,7 +1,7 @@
 package com.mandamong.server.mandalart.facade
 
-import com.mandamong.server.common.request.PageParameter
-import com.mandamong.server.common.response.PageResponse
+import com.mandamong.server.common.dto.PaginationParameter
+import com.mandamong.server.common.dto.PaginationResponse
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.redis.CacheName
 import com.mandamong.server.mandalart.dto.BasicData
@@ -49,12 +49,12 @@ class MandalartFacade(
         log().info("MANDALART_DELETED userId=${loginUser.userId} mandalartId=$id")
     }
 
-    fun getMandalartsByUserId(pageParameter: PageParameter, loginUser: LoginUser): PageResponse<MandalartDataResponse> {
-        val mandalarts = mandalartService.getByUserIdWithPage(loginUser.userId, pageParameter)
+    fun getMandalartsByUserId(paginationParameter: PaginationParameter, loginUser: LoginUser): PaginationResponse<MandalartDataResponse> {
+        val mandalarts = mandalartService.getByUserIdWithPage(loginUser.userId, paginationParameter)
         val mandalartIds = mandalarts.joinToString(", ") { it.id.toString() }
         val mandalartPage: Page<MandalartDataResponse> = mandalarts.map { createMandalartDataResponse(it) }
         log().info("READ MANDALARTS userId=${loginUser.userId} mandalartIds=$mandalartIds")
-        return PageResponse.of(mandalartPage)
+        return PaginationResponse.of(mandalartPage)
     }
 
     @Cacheable(cacheNames = [CacheName.MANDALART], key = "#id")

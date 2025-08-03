@@ -1,7 +1,7 @@
 package com.mandamong.server.common.error
 
 import com.mandamong.server.common.error.exception.BusinessBaseException
-import com.mandamong.server.common.response.ApiResponse
+import com.mandamong.server.common.dto.ApiResponse
 import com.mandamong.server.common.util.log.log
 import org.springframework.http.ResponseEntity
 import org.springframework.web.HttpRequestMethodNotSupportedException

@@ -4,7 +4,7 @@ import com.mandamong.server.auth.dto.LoginRequest
 import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.auth.service.AuthService
 import com.mandamong.server.common.constants.ApiPath
-import com.mandamong.server.common.response.ApiResponse
+import com.mandamong.server.common.dto.ApiResponse
 import com.mandamong.server.user.dto.LoginUser
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal

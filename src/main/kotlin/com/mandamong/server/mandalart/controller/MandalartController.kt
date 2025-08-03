@@ -1,9 +1,9 @@
 package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
-import com.mandamong.server.common.request.PageParameter
-import com.mandamong.server.common.response.ApiResponse
-import com.mandamong.server.common.response.PageResponse
+import com.mandamong.server.common.dto.PaginationParameter
+import com.mandamong.server.common.dto.ApiResponse
+import com.mandamong.server.common.dto.PaginationResponse
 import com.mandamong.server.mandalart.dto.BasicData
 import com.mandamong.server.mandalart.dto.MandalartCreateRequest
 import com.mandamong.server.mandalart.dto.MandalartDataResponse
@@ -53,10 +53,10 @@ class MandalartController(
 
     @GetMapping(ApiPath.Mandalart.MANDALARTS)
     fun getMandalarts(
-        pageParameter: PageParameter,
+        paginationParameter: PaginationParameter,
         @AuthenticationPrincipal loginUser: LoginUser,
-    ): ResponseEntity<ApiResponse<PageResponse<MandalartDataResponse>>> {
-        return ApiResponse.ok(facade.getMandalartsByUserId(pageParameter, loginUser))
+    ): ResponseEntity<ApiResponse<PaginationResponse<MandalartDataResponse>>> {
+        return ApiResponse.ok(facade.getMandalartsByUserId(paginationParameter, loginUser))
     }
 
     @GetMapping(ApiPath.Mandalart.MANDALART)

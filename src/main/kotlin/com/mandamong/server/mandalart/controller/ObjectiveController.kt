@@ -1,7 +1,7 @@
 package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
-import com.mandamong.server.common.response.ApiResponse
+import com.mandamong.server.common.dto.ApiResponse
 import com.mandamong.server.infrastructure.gemini.GeminiService
 import com.mandamong.server.mandalart.dto.BasicData
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest

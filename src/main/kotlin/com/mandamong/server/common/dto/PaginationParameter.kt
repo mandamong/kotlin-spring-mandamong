@@ -1,6 +1,6 @@
-package com.mandamong.server.common.request
+package com.mandamong.server.common.dto
 
-data class PageParameter(
+data class PaginationParameter(
     val number: Int = START_PAGE,
     val size: Int = DEFAULT_SIZE,
 ) {
