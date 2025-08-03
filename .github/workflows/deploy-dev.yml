@@ -19,18 +19,18 @@ jobs:
 
       - name: Inject application.yml
         run: |
-          mkdir -p src/main/resources src/test/resources
+          mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION }}" > application.yml
           cp application.yml src/main/resources/application.yml
-          cp application.yml src/test/resources/application.yml
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle
-        run: ./gradlew clean build
         env:
           GOOGLE_API_KEY: ${{ secrets.GEMINI }}
+          SPRING_PROFILES_ACTIVE: prod
+        run: ./gradlew clean build
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -53,11 +53,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
 
-      - name: Write SSH private key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+      - name: Setup SSH Key
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy on K8s
         run: |

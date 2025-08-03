@@ -9,4 +9,5 @@ class KotlinSpringMandamongApplicationTests {
     @Test
     fun contextLoads() {
     }
+
 }
