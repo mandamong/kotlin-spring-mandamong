@@ -1,6 +1,6 @@
 package com.mandamong.server
 
-import com.mandamong.server.common.order.AopOrder
+import com.mandamong.server.common.constants.AopOrder
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication

@@ -1,4 +1,4 @@
-package com.mandamong.server.common.order
+package com.mandamong.server.common.constants
 
 object AopOrder {
 

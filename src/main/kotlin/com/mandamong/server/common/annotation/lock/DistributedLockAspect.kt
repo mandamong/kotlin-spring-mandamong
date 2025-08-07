@@ -1,6 +1,6 @@
 package com.mandamong.server.common.annotation.lock
 
-import com.mandamong.server.common.order.AopOrder
+import com.mandamong.server.common.constants.AopOrder
 import com.mandamong.server.common.error.exception.MaxWaitForLockException
 import com.mandamong.server.common.util.parser.SpringELParser
 import org.aspectj.lang.ProceedingJoinPoint
