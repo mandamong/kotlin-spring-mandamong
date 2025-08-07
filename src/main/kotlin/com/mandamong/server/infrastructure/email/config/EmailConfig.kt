@@ -1,4 +1,4 @@
-package com.mandamong.server.infrastructure.email
+package com.mandamong.server.infrastructure.email.config
 
 import java.util.Properties
 import org.springframework.beans.factory.annotation.Value

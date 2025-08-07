@@ -1,53 +1,50 @@
-package com.mandamong.server.infrastructure.email
+package com.mandamong.server.infrastructure.email.scheduler
 
-import com.mandamong.server.common.error.exception.UnauthorizedException
+import com.mandamong.server.common.error.exception.BusinessBaseException
 import com.mandamong.server.common.util.log.log
-import com.mandamong.server.user.dto.EmailVerificationRequest
+import com.mandamong.server.infrastructure.email.entity.EmailOutbox
+import com.mandamong.server.infrastructure.email.enums.EmailOutboxStatus
+import com.mandamong.server.infrastructure.email.repository.EmailOutboxRepository
 import com.mandamong.server.user.repository.EmailVerificationRepository
 import jakarta.mail.internet.MimeMessage
-import java.security.SecureRandom
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
-import org.springframework.stereotype.Service
+import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
-@Service
-class EmailService(
+@Component
+class EmailOutboxScheduler(
+    private val repository: EmailOutboxRepository,
     private val emailVerificationRepository: EmailVerificationRepository,
     private val mailSender: JavaMailSender,
-    private val coroutine: CoroutineScope,
 ) {
 
-    fun sendCode(request: EmailVerificationRequest) {
-        coroutine.launch {
-            val code = createCode()
-            sendEmail(request.email, code)
-            emailVerificationRepository.set(request.email, code)
-            log().info("VERIFICATION_EMAIL_SENT email=${request.email}")
+    @Scheduled(fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
+    @Transactional
+    fun publish() {
+        val outboxes = repository.findTop10ByStatus(EmailOutboxStatus.PENDING)
+        outboxes.forEach { outbox ->
+            try {
+                sendEmail(outbox)
+                outbox.markSent()
+                emailVerificationRepository.set(outbox.email, outbox.code)
+            } catch (e: Exception) {
+                outbox.markFailed()
+                throw BusinessBaseException()
+            }
         }
     }
 
-    fun verifyCode(email: String, code: String) {
-        val savedCode: String? = emailVerificationRepository.get(email)
-        if (savedCode == null || savedCode != code) {
-            throw UnauthorizedException()
-        }
-        log().info("EMAIL_VERIFIED email=$email")
-    }
-
-    private fun createCode(): String {
-        val random: SecureRandom = SecureRandom.getInstanceStrong()
-        return buildString(CODE_LENGTH) { repeat(CODE_LENGTH) { append(random.nextInt(RANDOM_RANGE)) } }
-    }
-
-    private fun sendEmail(email: String, code: String) {
+    private fun sendEmail(outbox: EmailOutbox) {
         val message: MimeMessage = mailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true, "UTF-8")
-        helper.setTo(email)
+        helper.setTo(outbox.email)
         helper.setSubject(EMAIL_SUBJECT)
-        helper.setText(createEmail(code), true)
+        helper.setText(createEmail(outbox.code), true)
         mailSender.send(message)
+        log().info("VERIFICATION_EMAIL_SENT email=${outbox.email}")
     }
 
     private fun createEmail(code: String): String {
@@ -70,8 +67,6 @@ class EmailService(
 
     companion object {
         private const val EMAIL_SUBJECT: String = "만다몽 - 이메일 인증 번호"
-        private const val CODE_LENGTH = 6
-        private const val RANDOM_RANGE = 10
     }
 
 }

@@ -2,7 +2,7 @@ package com.mandamong.server.user.controller
 
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.dto.ApiResponse
-import com.mandamong.server.infrastructure.email.EmailService
+import com.mandamong.server.infrastructure.email.service.EmailService
 import com.mandamong.server.user.dto.EmailVerificationRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
