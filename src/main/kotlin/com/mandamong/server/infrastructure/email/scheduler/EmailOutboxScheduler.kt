@@ -1,5 +1,6 @@
 package com.mandamong.server.infrastructure.email.scheduler
 
+import com.mandamong.server.common.annotation.lock.DistributedLock
 import com.mandamong.server.common.error.exception.BusinessBaseException
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.email.entity.EmailOutbox
@@ -21,8 +22,9 @@ class EmailOutboxScheduler(
     private val mailSender: JavaMailSender,
 ) {
 
-    @Scheduled(fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
+    @DistributedLock(name = "EMAIL", key = "'OUTBOX'", autoUnlockAfter = 30)
     @Transactional
+    @Scheduled(fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
     fun publish() {
         val outboxes = repository.findTop10ByStatus(EmailOutboxStatus.PENDING)
         outboxes.forEach { outbox ->
