@@ -22,20 +22,22 @@ class EmailOutboxScheduler(
     private val mailSender: JavaMailSender,
 ) {
 
-    @DistributedLock(name = "EMAIL", key = "'OUTBOX'", autoUnlockAfter = 30)
+    @DistributedLock(name = "EMAIL", key = "'OUTBOX'", maxWaitForLock = 15, autoUnlockAfter = 30)
     @Transactional
     @Scheduled(fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
     fun publish() {
         val outboxes = repository.findTop10ByStatus(EmailOutboxStatus.PENDING)
-        outboxes.forEach { outbox ->
-            try {
-                sendEmail(outbox)
-                outbox.markSent()
-                emailVerificationRepository.set(outbox.email, outbox.code)
-            } catch (e: Exception) {
-                outbox.markFailed()
-                throw BusinessBaseException()
-            }
+        outboxes.forEach(::processOutbox)
+    }
+
+    private fun processOutbox(outbox: EmailOutbox) {
+        try {
+            sendEmail(outbox)
+            outbox.markSent()
+            emailVerificationRepository.set(outbox.email, outbox.code)
+        } catch (e: Exception) {
+            outbox.markFailed()
+            throw BusinessBaseException()
         }
     }
 
