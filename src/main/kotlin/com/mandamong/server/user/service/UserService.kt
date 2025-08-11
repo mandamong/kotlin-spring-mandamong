@@ -41,8 +41,8 @@ class UserService(
         val user = RegisterRequest.toEntity(registerRequest, encodedPassword, profileImageUrl)
 
         val savedUser = repository.save(user)
-        val accessToken = tokenUtil.generateAccessToken(savedUser.id)
-        val refreshToken = tokenUtil.generateRefreshToken(savedUser.id)
+        val accessToken = tokenUtil.createAccessToken(savedUser.id)
+        val refreshToken = tokenUtil.createRefreshToken(savedUser.id)
         redisTemplate.opsForValue()
             .set("RT::${savedUser.id}", refreshToken, Duration.ofMillis(tokenUtil.properties.refreshExpiry))
 

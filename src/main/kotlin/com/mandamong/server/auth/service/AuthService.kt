@@ -27,8 +27,8 @@ class AuthService(
     fun login(request: LoginRequest): LoginResponse {
         val savedUser = userService.getByEmail(request.email)
         validatePassword(request.password, savedUser.password)
-        val accessToken = tokenUtil.generateAccessToken(savedUser.id)
-        val refreshToken = tokenUtil.generateRefreshToken(savedUser.id)
+        val accessToken = tokenUtil.createAccessToken(savedUser.id)
+        val refreshToken = tokenUtil.createRefreshToken(savedUser.id)
         refreshTokenRepository.set(savedUser.id, refreshToken)
         savedUser.image = minioService.getPresignedUrlByNickname(savedUser.nickname)
         log().info("USER_LOGIN userId=${savedUser.id}")

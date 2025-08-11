@@ -17,7 +17,7 @@ class TokenUtilTest {
 
     @Test
     fun `AccessToken 발급에 성공한다`() {
-        val accessToken = tokenUtil.generateAccessToken(memberId)
+        val accessToken = tokenUtil.createAccessToken(memberId)
         val claims: Claims = tokenUtil.parseAccessToken(accessToken)
 
         assertThat(accessToken).isNotNull()
@@ -27,7 +27,7 @@ class TokenUtilTest {
 
     @Test
     fun `RefreshToken 발급에 성공한다`() {
-        val refreshToken = tokenUtil.generateRefreshToken(memberId)
+        val refreshToken = tokenUtil.createRefreshToken(memberId)
         val claims: Claims = tokenUtil.parseRefreshToken(refreshToken)
 
         assertThat(refreshToken).isNotNull()

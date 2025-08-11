@@ -21,7 +21,7 @@ class TokenUtil(
     private val accessSignKey: SecretKey = Keys.hmacShaKeyFor(rawSecretKey)
     private val refreshSignKey: SecretKey = Keys.hmacShaKeyFor(decodedSecretKey)
 
-    fun generateAccessToken(userId: Long): String {
+    fun createAccessToken(userId: Long): String {
         val now = Date()
         val expiry = Date(now.time + properties.accessExpiry)
         return Jwts.builder()
@@ -36,7 +36,7 @@ class TokenUtil(
             .compact()
     }
 
-    fun generateRefreshToken(userId: Long): String {
+    fun createRefreshToken(userId: Long): String {
         val now = Date()
         val expiry = Date(now.time + properties.refreshExpiry)
         return Jwts.builder()

@@ -52,7 +52,7 @@ class MandalartController(
     }
 
     @GetMapping(ApiPath.Mandalart.MANDALARTS)
-    fun getMandalarts(
+    fun readMandalarts(
         paginationParameter: PaginationParameter,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<PaginationResponse<MandalartDataResponse>>> {
@@ -60,7 +60,7 @@ class MandalartController(
     }
 
     @GetMapping(ApiPath.Mandalart.MANDALART)
-    fun getMandalart(
+    fun readMandalart(
         @PathVariable mandalartId: Long,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<MandalartDataResponse>> {

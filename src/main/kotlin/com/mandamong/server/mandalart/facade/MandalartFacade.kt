@@ -36,14 +36,12 @@ class MandalartFacade(
         return MandalartDataResponse.of(mandalart, subject, objectives, actions)
     }
 
-    @CacheEvict(cacheNames = [CacheName.MANDALART], key = "#id")
     fun update(id: Long, request: MandalartUpdateRequest, loginUser: LoginUser): BasicData {
         val mandalart = mandalartService.update(id, request.updated)
         log().info("MANDALART_UPDATED userId=${loginUser.userId} mandalartId=$id")
         return BasicData.of(mandalart.id, mandalart.name, mandalart.status)
     }
 
-    @CacheEvict(cacheNames = [CacheName.MANDALART], key = "#id")
     fun delete(id: Long, loginUser: LoginUser) {
         mandalartService.deleteById(id)
         log().info("MANDALART_DELETED userId=${loginUser.userId} mandalartId=$id")
@@ -57,7 +55,6 @@ class MandalartFacade(
         return PaginationResponse.of(mandalartPage)
     }
 
-    @Cacheable(cacheNames = [CacheName.MANDALART], key = "#id")
     fun getMandalartById(id: Long, loginUser: LoginUser): MandalartDataResponse {
         val mandalart = mandalartService.getByIdWithFullData(id)
         log().info("READ MANDALART userId=${loginUser.userId} mandalartId=$id")
