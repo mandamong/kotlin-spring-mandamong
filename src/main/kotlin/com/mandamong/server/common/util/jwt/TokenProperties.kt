@@ -4,7 +4,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "jwt")
 class TokenProperties(
-    val secretKey: String,
-    val accessExpiry: Long,
-    val refreshExpiry: Long,
+    val issuer: String,
+    val secret: String,
+    val expiry: Expiry,
+)
+
+class Expiry(
+    val access: Long,
+    val refresh: Long,
 )

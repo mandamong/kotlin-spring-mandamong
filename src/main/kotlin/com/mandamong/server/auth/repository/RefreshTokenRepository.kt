@@ -1,6 +1,6 @@
 package com.mandamong.server.auth.repository
 
-import com.mandamong.server.common.util.jwt.TokenUtil
+import com.mandamong.server.common.util.jwt.TokenProperties
 import java.time.Duration
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Repository
@@ -8,12 +8,12 @@ import org.springframework.stereotype.Repository
 @Repository
 class RefreshTokenRepository(
     private val redisTemplate: StringRedisTemplate,
-    private val tokenUtil: TokenUtil,
+    private val properties: TokenProperties,
 ) {
 
     fun set(userId: Long, refreshToken: String) {
         redisTemplate.opsForValue()
-            .set("$REFRESH_TOKEN_PREFIX$userId", refreshToken, Duration.ofMillis(tokenUtil.properties.refreshExpiry))
+            .set("$REFRESH_TOKEN_PREFIX$userId", refreshToken, Duration.ofMillis(properties.expiry.refresh))
     }
 
     fun get(userId: Long): String? {

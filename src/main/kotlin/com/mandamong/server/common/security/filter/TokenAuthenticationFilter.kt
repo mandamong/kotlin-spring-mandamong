@@ -18,10 +18,20 @@ class TokenAuthenticationFilter(
         response: HttpServletResponse,
         chain: FilterChain,
     ) {
-        val accessToken: String? = request.getHeader(AUTHORIZATION_HEADER)
+        val accessTokenFromHeader = request.getHeader(AUTHORIZATION_HEADER)
             ?.takeIf { it.startsWith(TOKEN_PREFIX) }
             ?.substring(TOKEN_PREFIX.length)
-        accessToken?.let { SecurityContextHolder.getContext().authentication = tokenUtil.getAuthentication(accessToken) }
+
+        val accessTokenFromCookie = request.cookies
+            ?.firstOrNull { it.name == "access_token" }
+            ?.value
+
+        val accessToken = accessTokenFromHeader ?: accessTokenFromCookie
+
+        accessToken?.let {
+            SecurityContextHolder.getContext().authentication = tokenUtil.getAuthentication(accessToken)
+        }
+
         chain.doFilter(request, response)
     }
 

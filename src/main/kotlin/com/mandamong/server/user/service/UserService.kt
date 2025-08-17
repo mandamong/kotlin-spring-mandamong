@@ -1,6 +1,7 @@
 package com.mandamong.server.user.service
 
 import com.mandamong.server.auth.dto.LoginResponse
+import com.mandamong.server.auth.repository.RefreshTokenRepository
 import com.mandamong.server.common.error.exception.EmailDuplicatedException
 import com.mandamong.server.common.error.exception.EmailNotFoundException
 import com.mandamong.server.common.error.exception.IdNotFoundException
@@ -13,12 +14,10 @@ import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.dto.PasswordValidationRequest
 import com.mandamong.server.user.dto.RegisterRequest
 import com.mandamong.server.user.dto.UserUpdateRequest
-import com.mandamong.server.user.model.Email
 import com.mandamong.server.user.entity.User
+import com.mandamong.server.user.model.Email
 import com.mandamong.server.user.repository.UserRepository
-import java.time.Duration
 import kotlin.jvm.optionals.getOrNull
-import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -29,7 +28,7 @@ class UserService(
     private val passwordEncoder: BCryptPasswordEncoder,
     private val tokenUtil: TokenUtil,
     private val minioService: MinioService,
-    private val redisTemplate: StringRedisTemplate,
+    private val refreshTokenRepository: RefreshTokenRepository,
 ) {
 
     @Transactional
@@ -37,17 +36,17 @@ class UserService(
         validateEmailDuplication(registerRequest.email)
         validateNicknameDuplication(registerRequest.nickname)
         val encodedPassword = passwordEncoder.encode(registerRequest.password)
-        val profileImageUrl = minioService.upload(registerRequest.image, registerRequest.nickname)
-        val user = RegisterRequest.toEntity(registerRequest, encodedPassword, profileImageUrl)
-
+        val user = registerRequest.toEntity(encodedPassword)
         val savedUser = repository.save(user)
+
+        registerRequest.image?.let { savedUser.imageKey = minioService.upload(savedUser.id, it) }
+
+        val presignedUrl: String = minioService.getPresignedUrlByObjectKey(savedUser.imageKey)
         val accessToken = tokenUtil.createAccessToken(savedUser.id)
         val refreshToken = tokenUtil.createRefreshToken(savedUser.id)
-        redisTemplate.opsForValue()
-            .set("RT::${savedUser.id}", refreshToken, Duration.ofMillis(tokenUtil.properties.refreshExpiry))
-
+        refreshTokenRepository.set(savedUser.id, refreshToken)
         log().info("REGISTER userId=${savedUser.id}")
-        return User.toDto(savedUser, accessToken, refreshToken)
+        return savedUser.toDto(presignedUrl, accessToken, refreshToken)
     }
 
     @Transactional

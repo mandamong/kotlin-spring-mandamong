@@ -12,41 +12,43 @@ import org.springframework.stereotype.Component
 
 @Component
 class TokenUtil(
-    val properties: TokenProperties,
+    private val properties: TokenProperties,
 ) {
 
-    private val rawSecretKey: ByteArray = properties.secretKey.toByteArray()
-    private val decodedSecretKey: ByteArray = Base64.getDecoder().decode(properties.secretKey)
+    private val rawSecret: ByteArray = properties.secret.toByteArray()
+    private val decodedSecret: ByteArray = Base64.getDecoder().decode(properties.secret)
 
-    private val accessSignKey: SecretKey = Keys.hmacShaKeyFor(rawSecretKey)
-    private val refreshSignKey: SecretKey = Keys.hmacShaKeyFor(decodedSecretKey)
+    private val accessSignKey: SecretKey = Keys.hmacShaKeyFor(rawSecret)
+    private val refreshSignKey: SecretKey = Keys.hmacShaKeyFor(decodedSecret)
 
     fun createAccessToken(userId: Long): String {
         val now = Date()
-        val expiry = Date(now.time + properties.accessExpiry)
+        val expiry = Date(now.time + properties.expiry.access)
         return Jwts.builder()
             .header()
             .type(TOKEN_TYPE)
             .and()
-            .subject(userId.toString())
+            .issuer(properties.issuer)
             .issuedAt(now)
             .notBefore(now)
             .expiration(expiry)
+            .subject(userId.toString())
             .signWith(accessSignKey)
             .compact()
     }
 
     fun createRefreshToken(userId: Long): String {
         val now = Date()
-        val expiry = Date(now.time + properties.refreshExpiry)
+        val expiry = Date(now.time + properties.expiry.refresh)
         return Jwts.builder()
             .header()
             .type(TOKEN_TYPE)
             .and()
-            .subject(userId.toString())
+            .issuer(properties.issuer)
             .issuedAt(now)
             .notBefore(now)
             .expiration(expiry)
+            .subject(userId.toString())
             .signWith(refreshSignKey)
             .compact()
     }
