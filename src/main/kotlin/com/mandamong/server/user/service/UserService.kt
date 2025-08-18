@@ -106,11 +106,11 @@ class UserService(
     }
 
     @Transactional
-    fun initializePassword(loginUser: LoginUser): UserUpdateRequest {
-        val user = getById(loginUser.userId)
+    fun initializePassword(email: String): UserUpdateRequest {
+        val user = getByEmail(email)
         val randomPassword = generateRandomPassword()
         user.password = passwordEncoder.encode(randomPassword)
-        log().info("INITIALIZE_PASSWORD userId=${loginUser.userId}")
+        log().info("INITIALIZE_PASSWORD email=$email")
         return UserUpdateRequest(updated = randomPassword)
     }
 
