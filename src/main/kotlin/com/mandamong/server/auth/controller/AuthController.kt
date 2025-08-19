@@ -23,8 +23,8 @@ class AuthController(
     fun login(
         @RequestBody request: LoginRequest,
         response: HttpServletResponse,
-        ): ResponseEntity<ApiResponse<LoginResponse>> {
-        return ApiResponse.ok(service.login(request, response))
+    ): ResponseEntity<ApiResponse<LoginResponse>> {
+        return ApiResponse.ok(service.login(request.email, request.password, response))
     }
 
     @PostMapping(ApiPath.Auth.LOGOUT)
@@ -33,7 +33,7 @@ class AuthController(
         request: HttpServletRequest,
         response: HttpServletResponse,
     ): ResponseEntity<ApiResponse<Nothing>> {
-        service.logout(loginUser, request, response)
+        service.logout(loginUser.userId, request, response)
         return ApiResponse.deleted()
     }
 

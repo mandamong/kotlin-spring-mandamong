@@ -3,9 +3,9 @@ package com.mandamong.server.user.controller
 import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.dto.ApiResponse
-import com.mandamong.server.user.dto.RegisterRequest
 import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.dto.PasswordValidationRequest
+import com.mandamong.server.user.dto.RegisterRequest
 import com.mandamong.server.user.dto.UserPasswordInitializeRequest
 import com.mandamong.server.user.dto.UserUpdateRequest
 import com.mandamong.server.user.service.UserService
@@ -23,11 +23,11 @@ class UserController(
     private val service: UserService,
 ) {
 
-    @PostMapping(ApiPath.User.REGISTER)
-    fun register(
+    @PostMapping(ApiPath.User.CREATE)
+    fun create(
         @ModelAttribute request: RegisterRequest,
     ): ResponseEntity<ApiResponse<LoginResponse>> {
-        return ApiResponse.created(service.register(request))
+        return ApiResponse.created(service.create(request))
     }
 
     @PatchMapping(ApiPath.User.UPDATE_NICKNAME)
@@ -35,7 +35,7 @@ class UserController(
         @RequestBody request: UserUpdateRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<UserUpdateRequest>> {
-        return ApiResponse.ok(service.updateNickname(request, loginUser))
+        return ApiResponse.ok(service.updateNickname(request.updated, loginUser.userId))
     }
 
     @PostMapping(ApiPath.User.VALIDATE_PASSWORD)
@@ -43,7 +43,7 @@ class UserController(
         @RequestBody request: PasswordValidationRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<Nothing>> {
-        service.validatePassword(request, loginUser)
+        service.validatePassword(request.password, loginUser.userId)
         return ApiResponse.ok()
     }
 
@@ -52,7 +52,7 @@ class UserController(
         @RequestBody request: UserUpdateRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<Nothing>> {
-        service.updatePassword(request, loginUser)
+        service.updatePassword(request.updated, loginUser.userId)
         return ApiResponse.ok()
     }
 
@@ -61,9 +61,9 @@ class UserController(
         return ApiResponse.ok(service.initializePassword(request.email))
     }
 
-    @DeleteMapping(ApiPath.User.UNREGISTER)
-    fun unregister(@AuthenticationPrincipal loginUser: LoginUser): ResponseEntity<ApiResponse<Nothing>> {
-        service.unregister(loginUser)
+    @DeleteMapping(ApiPath.User.DELETE)
+    fun delete(@AuthenticationPrincipal loginUser: LoginUser): ResponseEntity<ApiResponse<Nothing>> {
+        service.delete(loginUser.userId)
         return ApiResponse.deleted()
     }
 

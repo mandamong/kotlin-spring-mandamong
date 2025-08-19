@@ -1,8 +1,8 @@
 package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
-import com.mandamong.server.common.dto.PaginationParameter
 import com.mandamong.server.common.dto.ApiResponse
+import com.mandamong.server.common.dto.PaginationParameter
 import com.mandamong.server.common.dto.PaginationResponse
 import com.mandamong.server.mandalart.dto.BasicData
 import com.mandamong.server.mandalart.dto.MandalartCreateRequest
@@ -30,7 +30,7 @@ class MandalartController(
         @RequestBody request: MandalartCreateRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<MandalartDataResponse>> {
-        return ApiResponse.ok(facade.create(request, loginUser))
+        return ApiResponse.ok(facade.create(request, loginUser.userId))
     }
 
     @PatchMapping(ApiPath.Mandalart.UPDATE_NAME)
@@ -39,7 +39,7 @@ class MandalartController(
         @RequestBody request: MandalartUpdateRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<BasicData>> {
-        return ApiResponse.ok(facade.update(mandalartId, request, loginUser))
+        return ApiResponse.ok(facade.update(mandalartId, request.updated, loginUser.userId))
     }
 
     @DeleteMapping(ApiPath.Mandalart.DELETE)
@@ -47,7 +47,7 @@ class MandalartController(
         @PathVariable mandalartId: Long,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<Nothing>> {
-        facade.delete(mandalartId, loginUser)
+        facade.delete(mandalartId, loginUser.userId)
         return ApiResponse.deleted()
     }
 
@@ -56,7 +56,7 @@ class MandalartController(
         paginationParameter: PaginationParameter,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<PaginationResponse<MandalartDataResponse>>> {
-        return ApiResponse.ok(facade.getMandalartsByUserId(paginationParameter, loginUser))
+        return ApiResponse.ok(facade.getMandalartsByUserId(paginationParameter, loginUser.userId))
     }
 
     @GetMapping(ApiPath.Mandalart.MANDALART)
@@ -64,7 +64,7 @@ class MandalartController(
         @PathVariable mandalartId: Long,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<MandalartDataResponse>> {
-        return ApiResponse.ok(facade.getMandalartById(mandalartId, loginUser))
+        return ApiResponse.ok(facade.getMandalartById(mandalartId, loginUser.userId))
     }
 
 }

@@ -1,4 +1,4 @@
-package com.mandamong.server.infrastructure.minio
+package com.mandamong.server.infrastructure.minio.config
 
 import io.minio.MinioClient
 import org.springframework.beans.factory.annotation.Value

@@ -12,10 +12,6 @@ import org.springframework.stereotype.Repository
 interface MandalartRepository : JpaRepository<Mandalart, Long> {
 
     @EntityGraph(attributePaths = ["subject", "subject.objectives", "subject.objectives.actions"])
-    @Query("SELECT m FROM Mandalart m WHERE m.user.id = :userId")
-    fun findByUserIdWithFullData(userId: Long): List<Mandalart>?
-
-    @EntityGraph(attributePaths = ["subject", "subject.objectives", "subject.objectives.actions"])
     fun findByUserId(userId: Long, pageable: Pageable): Page<Mandalart>?
 
     @EntityGraph(attributePaths = ["subject", "subject.objectives", "subject.objectives.actions"])

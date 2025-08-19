@@ -2,7 +2,7 @@ package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.dto.ApiResponse
-import com.mandamong.server.infrastructure.gemini.GeminiService
+import com.mandamong.server.infrastructure.gemini.service.GeminiService
 import com.mandamong.server.mandalart.dto.BasicData
 import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.dto.SuggestByObjectiveResponse
@@ -26,7 +26,7 @@ class ObjectiveController(
         @PathVariable objectiveId: Long,
         @RequestBody request: MandalartUpdateRequest,
     ): ResponseEntity<ApiResponse<BasicData>> {
-        return ApiResponse.ok(service.update(objectiveId, request))
+        return ApiResponse.ok(service.update(objectiveId, request.updated))
     }
 
     @PostMapping(ApiPath.Objective.SUGGEST)

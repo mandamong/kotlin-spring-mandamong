@@ -2,10 +2,8 @@ package com.mandamong.server.mandalart.service
 
 import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.mandalart.dto.BasicData
-import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
 import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.entity.Subject
-import com.mandamong.server.mandalart.enums.Status
 import com.mandamong.server.mandalart.repository.ObjectiveRepository
 import kotlin.jvm.optionals.getOrNull
 import org.springframework.stereotype.Service
@@ -25,9 +23,9 @@ class ObjectiveService(
     }
 
     @Transactional
-    fun update(id: Long, request: MandalartUpdateRequest): BasicData {
+    fun update(id: Long, updated: String): BasicData {
         val objective = getById(id)
-        objective.objective = request.updated
+        objective.objective = updated
         return BasicData.of(objective.id, objective.objective, objective.status)
     }
 

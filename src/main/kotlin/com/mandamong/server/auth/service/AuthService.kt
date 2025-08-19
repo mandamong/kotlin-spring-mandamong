@@ -1,15 +1,12 @@
 package com.mandamong.server.auth.service
 
-import com.mandamong.server.auth.dto.LoginRequest
 import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.auth.repository.RefreshTokenRepository
 import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.cookie.CookieUtil
 import com.mandamong.server.common.util.jwt.TokenUtil
 import com.mandamong.server.common.util.log.log
-import com.mandamong.server.infrastructure.minio.MinioService
-import com.mandamong.server.user.dto.LoginUser
-import com.mandamong.server.user.entity.User
+import com.mandamong.server.infrastructure.minio.service.MinioService
 import com.mandamong.server.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -28,9 +25,9 @@ class AuthService(
 ) {
 
     @Transactional
-    fun login(request: LoginRequest, response: HttpServletResponse): LoginResponse {
-        val savedUser = userService.getByEmail(request.email)
-        validatePassword(request.password, savedUser.password)
+    fun login(email: String, password: String, response: HttpServletResponse): LoginResponse {
+        val savedUser = userService.getByEmail(email)
+        validatePassword(password, savedUser.password)
         val accessToken = tokenUtil.createAccessToken(savedUser.id)
         val refreshToken = tokenUtil.createRefreshToken(savedUser.id)
         refreshTokenRepository.set(savedUser.id, refreshToken)
@@ -42,10 +39,10 @@ class AuthService(
     }
 
     @Transactional
-    fun logout(loginUser: LoginUser, request: HttpServletRequest, response: HttpServletResponse) {
-        refreshTokenRepository.delete(loginUser.userId)
+    fun logout(userId: Long, request: HttpServletRequest, response: HttpServletResponse) {
+        refreshTokenRepository.delete(userId)
         cookieUtil.delete(request, response, "access_token")
-        log().info("USER_LOGOUT userId=${loginUser.userId}")
+        log().info("USER_LOGOUT userId=$userId")
     }
 
     private fun validatePassword(raw: String, encoded: String) {

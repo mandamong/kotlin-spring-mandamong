@@ -1,4 +1,4 @@
-package com.mandamong.server.infrastructure.gemini
+package com.mandamong.server.infrastructure.gemini.config
 
 import com.google.genai.Client
 import org.springframework.context.annotation.Bean

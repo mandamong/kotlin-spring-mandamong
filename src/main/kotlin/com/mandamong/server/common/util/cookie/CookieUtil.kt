@@ -11,7 +11,7 @@ class CookieUtil {
     fun add(response: HttpServletResponse, key: String, value: String, maxAge: Int) {
         val cookie = Cookie(key, value).apply {
             path = "/"
-            isHttpOnly = false
+            isHttpOnly = true
             this.maxAge = maxAge
             secure = true
             domain = "mandamong.sailin.cloud"

@@ -1,6 +1,5 @@
 package com.mandamong.server.auth.service
 
-import com.mandamong.server.auth.dto.RefreshRequest
 import com.mandamong.server.auth.dto.RefreshResponse
 import com.mandamong.server.auth.repository.RefreshTokenRepository
 import com.mandamong.server.common.error.exception.IdNotFoundException
@@ -8,7 +7,6 @@ import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.jwt.TokenUtil
 import com.mandamong.server.common.util.log.log
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class RefreshService(
@@ -16,11 +14,10 @@ class RefreshService(
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
 
-    @Transactional
-    fun refresh(request: RefreshRequest): RefreshResponse {
-        val userId = tokenUtil.parseRefreshToken(request.refreshToken).subject.toLong()
+    fun refresh(refreshToken: String): RefreshResponse {
+        val userId = tokenUtil.parseRefreshToken(refreshToken).subject.toLong()
         val savedRefreshToken: String = refreshTokenRepository.get(userId) ?: throw IdNotFoundException(userId)
-        validateToken(request.refreshToken, savedRefreshToken, userId)
+        validateToken(refreshToken, savedRefreshToken, userId)
         val newAccessToken: String = tokenUtil.createAccessToken(userId)
         val newRefreshToken: String = tokenUtil.createRefreshToken(userId)
         refreshTokenRepository.set(userId, newRefreshToken)

@@ -21,7 +21,7 @@ class ActionController(
         @PathVariable actionId: Long,
         @RequestBody request: ActionUpdateRequest,
     ): ResponseEntity<ApiResponse<BasicData>> {
-        return ApiResponse.ok(service.update(actionId, request))
+        return ApiResponse.ok(service.update(actionId, request.updated, request.status))
     }
 
 }

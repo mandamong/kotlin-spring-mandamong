@@ -1,10 +1,9 @@
 package com.mandamong.server.mandalart.service
 
-import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.common.dto.PaginationParameter
+import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.repository.MandalartRepository
-import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.service.UserService
 import kotlin.jvm.optionals.getOrNull
@@ -21,8 +20,8 @@ class MandalartService(
 ) {
 
     @Transactional
-    fun create(name: String, loginUser: LoginUser): Mandalart {
-        val savedUser: User = userService.getById(loginUser.userId)
+    fun create(name: String, userId: Long): Mandalart {
+        val savedUser: User = userService.getById(userId)
         val mandalart = Mandalart(name = name, user = savedUser)
         return repository.save(mandalart)
     }
