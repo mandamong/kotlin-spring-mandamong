@@ -9,7 +9,7 @@ import com.mandamong.server.common.util.log.log
 import org.springframework.stereotype.Service
 
 @Service
-class RefreshService(
+class TokenRefreshService(
     private val tokenUtil: TokenUtil,
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {

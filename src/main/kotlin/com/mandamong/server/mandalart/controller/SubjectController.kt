@@ -8,7 +8,9 @@ import com.mandamong.server.mandalart.dto.SuggestBySubjectResponse
 import com.mandamong.server.mandalart.dto.UpdateSubjectRequest
 import com.mandamong.server.mandalart.dto.UpdateSubjectResponse
 import com.mandamong.server.mandalart.service.SubjectService
+import com.mandamong.server.user.dto.LoginUser
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -25,8 +27,9 @@ class SubjectController(
     fun update(
         @PathVariable subjectId: Long,
         @RequestBody request: UpdateSubjectRequest,
+        @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<UpdateSubjectResponse>> {
-        return ApiResponse.ok(service.update(subjectId, request.subject))
+        return ApiResponse.ok(service.update(subjectId, request.subject, loginUser.userId))
     }
 
     @PostMapping(ApiPath.Subject.SUGGEST)

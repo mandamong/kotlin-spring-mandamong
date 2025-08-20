@@ -2,11 +2,13 @@ package com.mandamong.server.mandalart.service
 
 import com.mandamong.server.common.dto.PaginationParameter
 import com.mandamong.server.common.error.exception.IdNotFoundException
+import com.mandamong.server.infrastructure.redis.CacheName
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.repository.MandalartRepository
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.service.UserService
 import kotlin.jvm.optionals.getOrNull
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -20,6 +22,7 @@ class MandalartService(
 ) {
 
     @Transactional
+    @CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId")
     fun create(name: String, userId: Long): Mandalart {
         val savedUser: User = userService.getById(userId)
         val mandalart = Mandalart(name = name, user = savedUser)
@@ -27,14 +30,16 @@ class MandalartService(
     }
 
     @Transactional
-    fun update(id: Long, updated: String): Mandalart {
+    @CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId")
+    fun update(id: Long, newMandalartName: String, userId: Long): Mandalart {
         val mandalart = getById(id)
-        mandalart.name = updated
+        mandalart.name = newMandalartName
         return mandalart
     }
 
     @Transactional
-    fun deleteById(id: Long) = repository.deleteById(id)
+    @CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId")
+    fun deleteById(id: Long, userId: Long) = repository.deleteById(id)
 
     @Transactional(readOnly = true)
     fun findById(id: Long): Mandalart? = repository.findById(id).getOrNull()

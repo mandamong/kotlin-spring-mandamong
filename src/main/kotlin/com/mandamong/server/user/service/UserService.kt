@@ -65,8 +65,9 @@ class UserService(
     @Transactional
     fun delete(userId: Long) {
         val user = getById(userId)
-        minioService.deleteObject(user.imageKey)
         repository.deleteById(userId)
+        refreshTokenRepository.delete(user.id)
+        minioService.deleteObject(user.imageKey)
         log().info("DELETE userId=$userId")
     }
 

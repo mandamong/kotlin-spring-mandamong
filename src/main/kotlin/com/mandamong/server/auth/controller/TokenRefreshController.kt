@@ -2,7 +2,7 @@ package com.mandamong.server.auth.controller
 
 import com.mandamong.server.auth.dto.TokenRefreshRequest
 import com.mandamong.server.auth.dto.TokenRefreshResponse
-import com.mandamong.server.auth.service.RefreshService
+import com.mandamong.server.auth.service.TokenRefreshService
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.dto.ApiResponse
 import org.springframework.http.ResponseEntity
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class RefreshController(
-    private val service: RefreshService,
+class TokenRefreshController(
+    private val service: TokenRefreshService,
 ) {
 
     @PostMapping(ApiPath.Auth.REFRESH)
