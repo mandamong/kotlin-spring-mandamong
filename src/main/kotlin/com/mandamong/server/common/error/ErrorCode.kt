@@ -8,10 +8,10 @@ enum class ErrorCode(
     val status: HttpStatus,
 ) {
 
-    INTERNAL_SERVER_ERROR("internal.server.error", "서버 오류", HttpStatus.INTERNAL_SERVER_ERROR),
-    BAD_REQUEST_ERROR("common.bad.request", "요청 값 오류", HttpStatus.BAD_REQUEST),
+    INTERNAL_SERVER_ERROR("internal.server.error", "서버 내부 오류", HttpStatus.INTERNAL_SERVER_ERROR),
+    METHOD_NOT_ALLOWED("method.not.allowed", "잘못된 HTTP 메서드 호출", HttpStatus.METHOD_NOT_ALLOWED),
+    BAD_REQUEST_ERROR("client.bad.request", "클라이언트 요청 오류", HttpStatus.BAD_REQUEST),
 
-    METHOD_NOT_ALLOWED("common.method.not-allowed", "잘못된 HTTP 메서드 호출", HttpStatus.METHOD_NOT_ALLOWED),
     NOT_FOUND("common.not.found", "조회 오류", HttpStatus.NOT_FOUND),
     DUPLICATED("common.duplicated", "중복 오류", HttpStatus.CONFLICT),
     UNAUTHORIZED("common.unauthorized", "인증 오류", HttpStatus.UNAUTHORIZED),
