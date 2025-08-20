@@ -7,7 +7,7 @@ object ApiPath {
         const val UPDATE = "/api/user"
         const val DELETE = "/api/auth/basic"
         const val VALIDATE_PASSWORD = "/api/user/password"
-        const val INITIALIZE_PASSWORD = "/api/user/password/initialize"
+        const val INITIALIZE_PASSWORD = "/api/user/password"
     }
 
     object Duplication {
@@ -16,8 +16,8 @@ object ApiPath {
     }
 
     object Email {
-        const val SEND = "/api/auth/email/verification"
-        const val VERIFY = "/api/auth/email/verification"
+        const val SEND = "/api/auth/email"
+        const val VERIFY = "/api/auth/email"
     }
 
     object Auth {
