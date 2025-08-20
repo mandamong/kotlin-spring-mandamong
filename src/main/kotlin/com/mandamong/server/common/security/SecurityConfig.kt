@@ -45,7 +45,7 @@ class SecurityConfig(
         private val ALLOWED_PATH = arrayOf(
             "/api/auth/**",
             "/metric/**",
-            "/api/user/password/initialize"
+            "/api/user/password"
         )
     }
 

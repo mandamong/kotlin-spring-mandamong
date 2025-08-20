@@ -56,7 +56,7 @@ class MinioService(
     }
 
     companion object {
-        private const val PROFILE_PREFIX = "/user/profile"
+        private const val PROFILE_PREFIX = "user/profile"
         private const val DEFAULT = "/default/default.png"
     }
 

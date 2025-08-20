@@ -54,9 +54,9 @@ class UserService(
         request.nickname?.let { user.nickname = it }
         request.password?.let { user.password = passwordEncoder.encode(it) }
         request.image?.let {
+            minioService.deleteObject(user.imageKey)
             user.imageKey = minioService.upload(userId, it)
             presignedUrl = minioService.getPresignedUrlByObjectKey(user.imageKey)
-            minioService.deleteObject(user.imageKey)
         }
         log().info("UPDATE userId=$userId")
         return presignedUrl

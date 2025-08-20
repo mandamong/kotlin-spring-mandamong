@@ -26,7 +26,7 @@ class ObjectiveController(
         @PathVariable objectiveId: Long,
         @RequestBody request: UpdateObjectiveRequest,
     ): ResponseEntity<ApiResponse<UpdateObjectiveResponse>> {
-        return ApiResponse.ok(service.update(objectiveId, request.newObjective))
+        return ApiResponse.ok(service.update(objectiveId, request.objective))
     }
 
     @PostMapping(ApiPath.Objective.SUGGEST)

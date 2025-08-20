@@ -5,7 +5,7 @@ import com.mandamong.server.mandalart.enums.Status
 
 data class UpdateMandalartResponse(
     val id: Long,
-    val name: String,
+    val mandalartName: String,
     val status: Status,
 ) {
 
@@ -13,7 +13,7 @@ data class UpdateMandalartResponse(
         fun of(mandalart: Mandalart): UpdateMandalartResponse {
             return UpdateMandalartResponse(
                 id = mandalart.id,
-                name = mandalart.name,
+                mandalartName = mandalart.name,
                 status = mandalart.status,
             )
         }

@@ -32,7 +32,7 @@ class User(
     var nickname: String,
 
     @Column(name = "image_object_key", nullable = false)
-    var imageKey: String = "/user/profile/default/default.png",
+    var imageKey: String = "user/profile/default/default.png",
 
     @Column(name = "password", nullable = false)
     var password: String,

@@ -40,7 +40,7 @@ class MandalartController(
         @RequestBody request: UpdateMandalartRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<UpdateMandalartResponse>> {
-        return ApiResponse.ok(facade.update(mandalartId, request.newMandalartName, loginUser.userId))
+        return ApiResponse.ok(facade.update(mandalartId, request.mandalartName, loginUser.userId))
     }
 
     @DeleteMapping(ApiPath.Mandalart.DELETE)

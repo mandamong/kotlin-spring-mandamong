@@ -53,7 +53,7 @@ class MandalartFacade(
         val mandalarts = mandalartService.getByUserIdWithPage(userId, paginationParameter)
         val mandalartIds = mandalarts.joinToString(", ") { it.id.toString() }
         val mandalartPage: Page<ReadMandalartsResponse> = mandalarts.map {
-            ReadMandalartsResponse.of(it.name, it.subject!!.subject, it.status)
+            ReadMandalartsResponse.of(it)
         }
         log().info("READ MANDALARTS userId=$userId mandalartIds=$mandalartIds")
         return PaginationResponse.of(mandalartPage)

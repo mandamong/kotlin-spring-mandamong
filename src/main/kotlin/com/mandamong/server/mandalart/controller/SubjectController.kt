@@ -26,7 +26,7 @@ class SubjectController(
         @PathVariable subjectId: Long,
         @RequestBody request: UpdateSubjectRequest,
     ): ResponseEntity<ApiResponse<UpdateSubjectResponse>> {
-        return ApiResponse.ok(service.update(subjectId, request.newSubject))
+        return ApiResponse.ok(service.update(subjectId, request.subject))
     }
 
     @PostMapping(ApiPath.Subject.SUGGEST)

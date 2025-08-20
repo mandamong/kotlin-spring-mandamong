@@ -4,13 +4,13 @@ import com.mandamong.server.mandalart.entity.Action
 import com.mandamong.server.mandalart.enums.Status
 
 data class UpdateActionRequest(
-    val newAction: String?,
+    val action: String?,
     val status: Status?,
 ) {
 
     companion object {
         fun of(action: Action): UpdateActionRequest {
-            return UpdateActionRequest(newAction = action.action, status = action.status)
+            return UpdateActionRequest(action = action.action, status = action.status)
         }
     }
 
