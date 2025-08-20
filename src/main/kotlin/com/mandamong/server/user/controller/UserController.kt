@@ -6,7 +6,7 @@ import com.mandamong.server.common.dto.ApiResponse
 import com.mandamong.server.user.dto.LoginUser
 import com.mandamong.server.user.dto.ValidatePasswordRequest
 import com.mandamong.server.user.dto.CreateUserRequest
-import com.mandamong.server.user.dto.InitializeUserPasswordRequest
+import com.mandamong.server.user.dto.InitializePasswordRequest
 import com.mandamong.server.user.dto.UpdateUserRequest
 import com.mandamong.server.user.service.UserService
 import org.springframework.http.ResponseEntity
@@ -54,7 +54,7 @@ class UserController(
     }
 
     @PatchMapping(ApiPath.User.INITIALIZE_PASSWORD)
-    fun initializePassword(@RequestBody request: InitializeUserPasswordRequest): ResponseEntity<ApiResponse<UpdateUserRequest>> {
+    fun initializePassword(@RequestBody request: InitializePasswordRequest): ResponseEntity<ApiResponse<UpdateUserRequest>> {
         return ApiResponse.ok(service.initializePassword(request.email))
     }
 

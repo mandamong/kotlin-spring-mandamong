@@ -1,6 +1,7 @@
 package com.mandamong.server.infrastructure.email.service
 
 import com.mandamong.server.common.error.exception.BadRequestException
+import com.mandamong.server.common.error.exception.TimeoutException
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.email.entity.EmailOutbox
 import com.mandamong.server.infrastructure.email.repository.EmailOutboxRepository
@@ -28,9 +29,12 @@ class EmailService(
 
     fun verifyCode(email: String, code: String) {
         val savedCode: String? = emailVerificationRepository.get(email)
-        if (savedCode == null || savedCode != code) {
+        if (savedCode == null) {
+            throw TimeoutException()
+        } else if (savedCode != code) {
             throw BadRequestException()
         }
+
         log().info("EMAIL_VERIFIED email=$email")
     }
 

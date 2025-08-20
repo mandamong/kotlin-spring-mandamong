@@ -1,4 +1,4 @@
-package com.mandamong.server.common.error.exception
+package com.mandamong.server.common.error.exception.base
 
 import com.mandamong.server.common.error.ErrorCode
 

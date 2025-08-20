@@ -1,6 +1,7 @@
 package com.mandamong.server.common.error.exception
 
 import com.mandamong.server.common.error.ErrorCode
+import com.mandamong.server.common.error.exception.base.BusinessBaseException
 
 class MaxWaitForLockException(
     errorCode: ErrorCode = ErrorCode.MAX_WAIT_FOR_LOCK,

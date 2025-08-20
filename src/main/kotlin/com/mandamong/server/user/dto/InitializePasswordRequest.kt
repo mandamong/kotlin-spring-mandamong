@@ -1,5 +1,5 @@
 package com.mandamong.server.user.dto
 
-data class InitializeUserPasswordRequest(
+data class InitializePasswordRequest(
     val email: String,
 )

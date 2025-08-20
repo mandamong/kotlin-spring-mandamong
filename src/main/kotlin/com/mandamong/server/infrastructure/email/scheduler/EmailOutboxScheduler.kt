@@ -1,7 +1,7 @@
 package com.mandamong.server.infrastructure.email.scheduler
 
 import com.mandamong.server.common.annotation.lock.DistributedLock
-import com.mandamong.server.common.error.exception.BusinessBaseException
+import com.mandamong.server.common.error.exception.base.BusinessBaseException
 import com.mandamong.server.infrastructure.email.entity.EmailOutbox
 import com.mandamong.server.infrastructure.email.enums.EmailOutboxStatus
 import com.mandamong.server.infrastructure.email.repository.EmailOutboxRepository
