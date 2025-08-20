@@ -2,7 +2,7 @@ package com.mandamong.server.auth.service
 
 import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.auth.repository.RefreshTokenRepository
-import com.mandamong.server.common.error.exception.UnauthorizedException
+import com.mandamong.server.common.error.exception.BadRequestException
 import com.mandamong.server.common.util.cookie.CookieUtil
 import com.mandamong.server.common.util.jwt.TokenUtil
 import com.mandamong.server.common.util.log.log
@@ -47,7 +47,7 @@ class AuthService(
 
     private fun validatePassword(raw: String, encoded: String) {
         if (!passwordEncoder.matches(raw, encoded)) {
-            throw UnauthorizedException()
+            throw BadRequestException()
         }
     }
 

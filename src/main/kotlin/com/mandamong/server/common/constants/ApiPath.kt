@@ -5,9 +5,9 @@ object ApiPath {
     object User {
         const val CREATE = "/api/auth/basic"
         const val UPDATE = "/api/user"
+        const val DELETE = "/api/auth/basic"
         const val VALIDATE_PASSWORD = "/api/user/password"
         const val INITIALIZE_PASSWORD = "/api/user/password/initialize"
-        const val DELETE = "/api/auth/basic"
     }
 
     object Duplication {
@@ -28,10 +28,10 @@ object ApiPath {
 
     object Mandalart {
         const val CREATE = "/api/mandalart"
+        const val UPDATE = "/api/mandalart/name/{mandalartId}"
+        const val DELETE = "/api/mandalart/{mandalartId}"
         const val MANDALARTS = "/api/mandalart"
         const val MANDALART = "/api/mandalart/{mandalartId}"
-        const val UPDATE_NAME = "/api/mandalart/name/{mandalartId}"
-        const val DELETE = "/api/mandalart/{mandalartId}"
     }
 
     object Subject {

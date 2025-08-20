@@ -15,18 +15,18 @@ class GeminiService(
     private val objectMapper: ObjectMapper,
 ) {
 
-    fun suggestBySubject(prompt: String): SuggestBySubjectResponse {
+    fun suggestBySubject(subject: String): SuggestBySubjectResponse {
         val schema = Schema.fromJson(SUBJECT_SCHEMA)
         val config = GenerateContentConfig.builder().responseSchema(schema).build()
-        val response = client.models.generateContent(MODEL, prompt + SUBJECT_SUGGEST, config)
+        val response = client.models.generateContent(MODEL, subject + SUBJECT_SUGGEST, config)
         val json = response.text() ?: "response error"
         return objectMapper.readValue(json)
     }
 
-    fun suggestByObjective(prompt: String): SuggestByObjectiveResponse {
+    fun suggestByObjective(objective: String): SuggestByObjectiveResponse {
         val schema = Schema.fromJson(OBJECTIVE_SCHEMA)
         val config = GenerateContentConfig.builder().responseSchema(schema).build()
-        val response = client.models.generateContent(MODEL, prompt + OBJECTIVE_SUGGEST, config)
+        val response = client.models.generateContent(MODEL, objective + OBJECTIVE_SUGGEST, config)
         val json = response.text() ?: "response error"
         return objectMapper.readValue(json)
     }

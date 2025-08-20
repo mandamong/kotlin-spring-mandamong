@@ -4,10 +4,10 @@ import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.dto.ApiResponse
 import com.mandamong.server.user.dto.LoginUser
-import com.mandamong.server.user.dto.PasswordValidationRequest
-import com.mandamong.server.user.dto.RegisterRequest
-import com.mandamong.server.user.dto.UserPasswordInitializeRequest
-import com.mandamong.server.user.dto.UserUpdateRequest
+import com.mandamong.server.user.dto.ValidatePasswordRequest
+import com.mandamong.server.user.dto.CreateUserRequest
+import com.mandamong.server.user.dto.InitializeUserPasswordRequest
+import com.mandamong.server.user.dto.UpdateUserRequest
 import com.mandamong.server.user.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -25,18 +25,17 @@ class UserController(
 
     @PostMapping(ApiPath.User.CREATE)
     fun create(
-        @ModelAttribute request: RegisterRequest,
+        @ModelAttribute request: CreateUserRequest,
     ): ResponseEntity<ApiResponse<LoginResponse>> {
         return ApiResponse.created(service.create(request))
     }
 
     @PatchMapping(ApiPath.User.UPDATE)
     fun update(
-        @ModelAttribute request: UserUpdateRequest,
+        @ModelAttribute request: UpdateUserRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<String?>> {
-        val response = service.update(request, loginUser.userId)
-        return ApiResponse.ok(response)
+        return ApiResponse.ok(service.update(request, loginUser.userId))
     }
 
     @DeleteMapping(ApiPath.User.DELETE)
@@ -47,7 +46,7 @@ class UserController(
 
     @PostMapping(ApiPath.User.VALIDATE_PASSWORD)
     fun validatePassword(
-        @RequestBody request: PasswordValidationRequest,
+        @RequestBody request: ValidatePasswordRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
     ): ResponseEntity<ApiResponse<Nothing>> {
         service.validatePassword(request.password, loginUser.userId)
@@ -55,7 +54,7 @@ class UserController(
     }
 
     @PatchMapping(ApiPath.User.INITIALIZE_PASSWORD)
-    fun initializePassword(@RequestBody request: UserPasswordInitializeRequest): ResponseEntity<ApiResponse<UserUpdateRequest>> {
+    fun initializePassword(@RequestBody request: InitializeUserPasswordRequest): ResponseEntity<ApiResponse<UpdateUserRequest>> {
         return ApiResponse.ok(service.initializePassword(request.email))
     }
 

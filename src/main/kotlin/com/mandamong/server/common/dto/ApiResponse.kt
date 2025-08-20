@@ -26,8 +26,7 @@ data class ApiResponse<T>(
         }
 
         fun deleted(): ResponseEntity<ApiResponse<Nothing>> {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(ApiResponse(success = true, payload = null, error = null))
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
         }
 
         fun error(errorCode: ErrorCode): ResponseEntity<ApiResponse<Nothing>> {

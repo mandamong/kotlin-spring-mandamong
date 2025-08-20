@@ -1,7 +1,7 @@
 package com.mandamong.server.mandalart.service
 
 import com.mandamong.server.common.error.exception.IdNotFoundException
-import com.mandamong.server.mandalart.dto.BasicData
+import com.mandamong.server.mandalart.dto.UpdateSubjectResponse
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.entity.Subject
 import com.mandamong.server.mandalart.repository.SubjectRepository
@@ -21,10 +21,10 @@ class SubjectService(
     }
 
     @Transactional
-    fun update(id: Long, updated: String): BasicData {
+    fun update(id: Long, newSubject: String): UpdateSubjectResponse {
         val subject = getById(id)
-        subject.subject = updated
-        return BasicData.of(subject.id, subject.subject, subject.status)
+        subject.subject = newSubject
+        return UpdateSubjectResponse.of(subject)
     }
 
     @Transactional(readOnly = true)

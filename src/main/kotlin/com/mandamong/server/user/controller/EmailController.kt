@@ -3,7 +3,7 @@ package com.mandamong.server.user.controller
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.dto.ApiResponse
 import com.mandamong.server.infrastructure.email.service.EmailService
-import com.mandamong.server.user.dto.EmailVerificationRequest
+import com.mandamong.server.user.dto.ValidateEmailRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -17,7 +17,7 @@ class EmailController(
 ) {
 
     @PostMapping(ApiPath.Email.SEND)
-    fun sendVerificationCode(@RequestBody request: EmailVerificationRequest): ResponseEntity<ApiResponse<Nothing>> {
+    fun sendVerificationCode(@RequestBody request: ValidateEmailRequest): ResponseEntity<ApiResponse<Nothing>> {
         service.sendCode(request)
         return ApiResponse.ok()
     }

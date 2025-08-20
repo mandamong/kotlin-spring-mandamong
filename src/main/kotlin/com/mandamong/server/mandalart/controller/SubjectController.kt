@@ -3,10 +3,10 @@ package com.mandamong.server.mandalart.controller
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.dto.ApiResponse
 import com.mandamong.server.infrastructure.gemini.service.GeminiService
-import com.mandamong.server.mandalart.dto.BasicData
-import com.mandamong.server.mandalart.dto.MandalartUpdateRequest
+import com.mandamong.server.mandalart.dto.SuggestBySubjectRequest
 import com.mandamong.server.mandalart.dto.SuggestBySubjectResponse
-import com.mandamong.server.mandalart.dto.SuggestRequest
+import com.mandamong.server.mandalart.dto.UpdateSubjectRequest
+import com.mandamong.server.mandalart.dto.UpdateSubjectResponse
 import com.mandamong.server.mandalart.service.SubjectService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PatchMapping
@@ -24,14 +24,14 @@ class SubjectController(
     @PatchMapping(ApiPath.Subject.UPDATE)
     fun update(
         @PathVariable subjectId: Long,
-        @RequestBody request: MandalartUpdateRequest,
-    ): ResponseEntity<ApiResponse<BasicData>> {
-        return ApiResponse.ok(service.update(subjectId, request.updated))
+        @RequestBody request: UpdateSubjectRequest,
+    ): ResponseEntity<ApiResponse<UpdateSubjectResponse>> {
+        return ApiResponse.ok(service.update(subjectId, request.newSubject))
     }
 
     @PostMapping(ApiPath.Subject.SUGGEST)
-    fun suggest(@RequestBody request: SuggestRequest): ResponseEntity<ApiResponse<SuggestBySubjectResponse>> {
-        return ApiResponse.ok(geminiService.suggestBySubject(request.prompt))
+    fun suggest(@RequestBody request: SuggestBySubjectRequest): ResponseEntity<ApiResponse<SuggestBySubjectResponse>> {
+        return ApiResponse.ok(geminiService.suggestBySubject(request.subject))
     }
 
 }

@@ -1,6 +1,6 @@
 package com.mandamong.server.mandalart.dto
 
-data class MandalartCreateRequest(
+data class CreateMandalartRequest(
     val name: String,
     val subject: String,
     val objectives: List<String>,

@@ -10,8 +10,8 @@ import com.mandamong.server.common.error.exception.UnauthorizedException
 import com.mandamong.server.common.util.jwt.TokenUtil
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.minio.service.MinioService
-import com.mandamong.server.user.dto.RegisterRequest
-import com.mandamong.server.user.dto.UserUpdateRequest
+import com.mandamong.server.user.dto.CreateUserRequest
+import com.mandamong.server.user.dto.UpdateUserRequest
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.model.Email
 import com.mandamong.server.user.repository.UserRepository
@@ -30,14 +30,14 @@ class UserService(
 ) {
 
     @Transactional
-    fun create(registerRequest: RegisterRequest): LoginResponse {
-        validateEmailDuplication(registerRequest.email)
-        validateNicknameDuplication(registerRequest.nickname)
-        val encodedPassword = passwordEncoder.encode(registerRequest.password)
-        val user = registerRequest.toEntity(encodedPassword)
+    fun create(createUserRequest: CreateUserRequest): LoginResponse {
+        validateEmailDuplication(createUserRequest.email)
+        validateNicknameDuplication(createUserRequest.nickname)
+        val encodedPassword = passwordEncoder.encode(createUserRequest.password)
+        val user = createUserRequest.toEntity(encodedPassword)
         val savedUser = repository.save(user)
 
-        registerRequest.image?.let { savedUser.imageKey = minioService.upload(savedUser.id, it) }
+        createUserRequest.image?.let { savedUser.imageKey = minioService.upload(savedUser.id, it) }
 
         val presignedUrl = minioService.getPresignedUrlByObjectKey(savedUser.imageKey)
         val accessToken = tokenUtil.createAccessToken(savedUser.id)
@@ -48,15 +48,15 @@ class UserService(
     }
 
     @Transactional
-    fun update(request: UserUpdateRequest, userId: Long): String? {
+    fun update(request: UpdateUserRequest, userId: Long): String? {
         val user = getById(userId)
         var presignedUrl: String? = null
         request.nickname?.let { user.nickname = it }
         request.password?.let { user.password = passwordEncoder.encode(it) }
         request.image?.let {
-            minioService.deleteObject(user.imageKey)
             user.imageKey = minioService.upload(userId, it)
             presignedUrl = minioService.getPresignedUrlByObjectKey(user.imageKey)
+            minioService.deleteObject(user.imageKey)
         }
         log().info("UPDATE userId=$userId")
         return presignedUrl
@@ -106,12 +106,12 @@ class UserService(
     }
 
     @Transactional
-    fun initializePassword(email: String): UserUpdateRequest {
+    fun initializePassword(email: String): UpdateUserRequest {
         val user = getByEmail(email)
         val randomPassword = generateRandomPassword()
         user.password = passwordEncoder.encode(randomPassword)
         log().info("INITIALIZE_PASSWORD email=$email")
-        return UserUpdateRequest(password = randomPassword)
+        return UpdateUserRequest(password = randomPassword)
     }
 
     private fun isValidPassword(password: String, user: User) = passwordEncoder.matches(password, user.password)

@@ -1,5 +1,5 @@
 package com.mandamong.server.user.dto
 
-data class EmailVerificationRequest(
+data class ValidateEmailRequest(
     val email: String,
 )

@@ -1,5 +1,5 @@
 package com.mandamong.server.auth.dto
 
-data class RefreshRequest(
+data class TokenRefreshRequest(
     val refreshToken: String,
 )

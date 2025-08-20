@@ -2,7 +2,7 @@ package com.mandamong.server.mandalart.service
 
 import com.mandamong.server.common.annotation.lock.DistributedLock
 import com.mandamong.server.common.error.exception.IdNotFoundException
-import com.mandamong.server.mandalart.dto.BasicData
+import com.mandamong.server.mandalart.dto.UpdateActionResponse
 import com.mandamong.server.mandalart.entity.Action
 import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.enums.Status
@@ -26,9 +26,9 @@ class ActionService(
 
     @Transactional
     @DistributedLock(name = "ACTION", key = "#id")
-    fun update(id: Long, updated: String?, status: Status?): BasicData {
+    fun update(id: Long, newAction: String?, status: Status?): UpdateActionResponse {
         val action = getByIdWithAllData(id)
-        updated?.let { action.action = it }
+        newAction?.let { action.action = it }
         status?.let { newStatus ->
             action.status = newStatus
             val objective = action.objective
@@ -40,7 +40,7 @@ class ActionService(
             val mandalart = subject.mandalart
             mandalart.status = subject.status
         }
-        return BasicData.of(action.id, action.action, action.status)
+        return UpdateActionResponse.of(action)
     }
 
     @Transactional(readOnly = true)

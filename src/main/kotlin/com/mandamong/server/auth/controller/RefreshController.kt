@@ -1,7 +1,7 @@
 package com.mandamong.server.auth.controller
 
-import com.mandamong.server.auth.dto.RefreshRequest
-import com.mandamong.server.auth.dto.RefreshResponse
+import com.mandamong.server.auth.dto.TokenRefreshRequest
+import com.mandamong.server.auth.dto.TokenRefreshResponse
 import com.mandamong.server.auth.service.RefreshService
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.dto.ApiResponse
@@ -16,7 +16,7 @@ class RefreshController(
 ) {
 
     @PostMapping(ApiPath.Auth.REFRESH)
-    fun refresh(@RequestBody request: RefreshRequest): ResponseEntity<ApiResponse<RefreshResponse>> {
+    fun refresh(@RequestBody request: TokenRefreshRequest): ResponseEntity<ApiResponse<TokenRefreshResponse>> {
         return ApiResponse.ok(service.refresh(request.refreshToken))
     }
 

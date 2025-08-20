@@ -1,5 +1,5 @@
 package com.mandamong.server.user.dto
 
-data class PasswordValidationRequest(
+data class ValidatePasswordRequest(
     val password: String,
 )
