@@ -30,12 +30,19 @@ class UserController(
         return ApiResponse.created(service.create(request))
     }
 
-    @PatchMapping(ApiPath.User.UPDATE_NICKNAME)
-    fun updateNickname(
-        @RequestBody request: UserUpdateRequest,
+    @PatchMapping(ApiPath.User.UPDATE)
+    fun update(
+        @ModelAttribute request: UserUpdateRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
-    ): ResponseEntity<ApiResponse<UserUpdateRequest>> {
-        return ApiResponse.ok(service.updateNickname(request.updated, loginUser.userId))
+    ): ResponseEntity<ApiResponse<String?>> {
+        val response = service.update(request, loginUser.userId)
+        return ApiResponse.ok(response)
+    }
+
+    @DeleteMapping(ApiPath.User.DELETE)
+    fun delete(@AuthenticationPrincipal loginUser: LoginUser): ResponseEntity<ApiResponse<Nothing>> {
+        service.delete(loginUser.userId)
+        return ApiResponse.deleted()
     }
 
     @PostMapping(ApiPath.User.VALIDATE_PASSWORD)
@@ -47,24 +54,9 @@ class UserController(
         return ApiResponse.ok()
     }
 
-    @PatchMapping(ApiPath.User.UPDATE_PASSWORD)
-    fun updatePassword(
-        @RequestBody request: UserUpdateRequest,
-        @AuthenticationPrincipal loginUser: LoginUser,
-    ): ResponseEntity<ApiResponse<Nothing>> {
-        service.updatePassword(request.updated, loginUser.userId)
-        return ApiResponse.ok()
-    }
-
     @PatchMapping(ApiPath.User.INITIALIZE_PASSWORD)
     fun initializePassword(@RequestBody request: UserPasswordInitializeRequest): ResponseEntity<ApiResponse<UserUpdateRequest>> {
         return ApiResponse.ok(service.initializePassword(request.email))
-    }
-
-    @DeleteMapping(ApiPath.User.DELETE)
-    fun delete(@AuthenticationPrincipal loginUser: LoginUser): ResponseEntity<ApiResponse<Nothing>> {
-        service.delete(loginUser.userId)
-        return ApiResponse.deleted()
     }
 
 }

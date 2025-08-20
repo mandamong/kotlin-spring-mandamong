@@ -39,26 +39,35 @@ class UserService(
 
         registerRequest.image?.let { savedUser.imageKey = minioService.upload(savedUser.id, it) }
 
-        val presignedUrl: String = minioService.getPresignedUrlByObjectKey(savedUser.imageKey)
+        val presignedUrl = minioService.getPresignedUrlByObjectKey(savedUser.imageKey)
         val accessToken = tokenUtil.createAccessToken(savedUser.id)
         val refreshToken = tokenUtil.createRefreshToken(savedUser.id)
         refreshTokenRepository.set(savedUser.id, refreshToken)
-        log().info("REGISTER userId=${savedUser.id}")
+        log().info("CREATE userId=${savedUser.id}")
         return savedUser.toDto(presignedUrl, accessToken, refreshToken)
     }
 
     @Transactional
-    fun updateNickname(nickname: String, userId: Long): UserUpdateRequest {
+    fun update(request: UserUpdateRequest, userId: Long): String? {
         val user = getById(userId)
-        user.nickname = nickname
-        log().info("UPDATE_NICKNAME userId=$userId")
-        return UserUpdateRequest(updated = user.nickname)
+        var presignedUrl: String? = null
+        request.nickname?.let { user.nickname = it }
+        request.password?.let { user.password = passwordEncoder.encode(it) }
+        request.image?.let {
+            minioService.deleteObject(user.imageKey)
+            user.imageKey = minioService.upload(userId, it)
+            presignedUrl = minioService.getPresignedUrlByObjectKey(user.imageKey)
+        }
+        log().info("UPDATE userId=$userId")
+        return presignedUrl
     }
 
     @Transactional
     fun delete(userId: Long) {
+        val user = getById(userId)
+        minioService.deleteObject(user.imageKey)
         repository.deleteById(userId)
-        log().info("UNREGISTER userId=$userId")
+        log().info("DELETE userId=$userId")
     }
 
     @Transactional(readOnly = true)
@@ -97,19 +106,12 @@ class UserService(
     }
 
     @Transactional
-    fun updatePassword(password: String, userId: Long) {
-        val user = getById(userId)
-        user.password = passwordEncoder.encode(password)
-        log().info("UPDATE_PASSWORD userId=$userId")
-    }
-
-    @Transactional
     fun initializePassword(email: String): UserUpdateRequest {
         val user = getByEmail(email)
         val randomPassword = generateRandomPassword()
         user.password = passwordEncoder.encode(randomPassword)
         log().info("INITIALIZE_PASSWORD email=$email")
-        return UserUpdateRequest(updated = randomPassword)
+        return UserUpdateRequest(password = randomPassword)
     }
 
     private fun isValidPassword(password: String, user: User) = passwordEncoder.matches(password, user.password)

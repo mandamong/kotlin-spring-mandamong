@@ -3,6 +3,7 @@ package com.mandamong.server.infrastructure.minio.service
 import io.minio.GetPresignedObjectUrlArgs
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
+import io.minio.RemoveObjectArgs
 import io.minio.http.Method
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -14,8 +15,8 @@ class MinioService(
     private val minioClient: MinioClient,
 ) {
 
-    fun upload(id: Long, image: MultipartFile): String {
-        val objectKey = "$PROFILE_PREFIX/$id/${image.originalFilename}"
+    fun upload(userId: Long, image: MultipartFile): String {
+        val objectKey = "$PROFILE_PREFIX/$userId/${image.originalFilename}"
         putObject(objectKey, image)
         return objectKey
     }
@@ -41,8 +42,22 @@ class MinioService(
         )
     }
 
+    fun deleteObject(objectKey: String) {
+        if (objectKey == "$PROFILE_PREFIX$DEFAULT") {
+            return
+        }
+
+        minioClient.removeObject(
+            RemoveObjectArgs.builder()
+                .bucket(bucketName)
+                .`object`(objectKey)
+                .build()
+        )
+    }
+
     companion object {
         private const val PROFILE_PREFIX = "/user/profile"
+        private const val DEFAULT = "/default/default.png"
     }
 
 }
