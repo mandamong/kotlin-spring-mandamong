@@ -7,4 +7,5 @@ enum class CacheConfig(
     val ttl: Duration,
 ) {
     MANDALART(CacheName.MANDALART, Duration.ofMinutes(5)),
+    MANDALARTS(CacheName.MANDALARTS, Duration.ofMinutes(5)),
 }
