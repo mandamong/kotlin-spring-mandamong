@@ -44,7 +44,7 @@ class SecurityConfig(
     companion object {
         private val ALLOWED_PATH = arrayOf(
             "/api/auth/**",
-            "/metric/**",
+            "/metrics/**",
             "/api/user/password"
         )
     }
