@@ -7,9 +7,13 @@ class TokenProperties(
     val issuer: String,
     val secret: String,
     val expiry: Expiry,
-)
+) {
 
-class Expiry(
-    val access: Long,
-    val refresh: Long,
-)
+    class Expiry(
+        val access: Long,
+        val refresh: Long,
+    )
+
+}
+
+
