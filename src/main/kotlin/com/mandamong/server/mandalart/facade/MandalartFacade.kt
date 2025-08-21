@@ -49,7 +49,11 @@ class MandalartFacade(
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = [CacheName.MANDALARTS], key = "#userId")
+    @Cacheable(
+        cacheNames = [CacheName.MANDALARTS],
+        key = "#userId",
+        condition = "#paginationParameter.number <= 1"
+    )
     fun getMandalartsByUserId(
         paginationParameter: PaginationParameter,
         userId: Long,
