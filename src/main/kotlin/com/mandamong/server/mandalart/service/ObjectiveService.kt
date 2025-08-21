@@ -4,14 +4,17 @@ import com.mandamong.server.common.error.exception.IdNotFoundException
 import com.mandamong.server.mandalart.dto.UpdateObjectiveResponse
 import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.entity.Subject
+import com.mandamong.server.mandalart.event.dto.UpdateObjectiveEvent
 import com.mandamong.server.mandalart.repository.ObjectiveRepository
 import kotlin.jvm.optionals.getOrNull
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ObjectiveService(
     private val repository: ObjectiveRepository,
+    private val publisher: ApplicationEventPublisher
 ) {
 
     @Transactional
@@ -26,6 +29,14 @@ class ObjectiveService(
     fun update(id: Long, newObjective: String): UpdateObjectiveResponse {
         val objective = getById(id)
         objective.objective = newObjective
+
+        publisher.publishEvent(
+            UpdateObjectiveEvent(
+                mandalartId = objective.subject.mandalart.id,
+                objectiveId = objective.id,
+            )
+        )
+
         return UpdateObjectiveResponse.of(objective)
     }
 

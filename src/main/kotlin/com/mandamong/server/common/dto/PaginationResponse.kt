@@ -2,7 +2,7 @@ package com.mandamong.server.common.dto
 
 import org.springframework.data.domain.Page
 
-data class PaginationResponse<T>(
+open class PaginationResponse<T>(
     val totalPage: Int,
     val hasNext: Boolean,
     val content: List<T>,

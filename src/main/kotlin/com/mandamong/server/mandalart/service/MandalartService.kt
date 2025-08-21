@@ -9,6 +9,7 @@ import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.service.UserService
 import kotlin.jvm.optionals.getOrNull
 import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Caching
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -30,7 +31,12 @@ class MandalartService(
     }
 
     @Transactional
-    @CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId")
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId"),
+            CacheEvict(cacheNames = [CacheName.MANDALART], key = "#id")
+        ]
+    )
     fun update(id: Long, newMandalartName: String, userId: Long): Mandalart {
         val mandalart = getById(id)
         mandalart.name = newMandalartName
@@ -38,7 +44,12 @@ class MandalartService(
     }
 
     @Transactional
-    @CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId")
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId"),
+            CacheEvict(cacheNames = [CacheName.MANDALART], key = "#id")
+        ]
+    )
     fun deleteById(id: Long, userId: Long) = repository.deleteById(id)
 
     @Transactional(readOnly = true)

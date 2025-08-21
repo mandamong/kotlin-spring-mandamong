@@ -6,13 +6,16 @@ import com.mandamong.server.mandalart.dto.UpdateActionResponse
 import com.mandamong.server.mandalart.entity.Action
 import com.mandamong.server.mandalart.entity.Objective
 import com.mandamong.server.mandalart.enums.Status
+import com.mandamong.server.mandalart.event.dto.UpdateActionEvent
 import com.mandamong.server.mandalart.repository.ActionRepository
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ActionService(
     private val repository: ActionRepository,
+    private val publisher: ApplicationEventPublisher,
 ) {
 
     @Transactional
@@ -40,6 +43,14 @@ class ActionService(
             val mandalart = subject.mandalart
             mandalart.status = subject.status
         }
+
+        publisher.publishEvent(
+            UpdateActionEvent(
+                mandalartId = action.objective.subject.mandalart.id,
+                actionId = action.id,
+            )
+        )
+
         return UpdateActionResponse.of(action)
     }
 

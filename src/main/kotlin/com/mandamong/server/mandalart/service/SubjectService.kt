@@ -8,6 +8,7 @@ import com.mandamong.server.mandalart.entity.Subject
 import com.mandamong.server.mandalart.repository.SubjectRepository
 import kotlin.jvm.optionals.getOrNull
 import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Caching
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -23,7 +24,12 @@ class SubjectService(
     }
 
     @Transactional
-    @CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId")
+    @Caching(
+        evict = [
+            CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId"),
+            CacheEvict(cacheNames = [CacheName.MANDALART], key = "#id")
+        ]
+    )
     fun update(id: Long, newSubject: String, userId: Long): UpdateSubjectResponse {
         val subject = getById(id)
         subject.subject = newSubject

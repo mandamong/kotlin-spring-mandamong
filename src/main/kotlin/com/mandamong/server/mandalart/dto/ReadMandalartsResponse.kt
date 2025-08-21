@@ -3,7 +3,7 @@ package com.mandamong.server.mandalart.dto
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.enums.Status
 
-data class ReadMandalartsResponse(
+open class ReadMandalartsResponse(
     val id: Long,
     val name: String,
     val subject: String,
