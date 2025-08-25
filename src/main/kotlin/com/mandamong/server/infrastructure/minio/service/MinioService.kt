@@ -1,5 +1,6 @@
 package com.mandamong.server.infrastructure.minio.service
 
+import com.mandamong.server.common.error.exception.BadRequestException
 import io.minio.GetPresignedObjectUrlArgs
 import io.minio.MinioClient
 import io.minio.PutObjectArgs
@@ -19,6 +20,9 @@ class MinioService(
     fun upload(userId: Long, image: MultipartFile): String {
         val uuid = UUID.randomUUID()
         val extension = image.originalFilename?.substringAfterLast('.', "")
+        if (extension.isNullOrEmpty()) {
+            throw BadRequestException()
+        }
         val objectKey = "$PROFILE_PREFIX/$userId/image-$uuid.$extension"
         putObject(objectKey, image)
         return objectKey
