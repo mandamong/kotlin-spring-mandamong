@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # MariaDB Database
   mariadb:
-    image: mariadb:10.11
+    image: mariadb:11.4.5
     container_name: mandamong-mariadb
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
@@ -15,7 +15,7 @@ services:
 
   # Redis Cache
   redis:
-    image: redis:7-alpine
+    image: redis:8.2.1
     container_name: mandamong-redis
     command: redis-server --requirepass password
     ports:
@@ -23,7 +23,7 @@ services:
 
   # RabbitMQ Message Broker
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:4.1.3-management
     container_name: mandamong-rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: username
@@ -34,7 +34,7 @@ services:
 
   # MinIO Object Storage
   minio:
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2025-07-23T15-54-02Z
     container_name: mandamong-minio
     environment:
       MINIO_ROOT_USER: username
