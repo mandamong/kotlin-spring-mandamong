@@ -16,18 +16,16 @@ class GeminiService(
     private val client: Client,
     private val objectMapper: ObjectMapper,
 ) {
-    lateinit var SUBJECT_SCHEMA: String
-    lateinit var OBJECTIVE_SCHEMA: String
+    private lateinit var SUBJECT_SCHEMA: String
+    private lateinit var OBJECTIVE_SCHEMA: String
 
     @PostConstruct
     fun init() {
-        SUBJECT_SCHEMA = loadSchemaFromResource("schema/subject_schema.json")
-        OBJECTIVE_SCHEMA = loadSchemaFromResource("schema/objective_schema.json")
+        this.SUBJECT_SCHEMA = loadSchemaFromResource("schema/subject_schema.json")
+        this.OBJECTIVE_SCHEMA = loadSchemaFromResource("schema/objective_schema.json")
     }
 
-    private fun loadSchemaFromResource(path: String): String {
-        return ClassPathResource(path).inputStream.bufferedReader().use { it.readText() }
-    }
+    private fun loadSchemaFromResource(path: String): String = ClassPathResource(path).inputStream.bufferedReader().use { it.readText() }
 
     fun suggestBySubject(subject: String): SuggestBySubjectResponse {
         val schema = Schema.fromJson(SUBJECT_SCHEMA)
