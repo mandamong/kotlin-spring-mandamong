@@ -5,6 +5,7 @@ import io.minio.MinioClient
 import io.minio.PutObjectArgs
 import io.minio.RemoveObjectArgs
 import io.minio.http.Method
+import java.util.UUID
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -16,7 +17,9 @@ class MinioService(
 ) {
 
     fun upload(userId: Long, image: MultipartFile): String {
-        val objectKey = "$PROFILE_PREFIX/$userId/${image.originalFilename}"
+        val uuid = UUID.randomUUID()
+        val extension = image.originalFilename?.substringAfterLast('.', "")
+        val objectKey = "$PROFILE_PREFIX/$userId/image-$uuid.$extension"
         putObject(objectKey, image)
         return objectKey
     }
