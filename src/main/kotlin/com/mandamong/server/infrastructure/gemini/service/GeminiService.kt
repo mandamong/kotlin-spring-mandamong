@@ -7,6 +7,8 @@ import com.google.genai.types.GenerateContentConfig
 import com.google.genai.types.Schema
 import com.mandamong.server.mandalart.dto.SuggestByObjectiveResponse
 import com.mandamong.server.mandalart.dto.SuggestBySubjectResponse
+import jakarta.annotation.PostConstruct
+import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,6 +16,18 @@ class GeminiService(
     private val client: Client,
     private val objectMapper: ObjectMapper,
 ) {
+    lateinit var SUBJECT_SCHEMA: String
+    lateinit var OBJECTIVE_SCHEMA: String
+
+    @PostConstruct
+    fun init() {
+        SUBJECT_SCHEMA = loadSchemaFromResource("schema/subject_schema.json")
+        OBJECTIVE_SCHEMA = loadSchemaFromResource("schema/objective_schema.json")
+    }
+
+    private fun loadSchemaFromResource(path: String): String {
+        return ClassPathResource(path).inputStream.bufferedReader().use { it.readText() }
+    }
 
     fun suggestBySubject(subject: String): SuggestBySubjectResponse {
         val schema = Schema.fromJson(SUBJECT_SCHEMA)
@@ -32,47 +46,6 @@ class GeminiService(
     }
 
     companion object {
-        private const val SUBJECT_SCHEMA = """
-            {
-                "type": "object",
-                "properties": {
-                    "objectives": {
-                        "type": "array",
-                        "items": { "type": "string" },
-                        "minItems": 4,
-                        "maxItems": 4
-                    },
-                    "actions": {
-                        "type": "array",
-                        "items": {
-                            "type": "array",
-                            "items": { "type": "string" },
-                            "minItems": 5,
-                            "maxItems": 5
-                        },
-                    "minItems": 4,
-                    "maxItems": 4
-                    }
-                },
-                "required": ["objectives", "actions"]
-            }
-        """
-
-        private const val OBJECTIVE_SCHEMA = """
-            {
-                "type": "object",
-                "properties": {
-                    "actions": {
-                        "type": "array",
-                        "items": { "type": "string" },
-                        "minItems": 5,
-                        "maxItems": 5
-                    }
-                },
-              "required": ["actions"]
-            }
-        """
-
         private const val SUBJECT_SUGGEST = """
             너는 JSON API 서버야.
             주제(subject)가 입력되면, 주제(subject)를 이루기 위한 목표(objectives)와 행동(actions)에 대한 정보를 JSON 형식으로만 응답해줘.  
