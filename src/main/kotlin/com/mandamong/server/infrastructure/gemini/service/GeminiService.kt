@@ -16,8 +16,9 @@ class GeminiService(
     private val objectMapper: ObjectMapper,
     schemaProperties: SchemaProperties,
 ) {
-    private var subjectSchema: Schema = schemaProperties.subject.file.readText().let { Schema.fromJson(it) }
-    private var objectiveSchema: Schema = schemaProperties.objective.file.readText().let { Schema.fromJson(it) }
+
+    private val subjectSchema: Schema = schemaProperties.subject.file.readText().let { Schema.fromJson(it) }
+    private val objectiveSchema: Schema = schemaProperties.objective.file.readText().let { Schema.fromJson(it) }
 
     fun suggestBySubject(subject: String): SuggestBySubjectResponse {
         val config = GenerateContentConfig.builder().responseSchema(subjectSchema).build()
