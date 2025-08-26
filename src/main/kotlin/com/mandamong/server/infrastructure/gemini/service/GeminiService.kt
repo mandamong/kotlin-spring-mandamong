@@ -17,12 +17,14 @@ class GeminiService(
     schemaProperties: SchemaProperties,
 ) {
 
-    private val subjectSchema: Schema by lazy {
-        schemaProperties.subject.file.readText().let { Schema.fromJson(it) }
+    private val subjectSchema: Schema = schemaProperties.subject.inputStream.use { input ->
+        val json = String(input.readBytes(), Charsets.UTF_8)
+        Schema.fromJson(json)
     }
 
-    private val objectiveSchema: Schema by lazy {
-        schemaProperties.objective.file.readText().let { Schema.fromJson(it) }
+    private val objectiveSchema: Schema = schemaProperties.objective.inputStream.use { input ->
+        val json = String(input.readBytes(), Charsets.UTF_8)
+        Schema.fromJson(json)
     }
 
     fun suggestBySubject(subject: String): SuggestBySubjectResponse {
