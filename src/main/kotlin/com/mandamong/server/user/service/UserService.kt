@@ -101,7 +101,7 @@ class UserService(
     fun validatePassword(password: String, userId: Long) {
         val user = getById(userId)
         log().info("VALIDATE_PASSWORD userId=$userId")
-        if (!isValidPassword(password, user)) {
+        if (!isValidPassword(password, user.password)) {
             throw UnauthorizedException()
         }
     }
@@ -115,7 +115,7 @@ class UserService(
         return UpdateUserRequest(password = randomPassword)
     }
 
-    private fun isValidPassword(password: String, user: User) = passwordEncoder.matches(password, user.password)
+    private fun isValidPassword(raw: String, encoded: String) = passwordEncoder.matches(raw, encoded)
 
     private fun generateRandomPassword(length: Int = 12): String {
         val chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=!@#$%^&*()_+"
