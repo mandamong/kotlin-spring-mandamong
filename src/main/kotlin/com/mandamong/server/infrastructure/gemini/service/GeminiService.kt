@@ -5,39 +5,29 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.google.genai.Client
 import com.google.genai.types.GenerateContentConfig
 import com.google.genai.types.Schema
+import com.mandamong.server.infrastructure.gemini.properties.SchemaProperties
 import com.mandamong.server.mandalart.dto.SuggestByObjectiveResponse
 import com.mandamong.server.mandalart.dto.SuggestBySubjectResponse
-import jakarta.annotation.PostConstruct
-import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Service
 
 @Service
 class GeminiService(
     private val client: Client,
     private val objectMapper: ObjectMapper,
+    schemaProperties: SchemaProperties,
 ) {
-    private lateinit var SUBJECT_SCHEMA: String
-    private lateinit var OBJECTIVE_SCHEMA: String
-
-    @PostConstruct
-    fun init() {
-        this.SUBJECT_SCHEMA = loadSchemaFromResource("schema/subject_schema.json")
-        this.OBJECTIVE_SCHEMA = loadSchemaFromResource("schema/objective_schema.json")
-    }
-
-    private fun loadSchemaFromResource(path: String): String = ClassPathResource(path).inputStream.bufferedReader().use { it.readText() }
+    private var subjectSchema: Schema = schemaProperties.subject.file.readText().let { Schema.fromJson(it) }
+    private var objectiveSchema: Schema = schemaProperties.objective.file.readText().let { Schema.fromJson(it) }
 
     fun suggestBySubject(subject: String): SuggestBySubjectResponse {
-        val schema = Schema.fromJson(SUBJECT_SCHEMA)
-        val config = GenerateContentConfig.builder().responseSchema(schema).build()
+        val config = GenerateContentConfig.builder().responseSchema(subjectSchema).build()
         val response = client.models.generateContent(MODEL, subject + SUBJECT_SUGGEST, config)
         val json = response.text() ?: "response error"
         return objectMapper.readValue(json)
     }
 
     fun suggestByObjective(objective: String): SuggestByObjectiveResponse {
-        val schema = Schema.fromJson(OBJECTIVE_SCHEMA)
-        val config = GenerateContentConfig.builder().responseSchema(schema).build()
+        val config = GenerateContentConfig.builder().responseSchema(objectiveSchema).build()
         val response = client.models.generateContent(MODEL, objective + OBJECTIVE_SUGGEST, config)
         val json = response.text() ?: "response error"
         return objectMapper.readValue(json)
