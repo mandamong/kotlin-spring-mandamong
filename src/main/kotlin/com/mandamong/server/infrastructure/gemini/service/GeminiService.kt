@@ -14,11 +14,18 @@ import org.springframework.stereotype.Service
 class GeminiService(
     private val client: Client,
     private val objectMapper: ObjectMapper,
-    private val schemaProperties: SchemaProperties,
+    schemaProperties: SchemaProperties,
 ) {
 
+    private val subjectSchema: Schema by lazy {
+        schemaProperties.subject.file.readText().let { Schema.fromJson(it) }
+    }
+
+    private val objectiveSchema: Schema by lazy {
+        schemaProperties.objective.file.readText().let { Schema.fromJson(it) }
+    }
+
     fun suggestBySubject(subject: String): SuggestBySubjectResponse {
-        val subjectSchema: Schema = schemaProperties.subject.file.readText().let { Schema.fromJson(it) }
         val config = GenerateContentConfig.builder().responseSchema(subjectSchema).build()
         val response = client.models.generateContent(MODEL, subject + SUBJECT_SUGGEST, config)
         val json = response.text() ?: "response error"
@@ -26,7 +33,6 @@ class GeminiService(
     }
 
     fun suggestByObjective(objective: String): SuggestByObjectiveResponse {
-        val objectiveSchema: Schema = schemaProperties.objective.file.readText().let { Schema.fromJson(it) }
         val config = GenerateContentConfig.builder().responseSchema(objectiveSchema).build()
         val response = client.models.generateContent(MODEL, objective + OBJECTIVE_SUGGEST, config)
         val json = response.text() ?: "response error"
