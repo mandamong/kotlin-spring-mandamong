@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.core.io.Resource
 
 @ConfigurationProperties(prefix = "schemas")
-class SchemaProperties {
-    lateinit var subject: Resource
-    lateinit var objective: Resource
-}
+data class SchemaProperties(
+    val subject: Resource,
+    val objective: Resource,
+)

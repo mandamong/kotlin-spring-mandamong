@@ -3,10 +3,14 @@
   "properties": {
     "actions": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "minItems": 5,
       "maxItems": 5
     }
   },
-  "required": ["actions"]
+  "required": [
+    "actions"
+  ]
 }
