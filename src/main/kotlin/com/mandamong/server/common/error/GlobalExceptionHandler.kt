@@ -3,6 +3,7 @@ package com.mandamong.server.common.error
 import com.mandamong.server.common.dto.ApiResponse
 import com.mandamong.server.common.error.exception.base.BusinessBaseException
 import com.mandamong.server.common.notification.discord.DiscordWebhookService
+import com.mandamong.server.common.util.log.log
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -16,7 +17,7 @@ class GlobalExceptionHandler(
     private val discordWebhookService: DiscordWebhookService,
 ) {
 
-    private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+    private val log = log()
 
     @ExceptionHandler(BusinessBaseException::class)
     fun handle(e: BusinessBaseException): ResponseEntity<ApiResponse<Nothing>> {
