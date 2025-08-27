@@ -1,7 +1,7 @@
 package com.mandamong.server.common.notification.discord
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.mandamong.server.common.util.log.log
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
@@ -15,8 +15,10 @@ import java.time.format.DateTimeFormatter
 
 @Service
 class DiscordWebhookService(
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
 ) {
+
+    private val log = LoggerFactory.getLogger(DiscordWebhookService::class.java)
 
     @Value("\${discord.webhook.url:}")
     private lateinit var webhookUrl: String
@@ -31,37 +33,37 @@ class DiscordWebhookService(
     @Async
     fun sendErrorNotification(exception: Exception, requestInfo: String? = null) {
         if (!webhookEnabled || webhookUrl.isBlank()) {
-            log().warn("Discord webhook is disabled or URL is not configured")
+            log.warn("Discord webhook is disabled or URL is not configured")
             return
         }
 
         try {
             val embed = createErrorEmbed(exception, requestInfo)
             val payload = DiscordWebhookPayload(embeds = listOf(embed))
-            
+
             sendWebhook(payload)
-            log().info("Discord error notification sent successfully")
+            log.info("Discord error notification sent successfully")
         } catch (e: Exception) {
-            log().error("Failed to send Discord notification", e)
+            log.error("Failed to send Discord notification", e)
         }
     }
 
     private fun createErrorEmbed(exception: Exception, requestInfo: String?): DiscordEmbed {
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-        
+
         val fields = mutableListOf<DiscordField>().apply {
             add(DiscordField("Exception Type", exception.javaClass.simpleName, true))
             add(DiscordField("Message", exception.message ?: "No message", true))
             add(DiscordField("Timestamp", timestamp, true))
-            
+
             requestInfo?.let {
                 add(DiscordField("Request Info", it, false))
             }
-            
+
             exception.stackTrace.take(5).let { stackTrace ->
                 if (stackTrace.isNotEmpty()) {
-                    val stackTraceString = stackTrace.joinToString("\n") { 
-                        "${it.className}.${it.methodName}:${it.lineNumber}" 
+                    val stackTraceString = stackTrace.joinToString("\n") {
+                        "${it.className}.${it.methodName}:${it.lineNumber}"
                     }
                     add(DiscordField("Stack Trace (Top 5)", "```\n$stackTraceString\n```", false))
                 }
@@ -80,7 +82,7 @@ class DiscordWebhookService(
 
     private fun sendWebhook(payload: DiscordWebhookPayload) {
         val json = objectMapper.writeValueAsString(payload)
-        
+
         val request = HttpRequest.newBuilder()
             .uri(URI.create(webhookUrl))
             .header("Content-Type", "application/json")
@@ -89,7 +91,7 @@ class DiscordWebhookService(
             .build()
 
         val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-        
+
         if (response.statusCode() !in 200..299) {
             throw RuntimeException("Discord webhook failed with status: ${response.statusCode()}, body: ${response.body()}")
         }
@@ -97,7 +99,7 @@ class DiscordWebhookService(
 }
 
 data class DiscordWebhookPayload(
-    val embeds: List<DiscordEmbed>
+    val embeds: List<DiscordEmbed>,
 )
 
 data class DiscordEmbed(
@@ -106,15 +108,15 @@ data class DiscordEmbed(
     val color: Int,
     val fields: List<DiscordField>,
     val footer: DiscordFooter,
-    val timestamp: String
+    val timestamp: String,
 )
 
 data class DiscordField(
     val name: String,
     val value: String,
-    val inline: Boolean
+    val inline: Boolean,
 )
 
 data class DiscordFooter(
-    val text: String
+    val text: String,
 )
