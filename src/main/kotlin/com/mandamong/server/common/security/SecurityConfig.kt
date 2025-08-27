@@ -46,7 +46,6 @@ class SecurityConfig(
             "/api/auth/**",
             "/metrics/**",
             "/api/user/password",
-            "/api/test/**"
         )
     }
 
