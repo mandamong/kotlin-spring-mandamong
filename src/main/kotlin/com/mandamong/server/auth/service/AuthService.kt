@@ -26,7 +26,8 @@ class AuthService(
         refreshTokenRepository.set(savedUser.id, refreshToken)
         val presignedUrl = minioService.getPresignedUrlByObjectKey(savedUser.imageKey)
         log().info("USER_LOGIN userId=${savedUser.id}")
-        return savedUser.toDto(presignedUrl, accessToken, refreshToken)
+
+        return LoginResponse.from(savedUser, presignedUrl, accessToken, refreshToken)
     }
 
     fun logout(userId: Long) {
