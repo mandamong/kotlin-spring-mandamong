@@ -3,7 +3,16 @@ package com.mandamong.server.user.entity
 import com.mandamong.server.common.entity.BaseTimeEntity
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.user.model.Email
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Embedded
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
+import jakarta.persistence.Table
 
 @Entity
 @Table(name = "users")
