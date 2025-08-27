@@ -2,11 +2,7 @@ package com.mandamong.server.user.service
 
 import com.mandamong.server.auth.dto.LoginResponse
 import com.mandamong.server.auth.repository.RefreshTokenRepository
-import com.mandamong.server.common.error.exception.EmailDuplicatedException
-import com.mandamong.server.common.error.exception.EmailNotFoundException
-import com.mandamong.server.common.error.exception.IdNotFoundException
-import com.mandamong.server.common.error.exception.NicknameDuplicatedException
-import com.mandamong.server.common.error.exception.UnauthorizedException
+import com.mandamong.server.common.error.exception.*
 import com.mandamong.server.common.util.jwt.TokenUtil
 import com.mandamong.server.common.util.log.log
 import com.mandamong.server.infrastructure.minio.service.MinioService
@@ -15,10 +11,10 @@ import com.mandamong.server.user.dto.UpdateUserRequest
 import com.mandamong.server.user.entity.User
 import com.mandamong.server.user.model.Email
 import com.mandamong.server.user.repository.UserRepository
-import kotlin.jvm.optionals.getOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class UserService(
@@ -28,6 +24,7 @@ class UserService(
     private val minioService: MinioService,
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
+    private val log = log()
 
     @Transactional
     fun create(createUserRequest: CreateUserRequest): LoginResponse {
@@ -43,8 +40,8 @@ class UserService(
         val accessToken = tokenUtil.createAccessToken(savedUser.id)
         val refreshToken = tokenUtil.createRefreshToken(savedUser.id)
         refreshTokenRepository.set(savedUser.id, refreshToken)
-        log().info("CREATE userId=${savedUser.id}")
-        return savedUser.toDto(presignedUrl, accessToken, refreshToken)
+        log.info("CREATE userId=${savedUser.id}")
+        return LoginResponse.from(savedUser, presignedUrl, accessToken, refreshToken)
     }
 
     @Transactional
@@ -58,7 +55,7 @@ class UserService(
             user.imageKey = minioService.upload(userId, it)
             presignedUrl = minioService.getPresignedUrlByObjectKey(user.imageKey)
         }
-        log().info("UPDATE userId=$userId")
+        log.info("UPDATE userId=$userId")
         return presignedUrl
     }
 
@@ -68,7 +65,7 @@ class UserService(
         repository.deleteById(userId)
         refreshTokenRepository.delete(user.id)
         minioService.deleteObject(user.imageKey)
-        log().info("DELETE userId=$userId")
+        log.info("DELETE userId=$userId")
     }
 
     @Transactional(readOnly = true)
@@ -100,7 +97,7 @@ class UserService(
     @Transactional(readOnly = true)
     fun validatePassword(password: String, userId: Long) {
         val user = getById(userId)
-        log().info("VALIDATE_PASSWORD userId=$userId")
+        log.info("VALIDATE_PASSWORD userId=$userId")
         if (!isValidPassword(password, user.password)) {
             throw UnauthorizedException()
         }
@@ -111,7 +108,7 @@ class UserService(
         val user = getByEmail(email)
         val randomPassword = generateRandomPassword()
         user.password = passwordEncoder.encode(randomPassword)
-        log().info("INITIALIZE_PASSWORD email=$email")
+        log.info("INITIALIZE_PASSWORD email=$email")
         return UpdateUserRequest(password = randomPassword)
     }
 
