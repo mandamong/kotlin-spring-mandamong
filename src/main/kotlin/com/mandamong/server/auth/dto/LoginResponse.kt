@@ -13,7 +13,7 @@ data class LoginResponse(
 ) {
 
     companion object {
-        fun from(
+        fun of(
             user: User,
             presignedUrl: String,
             accessToken: String,
