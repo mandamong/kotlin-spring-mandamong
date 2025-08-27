@@ -46,7 +46,7 @@ class UserService(
         val refreshToken = tokenUtil.createRefreshToken(savedUser.id)
         refreshTokenRepository.set(savedUser.id, refreshToken)
         log.info("CREATE userId=${savedUser.id}")
-        return LoginResponse.from(savedUser, presignedUrl, accessToken, refreshToken)
+        return LoginResponse.of(savedUser, presignedUrl, accessToken, refreshToken)
     }
 
     @Transactional
