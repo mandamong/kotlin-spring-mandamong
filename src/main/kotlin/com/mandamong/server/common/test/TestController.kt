@@ -1,6 +1,8 @@
 package com.mandamong.server.common.test
 
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -25,4 +27,16 @@ class TestController {
         val result = 10 / 0
         return result.toString()
     }
+
+    @PostMapping("/test/error")
+    fun body(@RequestBody body: TestBody): String {
+        val nullString: String? = null
+        return nullString!!.length.toString() // 의도적으로 NPE 발생
+    }
+
 }
+
+class TestBody(
+    name: String,
+    age: Int,
+)
