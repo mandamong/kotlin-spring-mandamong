@@ -2,7 +2,7 @@ package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.dto.ApiResponse
-import com.mandamong.server.infrastructure.llm.MandalartLlmAgent
+import com.mandamong.server.infrastructure.llm.agent.MandalartLlmAgent
 import com.mandamong.server.infrastructure.llm.dto.ObjectiveSuggestionRequest
 import com.mandamong.server.mandalart.dto.SuggestByObjectiveRequest
 import com.mandamong.server.mandalart.dto.SuggestByObjectiveResponse
