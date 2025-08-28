@@ -34,7 +34,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation("com.google.genai:google-genai:1.0.0")
     implementation("org.redisson:redisson-spring-boot-starter:3.46.0")
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
