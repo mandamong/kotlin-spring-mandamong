@@ -8,6 +8,7 @@ data class MandalartAgentProperties(
     val defaultKey: String,
     val projectId: ProjectId
 ) {
+
     data class ProjectId(
         val mandalart: Mandalart
     ) {
@@ -16,4 +17,5 @@ data class MandalartAgentProperties(
             val objective: String
         )
     }
+
 }

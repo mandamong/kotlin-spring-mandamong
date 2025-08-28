@@ -18,4 +18,5 @@ class LlmAgentConfig(
     fun llmAgentWebClient(): WebClient = WebClient.builder()
         .baseUrl(properties.url)
         .build()
+
 }
