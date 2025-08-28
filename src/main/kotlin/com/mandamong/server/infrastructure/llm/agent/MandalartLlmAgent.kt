@@ -5,6 +5,7 @@ import com.mandamong.server.infrastructure.llm.dto.ObjectiveData
 import com.mandamong.server.infrastructure.llm.dto.ObjectiveSuggestionRequest
 import com.mandamong.server.infrastructure.llm.dto.SubjectData
 import com.mandamong.server.infrastructure.llm.dto.SubjectSuggestionRequest
+import com.mandamong.server.infrastructure.llm.exception.LlmAgentException
 import com.mandamong.server.infrastructure.llm.properties.MandalartAgentProperties
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Component
@@ -31,6 +32,10 @@ class MandalartLlmAgent(
             .bodyValue(request)
             .retrieve()
             .bodyToMono(object : ParameterizedTypeReference<LlmSuggestionResponse<T>>() {})
-            .block()!!
+            .block()
+            ?: throw LlmAgentException(
+                message = "LLM Agent로부터 응답을 받을 수 없습니다. Project ID: $projectId",
+                projectId = projectId
+            )
     }
 }
