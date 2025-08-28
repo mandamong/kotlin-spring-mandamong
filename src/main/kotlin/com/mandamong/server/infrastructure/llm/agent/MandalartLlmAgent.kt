@@ -7,13 +7,15 @@ import com.mandamong.server.infrastructure.llm.dto.SubjectData
 import com.mandamong.server.infrastructure.llm.dto.SubjectSuggestionRequest
 import com.mandamong.server.infrastructure.llm.exception.LlmAgentException
 import com.mandamong.server.infrastructure.llm.properties.MandalartAgentProperties
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 
 @Component
 class MandalartLlmAgent(
-    private val webClient: WebClient,
+    @field:Qualifier("llmAgentWebClient")
+    private val llmAgentWebClient: WebClient,
     private val properties: MandalartAgentProperties
 ) {
 
@@ -26,7 +28,7 @@ class MandalartLlmAgent(
     }
 
     private inline fun <reified T> suggest(request: Any, projectId: String): LlmSuggestionResponse<T> {
-        return webClient.post()
+        return llmAgentWebClient.post()
             .uri("/api/v1/prediction/$projectId")
             .header("Authorization", "Bearer ${properties.defaultKey}")
             .bodyValue(request)
