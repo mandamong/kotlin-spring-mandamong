@@ -1,13 +1,19 @@
 package com.mandamong.server.common.util.jwt
 
 import io.jsonwebtoken.Claims
-import java.util.Date
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.junit.jupiter.SpringExtension
+import java.util.*
+
 
 @SpringBootTest
+@ActiveProfiles("local")
+@ExtendWith(SpringExtension::class)
 class TokenUtilTest {
 
     @Autowired
