@@ -2,7 +2,7 @@ package com.mandamong.server.mandalart.controller
 
 import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.dto.ApiResponse
-import com.mandamong.server.infrastructure.gemini.service.GeminiService
+import com.mandamong.server.infrastructure.flowise.service.FlowiseService
 import com.mandamong.server.mandalart.dto.SuggestByObjectiveRequest
 import com.mandamong.server.mandalart.dto.SuggestByObjectiveResponse
 import com.mandamong.server.mandalart.dto.UpdateObjectiveRequest
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class ObjectiveController(
     private val service: ObjectiveService,
-    private val geminiService: GeminiService,
+    private val flowiseService: FlowiseService,
 ) {
 
     @PatchMapping(ApiPath.Objective.UPDATE)
@@ -31,7 +31,7 @@ class ObjectiveController(
 
     @PostMapping(ApiPath.Objective.SUGGEST)
     fun suggest(@RequestBody request: SuggestByObjectiveRequest): ResponseEntity<ApiResponse<SuggestByObjectiveResponse>> {
-        return ApiResponse.ok(geminiService.suggestByObjective(request.objective))
+        return ApiResponse.ok(flowiseService.suggestByObjective(request))
     }
 
 }
