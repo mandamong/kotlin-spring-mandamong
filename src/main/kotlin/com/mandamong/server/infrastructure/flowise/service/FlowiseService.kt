@@ -1,7 +1,6 @@
 package com.mandamong.server.infrastructure.flowise.service
 
 import com.mandamong.server.common.error.exception.base.BusinessBaseException
-import com.mandamong.server.common.util.json.JsonUtil
 import com.mandamong.server.mandalart.dto.FlowiseResponse
 import com.mandamong.server.mandalart.dto.SuggestByObjectiveRequest
 import com.mandamong.server.mandalart.dto.SuggestByObjectiveResponse
@@ -14,7 +13,6 @@ import org.springframework.web.reactive.function.client.WebClient
 class FlowiseService(
     private val subjectClient: WebClient,
     private val objectiveClient: WebClient,
-    private val jsonUtil: JsonUtil,
 ) {
 
     fun suggestBySubject(request: SuggestBySubjectRequest): SuggestBySubjectResponse {
@@ -24,7 +22,7 @@ class FlowiseService(
             .bodyToMono(FlowiseResponse::class.java)
             .block()
             ?: throw BusinessBaseException()
-        return jsonUtil.convert(flowiseResponse.json, SuggestBySubjectResponse::class.java)
+        return SuggestBySubjectResponse.from(flowiseResponse.json)
     }
 
     fun suggestByObjective(request: SuggestByObjectiveRequest): SuggestByObjectiveResponse {
@@ -34,7 +32,7 @@ class FlowiseService(
             .bodyToMono(FlowiseResponse::class.java)
             .block()
             ?: throw BusinessBaseException()
-        return jsonUtil.convert(flowiseResponse.json, SuggestByObjectiveResponse::class.java)
+        return SuggestByObjectiveResponse.from(flowiseResponse.json)
     }
 
 }
