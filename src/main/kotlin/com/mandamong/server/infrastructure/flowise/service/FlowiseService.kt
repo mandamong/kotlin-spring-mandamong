@@ -6,6 +6,7 @@ import com.mandamong.server.mandalart.dto.SuggestByObjectiveRequest
 import com.mandamong.server.mandalart.dto.SuggestByObjectiveResponse
 import com.mandamong.server.mandalart.dto.SuggestBySubjectRequest
 import com.mandamong.server.mandalart.dto.SuggestBySubjectResponse
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 
@@ -16,23 +17,24 @@ class FlowiseService(
 ) {
 
     fun suggestBySubject(request: SuggestBySubjectRequest): SuggestBySubjectResponse {
-        val flowiseResponse = subjectClient.post()
-            .bodyValue(request)
-            .retrieve()
-            .bodyToMono(FlowiseResponse::class.java)
-            .block()
-            ?: throw BusinessBaseException()
-        return SuggestBySubjectResponse.from(flowiseResponse.json)
+        return sendRequest(subjectClient, request)
     }
 
     fun suggestByObjective(request: SuggestByObjectiveRequest): SuggestByObjectiveResponse {
-        val flowiseResponse = objectiveClient.post()
+        return sendRequest(objectiveClient, request)
+    }
+
+    private inline fun <reified T> sendRequest(webClient: WebClient, request: Any): T {
+        return webClient.post()
             .bodyValue(request)
             .retrieve()
-            .bodyToMono(FlowiseResponse::class.java)
+            .bodyToMono(typeReference<T>())
             .block()
+            ?.json
             ?: throw BusinessBaseException()
-        return SuggestByObjectiveResponse.from(flowiseResponse.json)
     }
+
+    private inline fun <reified T> typeReference() =
+        object : ParameterizedTypeReference<FlowiseResponse<T>>() {}
 
 }
