@@ -1,42 +1,23 @@
 package com.mandamong.server.common.notification.discord
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
+import com.mandamong.server.common.util.log.log
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
-import java.time.Duration
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
 class DiscordWebhookService(
-    private val objectMapper: ObjectMapper,
+    @Qualifier("discordWebhookClient") private val webClient: WebClient,
 ) {
 
-    private val log = LoggerFactory.getLogger(DiscordWebhookService::class.java)
-
-    @Value("\${discord.webhook.url:}")
-    private lateinit var webhookUrl: String
-
-    @Value("\${discord.webhook.enabled:true}")
-    private var webhookEnabled: Boolean = true
-
-    private val httpClient = HttpClient.newBuilder()
-        .connectTimeout(Duration.ofSeconds(10))
-        .build()
+    private val log = log()
 
     @Async
     fun sendErrorNotification(exception: Exception, requestInfo: String? = null) {
-        if (!webhookEnabled || webhookUrl.isBlank()) {
-            log.warn("Discord webhook is disabled or URL is not configured")
-            return
-        }
-
         try {
             val embed = createErrorEmbed(exception, requestInfo)
             val payload = DiscordWebhookPayload(embeds = listOf(embed))
@@ -81,19 +62,16 @@ class DiscordWebhookService(
     }
 
     private fun sendWebhook(payload: DiscordWebhookPayload) {
-        val json = objectMapper.writeValueAsString(payload)
-
-        val request = HttpRequest.newBuilder()
-            .uri(URI.create(webhookUrl))
-            .header("Content-Type", "application/json")
-            .timeout(Duration.ofSeconds(30))
-            .POST(HttpRequest.BodyPublishers.ofString(json))
-            .build()
-
-        val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-
-        if (response.statusCode() !in 200..299) {
-            throw RuntimeException("Discord webhook failed with status: ${response.statusCode()}, body: ${response.body()}")
+        try {
+            webClient.post()
+                .bodyValue(payload)
+                .retrieve()
+                .bodyToMono(String::class.java)
+                .block()
+        } catch (e: WebClientResponseException) {
+            throw RuntimeException("Discord webhook failed with status: ${e.statusCode}, body: ${e.responseBodyAsString}", e)
+        } catch (e: Exception) {
+            throw RuntimeException("Discord webhook request failed", e)
         }
     }
 }
