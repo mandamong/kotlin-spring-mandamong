@@ -1,6 +1,7 @@
 package com.mandamong.server.infrastructure.flowise.config
 
 import com.mandamong.server.infrastructure.flowise.properties.FlowiseProperties
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
@@ -11,6 +12,9 @@ class WebClientConfig(
     private val properties: FlowiseProperties,
 ) {
 
+    @Value("\${discord.webhook.url:}")
+    private lateinit var discordWebhookUrl: String
+
     @Bean
     fun subjectClient(): WebClient {
         return createFlowiseClient(properties.projectId.subject)
@@ -19,6 +23,16 @@ class WebClientConfig(
     @Bean
     fun objectiveClient(): WebClient {
         return createFlowiseClient(properties.projectId.objective)
+    }
+
+    @Bean
+    fun discordWebhookClient(): WebClient {
+        return WebClient.builder()
+            .baseUrl(discordWebhookUrl)
+            .defaultHeaders {
+                it.contentType = MediaType.APPLICATION_JSON
+            }
+            .build()
     }
 
     private fun createFlowiseClient(projectId: String): WebClient {
