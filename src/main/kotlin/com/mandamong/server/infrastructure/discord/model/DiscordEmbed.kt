@@ -1,6 +1,6 @@
 package com.mandamong.server.infrastructure.discord.model
 
-import java.time.LocalDateTime
+import java.time.Instant
 import java.time.format.DateTimeFormatter
 
 data class DiscordEmbed(
@@ -14,8 +14,8 @@ data class DiscordEmbed(
 
     companion object {
         fun of(e: Exception, requestInformation: String?): DiscordEmbed {
-            val now = LocalDateTime.now()
-            val timestamp = now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            val instant = Instant.now()
+            val timestamp = DateTimeFormatter.ISO_INSTANT.format(instant)
             val fields: List<DiscordField> = buildList {
                 add(DiscordField("Exception Type", e.javaClass.simpleName, true))
                 add(DiscordField("Message", e.message ?: "No message", true))
@@ -37,7 +37,7 @@ data class DiscordEmbed(
                 color = RED,
                 fields = fields,
                 footer = DiscordFooter("Mandamong Server Alert"),
-                timestamp = "${now}Z"
+                timestamp = timestamp
             )
         }
 
