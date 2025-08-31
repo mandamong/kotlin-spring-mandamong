@@ -10,10 +10,8 @@ import org.springframework.web.reactive.function.client.WebClient
 @Configuration
 class WebClientConfig(
     private val properties: FlowiseProperties,
+    @param:Value("\${discord.webhook.url}") private val discordWebhookUrl: String
 ) {
-
-    @Value("\${discord.webhook.url:}")
-    private lateinit var discordWebhookUrl: String
 
     @Bean
     fun subjectClient(): WebClient {
@@ -26,7 +24,7 @@ class WebClientConfig(
     }
 
     @Bean
-    fun discordWebhookClient(): WebClient {
+    fun discordClient(): WebClient {
         return WebClient.builder()
             .baseUrl(discordWebhookUrl)
             .defaultHeaders {
