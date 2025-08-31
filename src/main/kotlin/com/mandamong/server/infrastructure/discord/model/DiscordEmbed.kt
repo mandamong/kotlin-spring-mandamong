@@ -13,13 +13,12 @@ data class DiscordEmbed(
 ) {
 
     companion object {
-        fun of(e: Exception, requestInformation: String?): DiscordEmbed {
+        fun of(e: Throwable, requestInformation: String?): DiscordEmbed {
             val instant = Instant.now()
             val timestamp = DateTimeFormatter.ISO_INSTANT.format(instant)
             val fields: List<DiscordField> = buildList {
                 add(DiscordField("Exception Type", e.javaClass.simpleName, true))
                 add(DiscordField("Message", e.message ?: "No message", true))
-                add(DiscordField("Timestamp", timestamp, true))
                 requestInformation?.let { add(DiscordField("Request Info", it, false)) }
                 e.stackTrace.take(5).let { stackTrace ->
                     if (stackTrace.isNotEmpty()) {

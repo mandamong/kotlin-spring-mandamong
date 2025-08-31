@@ -19,7 +19,6 @@ class DiscordService(
         val embed = DiscordEmbed.of(e, requestInformation)
         val payload = DiscordPayload(listOf(embed))
         sendNotification(payload)
-        log.info("EXCEPTION_NOTIFICATION_SENT")
     }
 
     private fun sendNotification(payload: DiscordPayload) {
@@ -27,7 +26,10 @@ class DiscordService(
             .bodyValue(payload)
             .retrieve()
             .toBodilessEntity()
-            .block()
+            .subscribe(
+                { log.info("EXCEPTION_NOTIFICATION_SENT") },
+                { error -> log.error("EXCEPTION_NOTIFICATION_FAILED", error) },
+            )
     }
 
 }

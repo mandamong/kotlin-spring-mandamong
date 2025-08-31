@@ -1,4 +1,4 @@
-package com.mandamong.server.infrastructure.flowise.config
+package com.mandamong.server.infrastructure.web.config
 
 import com.mandamong.server.infrastructure.flowise.properties.FlowiseProperties
 import org.springframework.beans.factory.annotation.Value
