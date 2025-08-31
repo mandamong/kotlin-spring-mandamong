@@ -32,12 +32,8 @@ class GlobalExceptionHandler(
     @ExceptionHandler(Exception::class)
     fun handle(e: Exception, request: HttpServletRequest): ResponseEntity<ApiResponse<Nothing>> {
         log.error("Exception", e)
-        try {
-            val requestInformation = getRequestInformation(request)
-            discordService.notifyException(e, requestInformation)
-        } catch (e: Exception) {
-            log.error("EXCEPTION_NOTIFICATION_FAILED", e)
-        }
+        val requestInformation = getRequestInformation(request)
+        discordService.notifyException(e, requestInformation)
         return ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR)
     }
 
