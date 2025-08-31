@@ -1,9 +1,11 @@
 package com.mandamong.server.common.security
 
+import com.mandamong.server.common.constants.ApiPath
 import com.mandamong.server.common.security.filter.TokenAuthenticationFilter
 import com.mandamong.server.common.security.filter.TokenExceptionFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -26,6 +28,7 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers(*ALLOWED_PATH).permitAll()
+                    .requestMatchers(HttpMethod.PATCH, ApiPath.User.INITIALIZE_PASSWORD).permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
@@ -45,7 +48,6 @@ class SecurityConfig(
         private val ALLOWED_PATH = arrayOf(
             "/api/auth/**",
             "/metrics/**",
-            "/api/user/password",
         )
     }
 
