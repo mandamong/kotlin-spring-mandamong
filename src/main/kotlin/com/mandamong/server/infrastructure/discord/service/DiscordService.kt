@@ -26,7 +26,7 @@ class DiscordService(
         discordClient.post()
             .bodyValue(payload)
             .retrieve()
-            .bodyToMono(String::class.java)
+            .toBodilessEntity()
             .block()
     }
 

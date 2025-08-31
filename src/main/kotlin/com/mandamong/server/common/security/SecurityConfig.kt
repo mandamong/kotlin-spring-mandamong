@@ -28,6 +28,8 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers(*ALLOWED_PATH).permitAll()
+                    .requestMatchers(HttpMethod.POST, ApiPath.Auth.LOGOUT).authenticated()
+                    .requestMatchers(HttpMethod.DELETE, ApiPath.User.DELETE).authenticated()
                     .requestMatchers(HttpMethod.PATCH, ApiPath.User.INITIALIZE_PASSWORD).permitAll()
                     .anyRequest().authenticated()
             }
