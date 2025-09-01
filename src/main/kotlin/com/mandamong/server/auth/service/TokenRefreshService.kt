@@ -13,7 +13,6 @@ class TokenRefreshService(
     private val tokenUtil: TokenUtil,
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
-
     fun refresh(refreshToken: String): TokenRefreshResponse {
         val userId = tokenUtil.parseRefreshToken(refreshToken).subject.toLong()
         val savedRefreshToken: String = refreshTokenRepository.get(userId) ?: throw IdNotFoundException(userId)
@@ -25,11 +24,14 @@ class TokenRefreshService(
         return TokenRefreshResponse(userId, newAccessToken, newRefreshToken)
     }
 
-    private fun validateToken(refreshToken: String, savedRefreshToken: String, userId: Long) {
+    private fun validateToken(
+        refreshToken: String,
+        savedRefreshToken: String,
+        userId: Long,
+    ) {
         val savedUserId: Long = tokenUtil.parseRefreshToken(savedRefreshToken).subject.toLong()
         if (userId != savedUserId || refreshToken != savedRefreshToken) {
             throw BadRequestException()
         }
     }
-
 }

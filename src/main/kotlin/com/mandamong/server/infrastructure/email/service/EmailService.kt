@@ -20,14 +20,16 @@ class EmailService(
     private val emailVerificationRepository: EmailVerificationRepository,
     private val mailSender: JavaMailSender,
 ) {
-
     @Transactional
     fun sendCode(request: ValidateEmailRequest) {
         val outbox = EmailOutbox(email = request.email, code = emailBuilder.createCode())
         repository.save(outbox)
     }
 
-    fun verifyCode(email: String, code: String) {
+    fun verifyCode(
+        email: String,
+        code: String,
+    ) {
         val savedCode: String? = emailVerificationRepository.get(email)
         if (savedCode == null) {
             throw TimeoutException()
@@ -38,7 +40,10 @@ class EmailService(
         log().info("EMAIL_VERIFIED email=$email")
     }
 
-    fun sendEmail(email: String, code: String) {
+    fun sendEmail(
+        email: String,
+        code: String,
+    ) {
         val message: MimeMessage = mailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true, "UTF-8")
         helper.setTo(email)
@@ -51,5 +56,4 @@ class EmailService(
     companion object {
         private const val EMAIL_SUBJECT: String = "만다몽 - 이메일 인증 번호"
     }
-
 }

@@ -4,5 +4,4 @@ enum class EmailOutboxStatus {
     PENDING,
     SENT,
     FAILED,
-    ;
 }

@@ -16,9 +16,11 @@ class AuthService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val minioService: MinioService,
 ) {
-
     @Transactional
-    fun login(email: String, password: String): LoginResponse {
+    fun login(
+        email: String,
+        password: String,
+    ): LoginResponse {
         val savedUser = userService.getByEmail(email)
         userService.validatePassword(password, savedUser.id)
         val accessToken = tokenUtil.createAccessToken(savedUser.id)
@@ -34,5 +36,4 @@ class AuthService(
         refreshTokenRepository.delete(userId)
         log().info("USER_LOGOUT userId=$userId")
     }
-
 }

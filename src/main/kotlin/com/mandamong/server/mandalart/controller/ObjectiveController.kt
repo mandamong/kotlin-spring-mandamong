@@ -20,18 +20,14 @@ class ObjectiveController(
     private val service: ObjectiveService,
     private val flowiseService: FlowiseService,
 ) {
-
     @PatchMapping(ApiPath.Objective.UPDATE)
     fun update(
         @PathVariable objectiveId: Long,
         @RequestBody request: UpdateObjectiveRequest,
-    ): ResponseEntity<ApiResponse<UpdateObjectiveResponse>> {
-        return ApiResponse.ok(service.update(objectiveId, request.objective))
-    }
+    ): ResponseEntity<ApiResponse<UpdateObjectiveResponse>> = ApiResponse.ok(service.update(objectiveId, request.objective))
 
     @PostMapping(ApiPath.Objective.SUGGEST)
-    fun suggest(@RequestBody request: SuggestByObjectiveRequest): ResponseEntity<ApiResponse<SuggestByObjectiveResponse>> {
-        return ApiResponse.ok(flowiseService.suggestByObjective(request))
-    }
-
+    fun suggest(
+        @RequestBody request: SuggestByObjectiveRequest,
+    ): ResponseEntity<ApiResponse<SuggestByObjectiveResponse>> = ApiResponse.ok(flowiseService.suggestByObjective(request))
 }

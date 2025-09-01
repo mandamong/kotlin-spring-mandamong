@@ -20,27 +20,18 @@ class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
-
     @Embedded
     var email: Email,
-
     @Column(name = "phone_number", nullable = true)
     var phoneNumber: String? = null,
-
     @Column(name = "nickname", nullable = false)
     var nickname: String,
-
     @Column(name = "image_object_key", nullable = false)
     var imageKey: String = "user/profile/default/default.png",
-
     @Column(name = "password", nullable = false)
     var password: String,
-
     @Column(name = "language", nullable = false)
     var language: String,
-
     @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
-    val mandalarts: List<Mandalart> = listOf()
-) : BaseTimeEntity() {
-
-}
+    val mandalarts: List<Mandalart> = listOf(),
+) : BaseTimeEntity()

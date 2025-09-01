@@ -9,12 +9,11 @@ data class UpdateSubjectResponse(
     val status: Status,
 ) {
     companion object {
-        fun of(subject: Subject): UpdateSubjectResponse {
-            return UpdateSubjectResponse(
+        fun of(subject: Subject): UpdateSubjectResponse =
+            UpdateSubjectResponse(
                 id = subject.id,
                 subject = subject.subject,
                 status = subject.status,
             )
-        }
     }
 }

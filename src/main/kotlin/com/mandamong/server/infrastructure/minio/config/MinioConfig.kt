@@ -11,11 +11,11 @@ class MinioConfig(
     @Value("\${minio.accessKey}") private val accessKey: String,
     @Value("\${minio.secretKey}") private val secretKey: String,
 ) {
-
     @Bean
-    fun minioClient(): MinioClient = MinioClient.builder()
-        .endpoint(endpoint)
-        .credentials(accessKey, secretKey)
-        .build()
-
+    fun minioClient(): MinioClient =
+        MinioClient
+            .builder()
+            .endpoint(endpoint)
+            .credentials(accessKey, secretKey)
+            .build()
 }

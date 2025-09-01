@@ -10,12 +10,9 @@ import org.springframework.transaction.event.TransactionalEventListener
 
 @Component
 class ObjectiveEventHandler {
-
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @CacheEvict(cacheNames = [CacheName.MANDALART], key = "#event.mandalartId")
     fun handleObjectiveUpdated(event: UpdateObjectiveEvent) {
         log().info("CACHE_EVICT mandalartId=${event.mandalartId}")
     }
-
 }
-

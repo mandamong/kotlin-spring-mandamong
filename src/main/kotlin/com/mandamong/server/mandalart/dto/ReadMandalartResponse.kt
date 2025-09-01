@@ -11,21 +11,18 @@ open class ReadMandalartResponse(
     val objectives: List<UpdateObjectiveResponse>,
     val actions: List<List<UpdateActionResponse>>,
 ) {
-
     companion object {
         fun of(
             mandalart: Mandalart,
             subject: Subject,
             objectives: List<Objective>,
             actions: List<List<Action>>,
-        ): ReadMandalartResponse {
-            return ReadMandalartResponse(
+        ): ReadMandalartResponse =
+            ReadMandalartResponse(
                 mandalart = UpdateMandalartResponse.of(mandalart),
                 subject = UpdateSubjectResponse.of(subject),
                 objectives = objectives.map { UpdateObjectiveResponse.of(it) },
-                actions = actions.map { action -> action.map { UpdateActionResponse.of(it) } }
+                actions = actions.map { action -> action.map { UpdateActionResponse.of(it) } },
             )
-        }
     }
-
 }

@@ -8,9 +8,7 @@ class Email(
     @Column(name = "email", nullable = false)
     val value: String,
 ) {
-
     companion object {
         fun from(value: String): Email = Email(value)
     }
-
 }

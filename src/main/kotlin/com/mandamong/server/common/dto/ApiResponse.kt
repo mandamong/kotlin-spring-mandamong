@@ -10,29 +10,21 @@ data class ApiResponse<T>(
     val payload: T?,
     val error: ErrorResponse?,
 ) {
-
     companion object {
-        fun <R> ok(): ResponseEntity<ApiResponse<R>> {
-            return ResponseEntity.ok(ApiResponse(success = true, payload = null, error = null))
-        }
+        fun <R> ok(): ResponseEntity<ApiResponse<R>> = ResponseEntity.ok(ApiResponse(success = true, payload = null, error = null))
 
-        fun <R> ok(data: R): ResponseEntity<ApiResponse<R>> {
-            return ResponseEntity.ok(ApiResponse(success = true, payload = data, error = null))
-        }
+        fun <R> ok(data: R): ResponseEntity<ApiResponse<R>> = ResponseEntity.ok(ApiResponse(success = true, payload = data, error = null))
 
-        fun <R> created(data: R): ResponseEntity<ApiResponse<R>> {
-            return ResponseEntity.status(HttpStatus.CREATED)
+        fun <R> created(data: R): ResponseEntity<ApiResponse<R>> =
+            ResponseEntity
+                .status(HttpStatus.CREATED)
                 .body(ApiResponse(success = true, payload = data, error = null))
-        }
 
-        fun deleted(): ResponseEntity<ApiResponse<Nothing>> {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
-        }
+        fun deleted(): ResponseEntity<ApiResponse<Nothing>> = ResponseEntity.status(HttpStatus.NO_CONTENT).build()
 
-        fun error(errorCode: ErrorCode): ResponseEntity<ApiResponse<Nothing>> {
-            return ResponseEntity.status(errorCode.status)
+        fun error(errorCode: ErrorCode): ResponseEntity<ApiResponse<Nothing>> =
+            ResponseEntity
+                .status(errorCode.status)
                 .body(ApiResponse(success = false, payload = null, error = ErrorResponse.of(errorCode)))
-        }
     }
-
 }

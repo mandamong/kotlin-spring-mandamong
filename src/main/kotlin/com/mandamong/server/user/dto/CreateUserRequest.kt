@@ -11,14 +11,11 @@ data class CreateUserRequest(
     val image: MultipartFile?,
     val language: String,
 ) {
-
-    fun toEntity(encodedPassword: String): User {
-        return User(
+    fun toEntity(encodedPassword: String): User =
+        User(
             email = Email.from(email),
             password = encodedPassword,
             nickname = nickname,
             language = language,
         )
-    }
-
 }

@@ -7,11 +7,7 @@ data class UpdateActionRequest(
     val action: String?,
     val status: Status?,
 ) {
-
     companion object {
-        fun of(action: Action): UpdateActionRequest {
-            return UpdateActionRequest(action = action.action, status = action.status)
-        }
+        fun of(action: Action): UpdateActionRequest = UpdateActionRequest(action = action.action, status = action.status)
     }
-
 }

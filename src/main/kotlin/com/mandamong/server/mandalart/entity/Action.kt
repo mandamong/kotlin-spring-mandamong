@@ -20,26 +20,23 @@ class Action(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
-
     @Column(name = "action", nullable = false)
     var action: String,
-
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     var status: Status = Status.IN_PROGRESS,
-
     @JoinColumn(name = "objective_id")
     @ManyToOne(fetch = FetchType.LAZY)
     val objective: Objective,
 ) {
-
     companion object {
-        fun of(action: String, objective: Objective): Action {
-            return Action(
+        fun of(
+            action: String,
+            objective: Objective,
+        ): Action =
+            Action(
                 action = action,
                 objective = objective,
             )
-        }
     }
-
 }

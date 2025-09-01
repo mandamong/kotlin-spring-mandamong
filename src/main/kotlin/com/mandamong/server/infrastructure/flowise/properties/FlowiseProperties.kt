@@ -8,10 +8,8 @@ data class FlowiseProperties(
     val token: String,
     val projectId: ProjectId,
 ) {
-
     data class ProjectId(
         val subject: String,
         val objective: String,
     )
-
 }

@@ -6,18 +6,20 @@ import io.minio.MinioClient
 import io.minio.PutObjectArgs
 import io.minio.RemoveObjectArgs
 import io.minio.http.Method
-import java.util.UUID
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.util.UUID
 
 @Service
 class MinioService(
     @Value("\${minio.bucketName}") private val bucketName: String,
     private val minioClient: MinioClient,
 ) {
-
-    fun upload(userId: Long, image: MultipartFile): String {
+    fun upload(
+        userId: Long,
+        image: MultipartFile,
+    ): String {
         val uuid = UUID.randomUUID()
         val extension = image.originalFilename?.substringAfterLast('.', "")
         if (extension.isNullOrEmpty()) {
@@ -28,26 +30,30 @@ class MinioService(
         return objectKey
     }
 
-    fun putObject(objectKey: String, image: MultipartFile) {
+    fun putObject(
+        objectKey: String,
+        image: MultipartFile,
+    ) {
         minioClient.putObject(
-            PutObjectArgs.builder()
+            PutObjectArgs
+                .builder()
                 .bucket(bucketName)
                 .`object`(objectKey)
                 .stream(image.inputStream, image.size, -1)
                 .contentType(image.contentType)
-                .build()
+                .build(),
         )
     }
 
-    fun getPresignedUrlByObjectKey(objectKey: String): String {
-        return minioClient.getPresignedObjectUrl(
-            GetPresignedObjectUrlArgs.builder()
+    fun getPresignedUrlByObjectKey(objectKey: String): String =
+        minioClient.getPresignedObjectUrl(
+            GetPresignedObjectUrlArgs
+                .builder()
                 .bucket(bucketName)
                 .`object`(objectKey)
                 .method(Method.GET)
-                .build()
+                .build(),
         )
-    }
 
     fun deleteObject(objectKey: String) {
         if (objectKey == "$PROFILE_PREFIX$DEFAULT") {
@@ -55,10 +61,11 @@ class MinioService(
         }
 
         minioClient.removeObject(
-            RemoveObjectArgs.builder()
+            RemoveObjectArgs
+                .builder()
                 .bucket(bucketName)
                 .`object`(objectKey)
-                .build()
+                .build(),
         )
     }
 
@@ -66,5 +73,4 @@ class MinioService(
         private const val PROFILE_PREFIX = "user/profile"
         private const val DEFAULT = "/default/default.png"
     }
-
 }

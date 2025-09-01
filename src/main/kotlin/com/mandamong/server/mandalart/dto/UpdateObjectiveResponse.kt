@@ -8,15 +8,12 @@ data class UpdateObjectiveResponse(
     val objective: String,
     val status: Status,
 ) {
-
     companion object {
-        fun of(objective: Objective): UpdateObjectiveResponse {
-            return UpdateObjectiveResponse(
+        fun of(objective: Objective): UpdateObjectiveResponse =
+            UpdateObjectiveResponse(
                 id = objective.id,
                 objective = objective.objective,
                 status = objective.status,
             )
-        }
     }
-
 }

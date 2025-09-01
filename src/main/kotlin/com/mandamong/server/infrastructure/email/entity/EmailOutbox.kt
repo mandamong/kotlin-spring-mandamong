@@ -14,18 +14,14 @@ import java.util.UUID
 class EmailOutbox(
     @Id
     val id: String = UUID.randomUUID().toString(),
-
     @Column(name = "email", nullable = false)
     val email: String,
-
     @Column(name = "code", nullable = false)
     val code: String,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     var status: EmailOutboxStatus = EmailOutboxStatus.PENDING,
 ) {
-
     fun markSent() {
         this.status = EmailOutboxStatus.SENT
     }
@@ -33,5 +29,4 @@ class EmailOutbox(
     fun markFailed() {
         this.status = EmailOutboxStatus.FAILED
     }
-
 }

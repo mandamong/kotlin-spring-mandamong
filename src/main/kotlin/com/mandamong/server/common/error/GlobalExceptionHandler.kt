@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class GlobalExceptionHandler(
     private val discordService: DiscordService,
 ) {
-
     private val log = log()
 
     @ExceptionHandler(BusinessBaseException::class)
@@ -30,15 +29,18 @@ class GlobalExceptionHandler(
     }
 
     @ExceptionHandler(Exception::class)
-    fun handle(e: Exception, request: HttpServletRequest): ResponseEntity<ApiResponse<Nothing>> {
+    fun handle(
+        e: Exception,
+        request: HttpServletRequest,
+    ): ResponseEntity<ApiResponse<Nothing>> {
         log.error("Exception", e)
         val requestInformation = getRequestInformation(request)
         discordService.notifyException(e, requestInformation)
         return ApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR)
     }
 
-    private fun getRequestInformation(request: HttpServletRequest): String {
-        return buildString {
+    private fun getRequestInformation(request: HttpServletRequest): String =
+        buildString {
             append("**Method:** ${request.method}\n")
             append("**URL:** ${request.requestURL}\n")
             request.queryString?.let { append("**Query:** $it\n") }
@@ -46,6 +48,4 @@ class GlobalExceptionHandler(
             append("**Remote Address:** ${request.remoteAddr}\n")
             request.getHeader("User-Agent")?.let { append("**User-Agent:** $it") }
         }
-    }
-
 }

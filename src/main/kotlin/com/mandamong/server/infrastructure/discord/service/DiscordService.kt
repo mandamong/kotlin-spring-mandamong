@@ -11,18 +11,21 @@ import org.springframework.web.reactive.function.client.WebClient
 class DiscordService(
     private val discordClient: WebClient,
 ) {
-
     private val log = log()
 
     @Async
-    fun notifyException(e: Exception, requestInformation: String? = null) {
+    fun notifyException(
+        e: Exception,
+        requestInformation: String? = null,
+    ) {
         val embed = DiscordEmbed.of(e, requestInformation)
         val payload = DiscordPayload(listOf(embed))
         sendNotification(payload)
     }
 
     private fun sendNotification(payload: DiscordPayload) {
-        discordClient.post()
+        discordClient
+            .post()
             .bodyValue(payload)
             .retrieve()
             .toBodilessEntity()
@@ -31,6 +34,4 @@ class DiscordService(
                 { error -> log.error("EXCEPTION_NOTIFICATION_FAILED", error) },
             )
     }
-
 }
-

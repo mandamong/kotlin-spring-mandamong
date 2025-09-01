@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RestController
 class TokenRefreshController(
     private val service: TokenRefreshService,
 ) {
-
     @PostMapping(ApiPath.Auth.REFRESH)
-    fun refresh(@RequestBody request: TokenRefreshRequest): ResponseEntity<ApiResponse<TokenRefreshResponse>> {
-        return ApiResponse.ok(service.refresh(request.refreshToken))
-    }
-
+    fun refresh(
+        @RequestBody request: TokenRefreshRequest,
+    ): ResponseEntity<ApiResponse<TokenRefreshResponse>> = ApiResponse.ok(service.refresh(request.refreshToken))
 }
