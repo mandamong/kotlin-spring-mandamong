@@ -15,17 +15,20 @@ import org.springframework.web.bind.annotation.RestController
 class EmailController(
     private val service: EmailService,
 ) {
-
     @PostMapping(ApiPath.Email.SEND)
-    fun sendVerificationCode(@RequestBody request: ValidateEmailRequest): ResponseEntity<ApiResponse<Nothing>> {
+    fun sendVerificationCode(
+        @RequestBody request: ValidateEmailRequest,
+    ): ResponseEntity<ApiResponse<Nothing>> {
         service.sendCode(request)
         return ApiResponse.ok()
     }
 
     @GetMapping(ApiPath.Email.VERIFY)
-    fun verifyCode(@RequestParam email: String, @RequestParam code: String): ResponseEntity<ApiResponse<Nothing>> {
+    fun verifyCode(
+        @RequestParam email: String,
+        @RequestParam code: String,
+    ): ResponseEntity<ApiResponse<Nothing>> {
         service.verifyCode(email, code)
         return ApiResponse.ok()
     }
-
 }

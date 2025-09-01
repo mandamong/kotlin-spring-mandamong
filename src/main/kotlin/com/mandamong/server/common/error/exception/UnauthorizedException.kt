@@ -7,4 +7,3 @@ open class UnauthorizedException(
     errorCode: ErrorCode = ErrorCode.UNAUTHORIZED,
     message: String = errorCode.message,
 ) : BusinessBaseException(errorCode, message)
-

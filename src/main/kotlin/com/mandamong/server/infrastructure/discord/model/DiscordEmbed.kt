@@ -11,24 +11,28 @@ data class DiscordEmbed(
     val footer: DiscordFooter,
     val timestamp: String,
 ) {
-
     companion object {
-        fun of(e: Throwable, requestInformation: String?): DiscordEmbed {
+        fun of(
+            e: Throwable,
+            requestInformation: String?,
+        ): DiscordEmbed {
             val instant = Instant.now()
             val timestamp = DateTimeFormatter.ISO_INSTANT.format(instant)
-            val fields: List<DiscordField> = buildList {
-                add(DiscordField("Exception Type", e.javaClass.simpleName, true))
-                add(DiscordField("Message", e.message ?: "No message", true))
-                requestInformation?.let { add(DiscordField("Request Info", it, false)) }
-                e.stackTrace.take(5).let { stackTrace ->
-                    if (stackTrace.isNotEmpty()) {
-                        val stackTraceString = stackTrace.joinToString("\n") {
-                            "${it.className}.${it.methodName}:${it.lineNumber}"
+            val fields: List<DiscordField> =
+                buildList {
+                    add(DiscordField("Exception Type", e.javaClass.simpleName, true))
+                    add(DiscordField("Message", e.message ?: "No message", true))
+                    requestInformation?.let { add(DiscordField("Request Info", it, false)) }
+                    e.stackTrace.take(5).let { stackTrace ->
+                        if (stackTrace.isNotEmpty()) {
+                            val stackTraceString =
+                                stackTrace.joinToString("\n") {
+                                    "${it.className}.${it.methodName}:${it.lineNumber}"
+                                }
+                            add(DiscordField("Stack Trace (Top 5)", "```\n$stackTraceString\n```", false))
                         }
-                        add(DiscordField("Stack Trace (Top 5)", "```\n$stackTraceString\n```", false))
                     }
                 }
-            }
 
             return DiscordEmbed(
                 title = "🚨 Server Error (500) Detected",
@@ -36,11 +40,10 @@ data class DiscordEmbed(
                 color = RED,
                 fields = fields,
                 footer = DiscordFooter("Mandamong Server Alert"),
-                timestamp = timestamp
+                timestamp = timestamp,
             )
         }
 
         private const val RED = 16711680
     }
-
 }

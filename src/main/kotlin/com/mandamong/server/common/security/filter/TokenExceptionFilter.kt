@@ -18,7 +18,6 @@ import org.springframework.web.filter.OncePerRequestFilter
 class TokenExceptionFilter(
     private val objectMapper: ObjectMapper,
 ) : OncePerRequestFilter() {
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -32,19 +31,22 @@ class TokenExceptionFilter(
         }
     }
 
-    private fun handle(e: Exception, response: HttpServletResponse) {
-        val errorCode: ErrorCode = when (e) {
-            is ExpiredJwtException -> ErrorCode.EXPIRED_TOKEN
-            is MalformedJwtException, is SignatureException -> ErrorCode.INVALID_TOKEN
-            is UnsupportedJwtException -> ErrorCode.UNSUPPORTED_TOKEN
-            is IllegalArgumentException -> ErrorCode.TOKEN_NOT_FOUND
-            else -> ErrorCode.INTERNAL_SERVER_ERROR
-        }
+    private fun handle(
+        e: Exception,
+        response: HttpServletResponse,
+    ) {
+        val errorCode: ErrorCode =
+            when (e) {
+                is ExpiredJwtException -> ErrorCode.EXPIRED_TOKEN
+                is MalformedJwtException, is SignatureException -> ErrorCode.INVALID_TOKEN
+                is UnsupportedJwtException -> ErrorCode.UNSUPPORTED_TOKEN
+                is IllegalArgumentException -> ErrorCode.TOKEN_NOT_FOUND
+                else -> ErrorCode.INTERNAL_SERVER_ERROR
+            }
         response.status = errorCode.status.value()
         response.contentType = "application/json"
         response.characterEncoding = "UTF-8"
         val errorResponse = ErrorResponse.of(errorCode)
         response.writer.write(objectMapper.writeValueAsString(errorResponse))
     }
-
 }

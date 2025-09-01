@@ -19,21 +19,26 @@ class SecurityConfig(
     private val tokenAuthenticationFilter: TokenAuthenticationFilter,
     private val tokenExceptionFilter: TokenExceptionFilter,
 ) {
-
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.csrf { it.disable() }
+        http
+            .csrf { it.disable() }
             .formLogin { it.disable() }
             .httpBasic { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers(*ALLOWED_PATH).permitAll()
-                    .requestMatchers(HttpMethod.POST, ApiPath.Auth.LOGOUT).authenticated()
-                    .requestMatchers(HttpMethod.DELETE, ApiPath.User.DELETE).authenticated()
-                    .requestMatchers(HttpMethod.PATCH, ApiPath.User.INITIALIZE_PASSWORD).permitAll()
-                    .anyRequest().authenticated()
-            }
-            .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+                it
+                    .requestMatchers(*ALLOWED_PATH)
+                    .permitAll()
+                    .requestMatchers(HttpMethod.POST, ApiPath.Auth.LOGOUT)
+                    .authenticated()
+                    .requestMatchers(HttpMethod.DELETE, ApiPath.User.DELETE)
+                    .authenticated()
+                    .requestMatchers(HttpMethod.PATCH, ApiPath.User.INITIALIZE_PASSWORD)
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+            }.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(tokenExceptionFilter, TokenAuthenticationFilter::class.java)
         return http.build()
     }
@@ -42,15 +47,13 @@ class SecurityConfig(
     fun passwordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
 
     @Bean
-    fun userDetailsService(): UserDetailsService {
-        return InMemoryUserDetailsManager()
-    }
+    fun userDetailsService(): UserDetailsService = InMemoryUserDetailsManager()
 
     companion object {
-        private val ALLOWED_PATH = arrayOf(
-            "/api/auth/**",
-            "/metrics/**",
-        )
+        private val ALLOWED_PATH =
+            arrayOf(
+                "/api/auth/**",
+                "/metrics/**",
+            )
     }
-
 }

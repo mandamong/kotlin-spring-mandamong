@@ -2,13 +2,12 @@ package com.mandamong.server.common.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.MappedSuperclass
-import java.time.LocalDateTime
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
+import java.time.LocalDateTime
 
 @MappedSuperclass
 abstract class BaseTimeEntity {
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     lateinit var createdAt: LocalDateTime
@@ -16,5 +15,4 @@ abstract class BaseTimeEntity {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     lateinit var updatedAt: LocalDateTime
-
 }

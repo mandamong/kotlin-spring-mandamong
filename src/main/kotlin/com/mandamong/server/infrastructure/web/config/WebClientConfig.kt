@@ -10,41 +10,33 @@ import org.springframework.web.reactive.function.client.WebClient
 @Configuration
 class WebClientConfig(
     private val properties: FlowiseProperties,
-    @param:Value("\${discord.webhook.url}") private val discordWebhookUrl: String
+    @param:Value("\${discord.webhook.url}") private val discordWebhookUrl: String,
 ) {
+    @Bean
+    fun subjectClient(): WebClient = createFlowiseClient(properties.projectId.subject)
 
     @Bean
-    fun subjectClient(): WebClient {
-        return createFlowiseClient(properties.projectId.subject)
-    }
+    fun objectiveClient(): WebClient = createFlowiseClient(properties.projectId.objective)
 
     @Bean
-    fun objectiveClient(): WebClient {
-        return createFlowiseClient(properties.projectId.objective)
-    }
-
-    @Bean
-    fun discordClient(): WebClient {
-        return WebClient.builder()
+    fun discordClient(): WebClient =
+        WebClient
+            .builder()
             .baseUrl(discordWebhookUrl)
             .defaultHeaders {
                 it.contentType = MediaType.APPLICATION_JSON
-            }
-            .build()
-    }
+            }.build()
 
-    private fun createFlowiseClient(projectId: String): WebClient {
-        return WebClient.builder()
+    private fun createFlowiseClient(projectId: String): WebClient =
+        WebClient
+            .builder()
             .baseUrl("${properties.baseUrl}$PATH$projectId")
             .defaultHeaders {
                 it.contentType = MediaType.APPLICATION_JSON
                 it.setBearerAuth(properties.token)
-            }
-            .build()
-    }
+            }.build()
 
     companion object {
         private const val PATH = "/api/v1/prediction/"
     }
-
 }

@@ -8,17 +8,13 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class RabbitConfig {
-
     @Bean
     fun emailQueue(): Queue = Queue(EMAIL_QUEUE, true)
 
     @Bean
-    fun messageConverter(): MessageConverter {
-        return Jackson2JsonMessageConverter()
-    }
+    fun messageConverter(): MessageConverter = Jackson2JsonMessageConverter()
 
     companion object {
         const val EMAIL_QUEUE = "email.queue"
     }
-
 }

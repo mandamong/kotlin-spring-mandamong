@@ -7,7 +7,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface EmailOutboxRepository : JpaRepository<EmailOutbox, String> {
-
     fun findTop10ByStatus(status: EmailOutboxStatus): List<EmailOutbox>
-
 }

@@ -22,19 +22,15 @@ class SubjectController(
     private val service: SubjectService,
     private val flowiseService: FlowiseService,
 ) {
-
     @PatchMapping(ApiPath.Subject.UPDATE)
     fun update(
         @PathVariable subjectId: Long,
         @RequestBody request: UpdateSubjectRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
-    ): ResponseEntity<ApiResponse<UpdateSubjectResponse>> {
-        return ApiResponse.ok(service.update(subjectId, request.subject, loginUser.userId))
-    }
+    ): ResponseEntity<ApiResponse<UpdateSubjectResponse>> = ApiResponse.ok(service.update(subjectId, request.subject, loginUser.userId))
 
     @PostMapping(ApiPath.Subject.SUGGEST)
-    fun suggest(@RequestBody request: SuggestBySubjectRequest): ResponseEntity<ApiResponse<SuggestBySubjectResponse>> {
-        return ApiResponse.ok(flowiseService.suggestBySubject(request))
-    }
-
+    fun suggest(
+        @RequestBody request: SuggestBySubjectRequest,
+    ): ResponseEntity<ApiResponse<SuggestBySubjectResponse>> = ApiResponse.ok(flowiseService.suggestBySubject(request))
 }

@@ -7,7 +7,6 @@ enum class ErrorCode(
     val message: String,
     val status: HttpStatus,
 ) {
-
     INTERNAL_SERVER_ERROR("internal.server.error", "서버 내부 오류", HttpStatus.INTERNAL_SERVER_ERROR),
     METHOD_NOT_ALLOWED("method.not.allowed", "잘못된 HTTP 메서드 호출", HttpStatus.METHOD_NOT_ALLOWED),
     BAD_REQUEST("client.bad.request", "클라이언트 요청 오류", HttpStatus.BAD_REQUEST),
@@ -22,5 +21,4 @@ enum class ErrorCode(
     TOKEN_NOT_FOUND("auth.token.not-found", "존재하지 않는 토큰", HttpStatus.BAD_REQUEST),
 
     MAX_WAIT_FOR_LOCK("lock.max-wait", "락 획득 대기 시간 초과", HttpStatus.REQUEST_TIMEOUT),
-    
 }

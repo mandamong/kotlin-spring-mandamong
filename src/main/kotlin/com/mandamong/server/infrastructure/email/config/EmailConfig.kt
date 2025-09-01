@@ -1,11 +1,11 @@
 package com.mandamong.server.infrastructure.email.config
 
-import java.util.Properties
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
+import java.util.Properties
 
 @Configuration
 class EmailConfig(
@@ -20,7 +20,6 @@ class EmailConfig(
     @Value("\${spring.mail.properties.mail.smtp.timeout}") private val timeout: Int,
     @Value("\${spring.mail.properties.mail.smtp.write-timeout}") private val writeTimeout: Int,
 ) {
-
     @Bean
     fun javaMailSender(): JavaMailSender {
         val mailSender = JavaMailSenderImpl()
@@ -44,5 +43,4 @@ class EmailConfig(
             properties["mail.smtp.writetimeout"] = writeTimeout
             return properties
         }
-
 }

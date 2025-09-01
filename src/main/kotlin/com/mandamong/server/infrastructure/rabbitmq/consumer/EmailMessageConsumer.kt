@@ -10,10 +10,8 @@ import org.springframework.stereotype.Component
 class EmailMessageConsumer(
     private val service: EmailService,
 ) {
-
     @RabbitListener(queues = [RabbitConfig.EMAIL_QUEUE])
     fun consume(outbox: EmailOutbox) {
         service.sendEmail(outbox.email, outbox.code)
     }
-
 }

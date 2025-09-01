@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ActionRepository : JpaRepository<Action, Long> {
-
     @Query(
         """
         SELECT a FROM Action a
@@ -15,8 +14,7 @@ interface ActionRepository : JpaRepository<Action, Long> {
         JOIN FETCH o.subject s
         JOIN FETCH s.mandalart
         WHERE a.id = :id
-    """
+    """,
     )
     fun findByIdWithAllData(id: Long): Action?
-
 }

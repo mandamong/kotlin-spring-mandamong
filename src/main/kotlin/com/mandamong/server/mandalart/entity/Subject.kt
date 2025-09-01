@@ -24,30 +24,26 @@ class Subject(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     val id: Long = 0L,
-
     @Column(name = "subject")
     var subject: String,
-
     @JoinColumn(name = "mandalart_id")
     @OneToOne(fetch = FetchType.LAZY)
     val mandalart: Mandalart,
-
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     var status: Status = Status.IN_PROGRESS,
-
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "subject", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
-    val objectives: MutableList<Objective> = mutableListOf()
+    val objectives: MutableList<Objective> = mutableListOf(),
 ) {
-
     companion object {
-        fun of(subject: String, mandalart: Mandalart): Subject {
-            return Subject(
+        fun of(
+            subject: String,
+            mandalart: Mandalart,
+        ): Subject =
+            Subject(
                 subject = subject,
                 mandalart = mandalart,
             )
-        }
     }
-
 }

@@ -16,13 +16,10 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val service: AuthService,
 ) {
-
     @PostMapping(ApiPath.Auth.LOGIN)
     fun login(
         @RequestBody request: LoginRequest,
-    ): ResponseEntity<ApiResponse<LoginResponse>> {
-        return ApiResponse.ok(service.login(request.email, request.password))
-    }
+    ): ResponseEntity<ApiResponse<LoginResponse>> = ApiResponse.ok(service.login(request.email, request.password))
 
     @PostMapping(ApiPath.Auth.LOGOUT)
     fun logout(
@@ -31,5 +28,4 @@ class AuthController(
         service.logout(loginUser.userId)
         return ApiResponse.deleted()
     }
-
 }

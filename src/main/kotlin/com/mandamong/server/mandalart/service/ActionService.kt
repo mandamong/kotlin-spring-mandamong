@@ -17,19 +17,24 @@ class ActionService(
     private val repository: ActionRepository,
     private val publisher: ApplicationEventPublisher,
 ) {
-
     @Transactional
-    fun create(actions: List<List<String>>, objectives: List<Objective>): List<List<Action>> {
-        return actions.zip(objectives).map { (actionsByObjective, objective) ->
+    fun create(
+        actions: List<List<String>>,
+        objectives: List<Objective>,
+    ): List<List<Action>> =
+        actions.zip(objectives).map { (actionsByObjective, objective) ->
             actionsByObjective.map { action ->
                 repository.save(Action.of(action, objective))
             }
         }
-    }
 
     @Transactional
     @DistributedLock(name = "ACTION", key = "#id")
-    fun update(id: Long, newAction: String?, status: Status?): UpdateActionResponse {
+    fun update(
+        id: Long,
+        newAction: String?,
+        status: Status?,
+    ): UpdateActionResponse {
         val action = getByIdWithAllData(id)
         newAction?.let { action.action = it }
         status?.let { newStatus ->
@@ -48,7 +53,7 @@ class ActionService(
             UpdateActionEvent(
                 mandalartId = action.objective.subject.mandalart.id,
                 actionId = action.id,
-            )
+            ),
         )
 
         return UpdateActionResponse.of(action)
@@ -59,5 +64,4 @@ class ActionService(
 
     @Transactional(readOnly = true)
     fun getByIdWithAllData(id: Long): Action = findByIdWithAllData(id) ?: throw IdNotFoundException(id)
-
 }

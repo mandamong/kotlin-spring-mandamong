@@ -15,13 +15,9 @@ import org.springframework.web.bind.annotation.RestController
 class ActionController(
     private val service: ActionService,
 ) {
-
     @PatchMapping(ApiPath.Action.UPDATE)
     fun update(
         @PathVariable actionId: Long,
         @RequestBody request: UpdateActionRequest,
-    ): ResponseEntity<ApiResponse<UpdateActionResponse>> {
-        return ApiResponse.ok(service.update(actionId, request.action, request.status))
-    }
-
+    ): ResponseEntity<ApiResponse<UpdateActionResponse>> = ApiResponse.ok(service.update(actionId, request.action, request.status))
 }

@@ -7,15 +7,12 @@ open class PaginationResponse<T>(
     val hasNext: Boolean,
     val content: List<T>,
 ) {
-
     companion object {
-        fun <T> of(result: Page<T>): PaginationResponse<T> {
-            return PaginationResponse(
+        fun <T> of(result: Page<T>): PaginationResponse<T> =
+            PaginationResponse(
                 totalPage = result.totalPages,
                 hasNext = result.hasNext(),
                 content = result.content,
             )
-        }
     }
-
 }

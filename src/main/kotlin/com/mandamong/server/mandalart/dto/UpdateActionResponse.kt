@@ -8,15 +8,12 @@ data class UpdateActionResponse(
     val action: String,
     val status: Status,
 ) {
-
     companion object {
-        fun of(action: Action): UpdateActionResponse {
-            return UpdateActionResponse(
+        fun of(action: Action): UpdateActionResponse =
+            UpdateActionResponse(
                 id = action.id,
                 action = action.action,
                 status = action.status,
             )
-        }
     }
-
 }

@@ -6,31 +6,36 @@ import com.mandamong.server.mandalart.dto.UpdateSubjectResponse
 import com.mandamong.server.mandalart.entity.Mandalart
 import com.mandamong.server.mandalart.entity.Subject
 import com.mandamong.server.mandalart.repository.SubjectRepository
-import kotlin.jvm.optionals.getOrNull
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Caching
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class SubjectService(
     private val repository: SubjectRepository,
 ) {
-
     @Transactional
     @CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId")
-    fun create(subject: String, mandalart: Mandalart, userId: Long): Subject {
-        return repository.save(Subject.of(subject, mandalart))
-    }
+    fun create(
+        subject: String,
+        mandalart: Mandalart,
+        userId: Long,
+    ): Subject = repository.save(Subject.of(subject, mandalart))
 
     @Transactional
     @Caching(
         evict = [
             CacheEvict(cacheNames = [CacheName.MANDALARTS], key = "#userId"),
-            CacheEvict(cacheNames = [CacheName.MANDALART], key = "#id")
-        ]
+            CacheEvict(cacheNames = [CacheName.MANDALART], key = "#id"),
+        ],
     )
-    fun update(id: Long, newSubject: String, userId: Long): UpdateSubjectResponse {
+    fun update(
+        id: Long,
+        newSubject: String,
+        userId: Long,
+    ): UpdateSubjectResponse {
         val subject = getById(id)
         subject.subject = newSubject
         return UpdateSubjectResponse.of(subject)
@@ -41,5 +46,4 @@ class SubjectService(
 
     @Transactional(readOnly = true)
     fun getById(id: Long): Subject = findById(id) ?: throw IdNotFoundException(id)
-
 }

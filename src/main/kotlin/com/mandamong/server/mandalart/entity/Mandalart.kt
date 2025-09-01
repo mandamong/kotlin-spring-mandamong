@@ -24,18 +24,14 @@ class Mandalart(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
-
     @Column(name = "name")
     var name: String,
-
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     val user: User,
-
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     var status: Status = Status.IN_PROGRESS,
-
     @OneToOne(mappedBy = "mandalart", cascade = [CascadeType.REMOVE], orphanRemoval = true, fetch = FetchType.LAZY)
-    val subject: Subject? = null
+    val subject: Subject? = null,
 ) : BaseTimeEntity()

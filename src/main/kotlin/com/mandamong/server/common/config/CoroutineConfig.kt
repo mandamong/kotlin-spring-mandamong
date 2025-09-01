@@ -10,13 +10,10 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class CoroutineConfig(
-    private val coroutine: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-): DisposableBean {
-
+    private val coroutine: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
+) : DisposableBean {
     @Bean
     fun coroutineScope(): CoroutineScope = coroutine
 
     override fun destroy() = coroutine.cancel()
-
 }
-

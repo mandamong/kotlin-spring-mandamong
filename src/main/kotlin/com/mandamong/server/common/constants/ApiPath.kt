@@ -1,7 +1,6 @@
 package com.mandamong.server.common.constants
 
 object ApiPath {
-
     object User {
         const val CREATE = "/api/auth/basic"
         const val UPDATE = "/api/user"
@@ -47,5 +46,4 @@ object ApiPath {
     object Action {
         const val UPDATE = "/api/mandalart/action/{actionId}"
     }
-
 }

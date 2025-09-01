@@ -12,19 +12,21 @@ import org.springframework.web.filter.OncePerRequestFilter
 class TokenAuthenticationFilter(
     private val tokenUtil: TokenUtil,
 ) : OncePerRequestFilter() {
-
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         chain: FilterChain,
     ) {
-        val accessTokenFromHeader = request.getHeader(AUTHORIZATION_HEADER)
-            ?.takeIf { it.startsWith(TOKEN_PREFIX) }
-            ?.substring(TOKEN_PREFIX.length)
+        val accessTokenFromHeader =
+            request
+                .getHeader(AUTHORIZATION_HEADER)
+                ?.takeIf { it.startsWith(TOKEN_PREFIX) }
+                ?.substring(TOKEN_PREFIX.length)
 
-        val accessTokenFromCookie = request.cookies
-            ?.firstOrNull { it.name == "access_token" }
-            ?.value
+        val accessTokenFromCookie =
+            request.cookies
+                ?.firstOrNull { it.name == "access_token" }
+                ?.value
 
         val accessToken = accessTokenFromHeader ?: accessTokenFromCookie
 
@@ -39,5 +41,4 @@ class TokenAuthenticationFilter(
         private const val AUTHORIZATION_HEADER = "Authorization"
         private const val TOKEN_PREFIX = "Bearer "
     }
-
 }

@@ -9,16 +9,13 @@ open class ReadMandalartsResponse(
     val subject: String,
     val status: Status,
 ) {
-
     companion object {
-        fun of(mandalart: Mandalart): ReadMandalartsResponse {
-            return ReadMandalartsResponse(
+        fun of(mandalart: Mandalart): ReadMandalartsResponse =
+            ReadMandalartsResponse(
                 id = mandalart.id,
                 name = mandalart.name,
                 subject = mandalart.subject!!.subject,
-                status = mandalart.status
+                status = mandalart.status,
             )
-        }
     }
-
 }

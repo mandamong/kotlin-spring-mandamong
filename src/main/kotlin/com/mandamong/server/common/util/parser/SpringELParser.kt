@@ -5,7 +5,6 @@ import org.springframework.expression.spel.standard.SpelExpressionParser
 import org.springframework.expression.spel.support.StandardEvaluationContext
 
 object SpringELParser {
-
     private val parser: ExpressionParser = SpelExpressionParser()
 
     fun getDynamicValue(
@@ -19,5 +18,4 @@ object SpringELParser {
         }
         return parser.parseExpression(key).getValue(context).toString()
     }
-
 }

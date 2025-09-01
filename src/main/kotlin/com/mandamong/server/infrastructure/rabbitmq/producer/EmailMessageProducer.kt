@@ -9,9 +9,7 @@ import org.springframework.stereotype.Component
 class EmailMessageProducer(
     private val rabbitTemplate: RabbitTemplate,
 ) {
-
     fun produce(outbox: EmailOutbox) {
         rabbitTemplate.convertAndSend(RabbitConfig.EMAIL_QUEUE, outbox)
     }
-
 }

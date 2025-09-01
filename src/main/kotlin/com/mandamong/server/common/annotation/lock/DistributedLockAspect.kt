@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component
 class DistributedLockAspect(
     private val redissonClient: RedissonClient,
 ) {
-
     @Around("@annotation(DistributedLock)")
     fun lock(joinPoint: ProceedingJoinPoint): Any? {
         val signature: MethodSignature = joinPoint.signature as MethodSignature
@@ -27,11 +26,12 @@ class DistributedLockAspect(
         val key: String = SpringELParser.getDynamicValue(signature.parameterNames, joinPoint.args, distributedLock.key)
         val lockKey = "$REDISSON_LOCK_PREFIX${distributedLock.name}:$key"
         val rLock: RLock = redissonClient.getLock(lockKey)
-        val locked: Boolean = rLock.tryLock(
-            distributedLock.maxWaitForLock,
-            distributedLock.autoUnlockAfter,
-            distributedLock.timeUnit,
-        )
+        val locked: Boolean =
+            rLock.tryLock(
+                distributedLock.maxWaitForLock,
+                distributedLock.autoUnlockAfter,
+                distributedLock.timeUnit,
+            )
 
         if (!locked) {
             throw MaxWaitForLockException()
@@ -47,5 +47,4 @@ class DistributedLockAspect(
     companion object {
         private const val REDISSON_LOCK_PREFIX = "LOCK::"
     }
-
 }

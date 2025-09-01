@@ -8,15 +8,12 @@ data class UpdateMandalartResponse(
     val mandalartName: String,
     val status: Status,
 ) {
-
     companion object {
-        fun of(mandalart: Mandalart): UpdateMandalartResponse {
-            return UpdateMandalartResponse(
+        fun of(mandalart: Mandalart): UpdateMandalartResponse =
+            UpdateMandalartResponse(
                 id = mandalart.id,
                 mandalartName = mandalart.name,
                 status = mandalart.status,
             )
-        }
     }
-
 }

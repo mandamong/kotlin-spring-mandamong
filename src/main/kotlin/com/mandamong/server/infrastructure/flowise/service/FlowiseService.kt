@@ -15,26 +15,22 @@ class FlowiseService(
     private val subjectClient: WebClient,
     private val objectiveClient: WebClient,
 ) {
+    fun suggestBySubject(request: SuggestBySubjectRequest): SuggestBySubjectResponse = sendRequest(subjectClient, request)
 
-    fun suggestBySubject(request: SuggestBySubjectRequest): SuggestBySubjectResponse {
-        return sendRequest(subjectClient, request)
-    }
+    fun suggestByObjective(request: SuggestByObjectiveRequest): SuggestByObjectiveResponse = sendRequest(objectiveClient, request)
 
-    fun suggestByObjective(request: SuggestByObjectiveRequest): SuggestByObjectiveResponse {
-        return sendRequest(objectiveClient, request)
-    }
-
-    private inline fun <reified T> sendRequest(webClient: WebClient, request: Any): T {
-        return webClient.post()
+    private inline fun <reified T> sendRequest(
+        webClient: WebClient,
+        request: Any,
+    ): T =
+        webClient
+            .post()
             .bodyValue(request)
             .retrieve()
             .bodyToMono(typeReference<T>())
             .block()
             ?.json
             ?: throw BusinessBaseException()
-    }
 
-    private inline fun <reified T> typeReference() =
-        object : ParameterizedTypeReference<FlowiseResponse<T>>() {}
-
+    private inline fun <reified T> typeReference() = object : ParameterizedTypeReference<FlowiseResponse<T>>() {}
 }

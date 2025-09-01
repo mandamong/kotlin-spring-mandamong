@@ -28,7 +28,6 @@ class UserService(
     private val minioService: MinioService,
     private val refreshTokenRepository: RefreshTokenRepository,
 ) {
-
     private val log = log()
 
     @Transactional
@@ -50,7 +49,10 @@ class UserService(
     }
 
     @Transactional
-    fun update(request: UpdateUserRequest, userId: Long): String? {
+    fun update(
+        request: UpdateUserRequest,
+        userId: Long,
+    ): String? {
         val user = getById(userId)
         var presignedUrl: String? = null
         request.nickname?.let { user.nickname = it }
@@ -100,7 +102,10 @@ class UserService(
     }
 
     @Transactional(readOnly = true)
-    fun validatePassword(password: String, userId: Long) {
+    fun validatePassword(
+        password: String,
+        userId: Long,
+    ) {
         val user = getById(userId)
         log.info("VALIDATE_PASSWORD userId=$userId")
         if (!isValidPassword(password, user.password)) {
@@ -117,11 +122,13 @@ class UserService(
         return UpdateUserRequest(password = randomPassword)
     }
 
-    private fun isValidPassword(raw: String, encoded: String) = passwordEncoder.matches(raw, encoded)
+    private fun isValidPassword(
+        raw: String,
+        encoded: String,
+    ) = passwordEncoder.matches(raw, encoded)
 
     private fun generateRandomPassword(length: Int = 12): String {
         val chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=!@#$%^&*()_+"
         return (1..length).map { chars.random() }.joinToString("")
     }
-
 }
