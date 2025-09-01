@@ -1,0 +1,29 @@
+name: ktlint
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  ktlint:
+    name: Check ktlint
+    runs-on: self-hosted
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Check ktlint
+        run: ./gradlew ktlintCheck
