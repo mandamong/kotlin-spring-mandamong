@@ -1,5 +1,6 @@
 package com.mandamong.server.infrastructure.email.entity
 
+import com.mandamong.server.common.entity.BaseTimeEntity
 import com.mandamong.server.infrastructure.email.enums.EmailOutboxStatus
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -21,7 +22,7 @@ class EmailOutbox(
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     var status: EmailOutboxStatus = EmailOutboxStatus.PENDING,
-) {
+) : BaseTimeEntity() {
     fun markSent() {
         this.status = EmailOutboxStatus.SENT
     }
