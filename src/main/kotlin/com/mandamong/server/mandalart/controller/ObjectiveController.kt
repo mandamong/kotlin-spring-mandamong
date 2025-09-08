@@ -24,10 +24,12 @@ class ObjectiveController(
     fun update(
         @PathVariable objectiveId: Long,
         @RequestBody request: UpdateObjectiveRequest,
-    ): ResponseEntity<ApiResponse<UpdateObjectiveResponse>> = ApiResponse.ok(service.update(objectiveId, request.objective))
+    ): ResponseEntity<ApiResponse<UpdateObjectiveResponse>> =
+        ApiResponse.ok(service.update(objectiveId, request.objective))
 
     @PostMapping(ApiPath.Objective.SUGGEST)
     fun suggest(
         @RequestBody request: SuggestByObjectiveRequest,
-    ): ResponseEntity<ApiResponse<SuggestByObjectiveResponse>> = ApiResponse.ok(flowiseService.suggestByObjective(request))
+    ): ResponseEntity<ApiResponse<SuggestByObjectiveResponse>> =
+        ApiResponse.ok(flowiseService.suggestByObjective(request))
 }

@@ -27,7 +27,8 @@ class SubjectController(
         @PathVariable subjectId: Long,
         @RequestBody request: UpdateSubjectRequest,
         @AuthenticationPrincipal loginUser: LoginUser,
-    ): ResponseEntity<ApiResponse<UpdateSubjectResponse>> = ApiResponse.ok(service.update(subjectId, request.subject, loginUser.userId))
+    ): ResponseEntity<ApiResponse<UpdateSubjectResponse>> =
+        ApiResponse.ok(service.update(subjectId, request.subject, loginUser.userId))
 
     @PostMapping(ApiPath.Subject.SUGGEST)
     fun suggest(

@@ -11,9 +11,11 @@ data class ApiResponse<T>(
     val error: ErrorResponse?,
 ) {
     companion object {
-        fun <R> ok(): ResponseEntity<ApiResponse<R>> = ResponseEntity.ok(ApiResponse(success = true, payload = null, error = null))
+        fun <R> ok(): ResponseEntity<ApiResponse<R>> =
+            ResponseEntity.ok(ApiResponse(success = true, payload = null, error = null))
 
-        fun <R> ok(data: R): ResponseEntity<ApiResponse<R>> = ResponseEntity.ok(ApiResponse(success = true, payload = data, error = null))
+        fun <R> ok(data: R): ResponseEntity<ApiResponse<R>> =
+            ResponseEntity.ok(ApiResponse(success = true, payload = data, error = null))
 
         fun <R> created(data: R): ResponseEntity<ApiResponse<R>> =
             ResponseEntity

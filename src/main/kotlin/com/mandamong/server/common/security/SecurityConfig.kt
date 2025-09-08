@@ -53,6 +53,7 @@ class SecurityConfig(
         private val ALLOWED_PATH =
             arrayOf(
                 "/api/auth/**",
+                "/api/gemini/**",
                 "/actuator/prometheus",
             )
     }

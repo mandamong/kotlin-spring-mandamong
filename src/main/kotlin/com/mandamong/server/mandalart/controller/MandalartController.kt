@@ -59,5 +59,6 @@ class MandalartController(
     fun readMandalart(
         @PathVariable mandalartId: Long,
         @AuthenticationPrincipal loginUser: LoginUser,
-    ): ResponseEntity<ApiResponse<ReadMandalartResponse>> = ApiResponse.ok(facade.getMandalartById(mandalartId, loginUser.userId))
+    ): ResponseEntity<ApiResponse<ReadMandalartResponse>> =
+        ApiResponse.ok(facade.getMandalartById(mandalartId, loginUser.userId))
 }

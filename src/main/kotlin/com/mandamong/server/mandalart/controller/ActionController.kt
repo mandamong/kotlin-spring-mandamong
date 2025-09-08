@@ -19,5 +19,6 @@ class ActionController(
     fun update(
         @PathVariable actionId: Long,
         @RequestBody request: UpdateActionRequest,
-    ): ResponseEntity<ApiResponse<UpdateActionResponse>> = ApiResponse.ok(service.update(actionId, request.action, request.status))
+    ): ResponseEntity<ApiResponse<UpdateActionResponse>> =
+        ApiResponse.ok(service.update(actionId, request.action, request.status))
 }

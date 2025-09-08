@@ -15,9 +15,11 @@ class FlowiseService(
     private val subjectClient: WebClient,
     private val objectiveClient: WebClient,
 ) {
-    fun suggestBySubject(request: SuggestBySubjectRequest): SuggestBySubjectResponse = sendRequest(subjectClient, request)
+    fun suggestBySubject(request: SuggestBySubjectRequest): SuggestBySubjectResponse =
+        sendRequest(subjectClient, request)
 
-    fun suggestByObjective(request: SuggestByObjectiveRequest): SuggestByObjectiveResponse = sendRequest(objectiveClient, request)
+    fun suggestByObjective(request: SuggestByObjectiveRequest): SuggestByObjectiveResponse =
+        sendRequest(objectiveClient, request)
 
     private inline fun <reified T> sendRequest(
         webClient: WebClient,
