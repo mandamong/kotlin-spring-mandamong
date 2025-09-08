@@ -46,4 +46,13 @@ object ApiPath {
     object Action {
         const val UPDATE = "/api/mandalart/action/{actionId}"
     }
+
+    object Tag {
+        const val CREATE = "/api/tag"
+        const val DELETE = "/api/tag/{tagId}"
+        const val TAGS = "/api/tag"
+        const val SEARCH = "/api/tag/search"
+        const val ADD_TO_MANDALART = "/api/mandalart/{mandalartId}/tag"
+        const val REMOVE_FROM_MANDALART = "/api/mandalart/{mandalartId}/tag/{tagId}"
+    }
 }
