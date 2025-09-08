@@ -34,6 +34,8 @@ class SecurityConfig(
                     .authenticated()
                     .requestMatchers(HttpMethod.DELETE, ApiPath.User.DELETE)
                     .authenticated()
+                    .requestMatchers(HttpMethod.POST, ApiPath.Subject.SUGGEST, ApiPath.Objective.SUGGEST)
+                    .permitAll()
                     .requestMatchers(HttpMethod.PATCH, ApiPath.User.INITIALIZE_PASSWORD)
                     .permitAll()
                     .anyRequest()
@@ -53,7 +55,6 @@ class SecurityConfig(
         private val ALLOWED_PATH =
             arrayOf(
                 "/api/auth/**",
-                "/api/gemini/**",
                 "/actuator/prometheus",
             )
     }
