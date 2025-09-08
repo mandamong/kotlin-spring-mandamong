@@ -45,6 +45,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.projectreactor:reactor-test")
+    testImplementation("com.h2database:h2")
 
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 
