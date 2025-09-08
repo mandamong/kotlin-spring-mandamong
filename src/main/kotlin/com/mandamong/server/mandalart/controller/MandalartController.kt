@@ -55,7 +55,16 @@ class MandalartController(
     ): ResponseEntity<ApiResponse<PaginationResponse<ReadMandalartsResponse>>> =
         ApiResponse.ok(facade.getMandalartsByUserId(paginationParameter, loginUser.userId))
 
-    @GetMapping(ApiPath.Mandalart.MANDALART)
+    /**
+         * 지정된 만다라트를 조회하여 반환합니다.
+         *
+         * 주어진 만다라트 ID와 인증된 사용자 정보를 사용해 해당 사용자가 접근 가능한 만다라트를 조회합니다.
+         *
+         * @param mandalartId 조회할 만다라트의 ID(경로 변수).
+         * @param loginUser 인증된 사용자 정보 — 요청자의 userId를 소유자 검증에 사용합니다.
+         * @return 조회된 만다라트 정보를 담은 ApiResponse<ReadMandalartResponse>를 포함한 ResponseEntity.
+         */
+        @GetMapping(ApiPath.Mandalart.MANDALART)
     fun readMandalart(
         @PathVariable mandalartId: Long,
         @AuthenticationPrincipal loginUser: LoginUser,

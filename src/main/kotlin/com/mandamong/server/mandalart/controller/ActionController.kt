@@ -15,7 +15,14 @@ import org.springframework.web.bind.annotation.RestController
 class ActionController(
     private val service: ActionService,
 ) {
-    @PatchMapping(ApiPath.Action.UPDATE)
+    /**
+         * 지정한 액션의 내용을 업데이트하고 업데이트된 결과를 반환합니다.
+         *
+         * @param actionId 업데이트할 액션의 ID
+         * @param request 업데이트할 필드들을 포함한 요청 객체 (`action`: 변경할 작업 내용, `status`: 변경할 상태)
+         * @return 업데이트된 액션 정보를 담은 ApiResponse (HTTP 200)
+         */
+        @PatchMapping(ApiPath.Action.UPDATE)
     fun update(
         @PathVariable actionId: Long,
         @RequestBody request: UpdateActionRequest,
