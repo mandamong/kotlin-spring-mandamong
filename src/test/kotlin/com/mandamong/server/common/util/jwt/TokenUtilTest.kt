@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import java.util.Date
 
 class TokenUtilTest {
-    private val properties: TokenProperties = TokenProperties(issuer = ISSUER, secret = SECRET, expiry = EXPIRY)
+    private val properties = TokenProperties(issuer = ISSUER, secret = SECRET, expiry = EXPIRY)
     private val tokenUtil = TokenUtil(properties)
 
     @Test
@@ -32,7 +32,7 @@ class TokenUtilTest {
     companion object {
         private const val USER_ID = 1L
         private const val ISSUER = "test-issuer"
-        private const val SECRET = "secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret"
+        private const val SECRET = "c2VjcmV0c2VjcmV0c2VjcmV0c2VjcmV0c2VjcmV0c2VjcmV0c2VjcmV0c2VjcmV0"
         private val EXPIRY = TokenProperties.Expiry(access = 3600, refresh = 7200)
     }
 }
